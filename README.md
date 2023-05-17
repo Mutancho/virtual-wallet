@@ -1,5 +1,5 @@
 # virtual_wallet
-
+![Alt](/images/database_virtual_wallet.png)
 
 
 ## Getting started
