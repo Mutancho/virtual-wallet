@@ -2,7 +2,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from database.database_queries import read_query,update_query,insert_query
-from schemas.user_models import RegisterUser,EmailLogin,UsernameLogin
+from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser
 from utils.passwords import hash_password, verify_password
 from utils import oauth2
 
@@ -44,6 +44,39 @@ async def login(credentials: EmailLogin | UsernameLogin):
 
     return oauth2.create_access_token(id)
 
+
+async def all(username,phone,email,limit,offset):
+
+    sql = '''SELECT u.username,ud.email,ud.phone_number,ud.first_name,ud.last_name,ud.address FROM users as u join user_details as ud on u.id = ud.user_id'''
+
+    where_clauses = []
+    if username:
+        where_clauses.append(f"LOCATE('{username}',u.username) > 0")
+        # where_clauses.append(f"u.username like '%{username}%'")
+    if email:
+        where_clauses.append(f"LOCATE('{email}',ud.email) > 0")
+        # where_clauses.append(f"ud.email like '%{email}%'")
+    if phone:
+        where_clauses.append(f"LOCATE('{phone}',ud.phone_number) > 0")
+        # where_clauses.append(f"ud.phone_number like '%{phone}%'")
+    if where_clauses:
+        sql += ' WHERE ' + ' AND '.join(where_clauses)
+    if limit:
+        if offset:
+            sql += f" limit {offset},{limit}"
+        else:
+            sql += f" limit {limit}"
+    data = await read_query(sql)
+
+    return (DisplayUser.from_query_result(*row) for row in data)
+
+
+
+
+
+
+
+
 async def verify_credentials(credentials: EmailLogin | UsernameLogin):
     data = None
     if isinstance(credentials, EmailLogin):
@@ -75,6 +108,20 @@ async def exists_by_username_email_phone(user: RegisterUser):
     if len(data) > 0 or len(data2) > 0:
         return True
     return False
+
+async def is_admin(token: str):
+    user_id = oauth2.get_current_user(token)
+    data = await read_query('''SELECT is_admin FROM users WHERE id = %s''',
+                            (user_id,))
+    role = data[0][0]
+    return role == 1
+
+async def exists_by_id(token):
+    id = oauth2.get_current_user(token)
+    data = await read_query('''SELECT id FROM users WHERE id = %s''',
+                            (id,))
+
+    return len(data) > 0
 
 async def send_email(recipient_email,confirmation_link = None ,subject=None, message = None ):
     sender_email = "virtual.wallet.team1@gmail.com"

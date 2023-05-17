@@ -55,5 +55,16 @@ class EmailLogin(BaseModel):
     email: EmailStr
     password: str
 
+class DisplayUser(BaseModel):
+    username: str
+    email:str
+    phone_number: str
+    first_name: str
+    last_name:str
+    address:str
+
+    @classmethod
+    def from_query_result(cls,username,email:str,phone_number: str,first_name: str,last_name:str,address:str):
+        return cls(username=username,email=email,phone_number=phone_number,first_name=first_name,last_name=last_name,address=address)
 
 

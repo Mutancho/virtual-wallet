@@ -29,3 +29,17 @@ async def login(credentials: EmailLogin | UsernameLogin):
         return Response(status_code=401, content='Invalid password.')
 
     return await user_service.login(credentials)
+
+@users_router.get('/')
+async def get_all(username: str | None = None,
+                  phone: str | None = None,
+                  email: str | None = None,
+                  limit: int | None = None,
+                  offset: int | None = None,
+                  token: str = Header(alias="Authorization")):
+    if not await user_service.exists_by_id(token):
+        return Response(status_code=404)
+    if not await user_service.is_admin(token):
+        return Response(status_code=403)
+
+    return await user_service.all(username,phone,email,limit,offset)
