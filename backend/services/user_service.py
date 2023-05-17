@@ -2,9 +2,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from database.database_queries import read_query,update_query,insert_query
-from schemas.user_models import RegisterUser
-from utils.passwords import hash_password
-from datetime import datetime,date
+from schemas.user_models import RegisterUser,EmailLogin,UsernameLogin
+from utils.passwords import hash_password, verify_password
+from utils import oauth2
 
 async def create(user:RegisterUser) -> RegisterUser:
     hashed = await hash_password(user.password)
@@ -32,9 +32,49 @@ async def confirm(id):
 
     return 'Verified'
 
+async def login(credentials: EmailLogin | UsernameLogin):
+    if isinstance(credentials, EmailLogin):
+        data = await read_query('''SELECT user_id,email FROM user_details WHERE email = %s''',
+                                (credentials.email,))
+    if isinstance(credentials, UsernameLogin):
+        data = await read_query('''SELECT id,username,password FROM users WHERE username = %s''',
+                                (credentials.username,))
+    id = data[0][0]
 
 
+    return oauth2.create_access_token(id)
 
+async def verify_credentials(credentials: EmailLogin | UsernameLogin):
+    data = None
+    if isinstance(credentials, EmailLogin):
+        data = await read_query('''SELECT ud.email FROM user_details as ud join users as u on ud.user_id = u.id WHERE email = %s''',
+                                (credentials.email,))
+    if isinstance(credentials, UsernameLogin):
+        data = await read_query('''SELECT username FROM users WHERE username = %s''',
+                                (credentials.username,))
+    return len(data) > 0
+
+
+async def valid_password(credentials: EmailLogin | UsernameLogin):
+    actual_password = None
+    if isinstance(credentials, EmailLogin):
+        result = await read_query('''SELECT u.password FROM user_details as ud join users as u on ud.user_id = u.id WHERE email = %s''', (credentials.email,))
+        actual_password = result[0][0]
+    elif isinstance(credentials, UsernameLogin):
+        result = await read_query('''SELECT password FROM users WHERE username = %s ''', (credentials.username,))
+        actual_password = result[0][0]
+
+    return await verify_password(credentials.password, actual_password)
+
+
+async def exists_by_username_email_phone(user: RegisterUser):
+    data = await read_query('''SELECT username FROM users WHERE username =%s ''',
+                            (user.username, ))
+    data2 = await read_query('''SELECT email,phone_number FROM user_details WHERE phone_number =%s or email = %s''',
+                            (user.phone_number, user.email))
+    if len(data) > 0 or len(data2) > 0:
+        return True
+    return False
 
 async def send_email(recipient_email,confirmation_link = None ,subject=None, message = None ):
     sender_email = "virtual.wallet.team1@gmail.com"

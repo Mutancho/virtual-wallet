@@ -46,4 +46,14 @@ class RegisterUser(BaseModel):
             raise ValueError('Invalid date format. Expected format: day.month.year')
         return date_obj
 
+class UsernameLogin(BaseModel):
+    username: constr(min_length=2,max_length=20)
+    password: str
+
+
+class EmailLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
 
