@@ -1,7 +1,7 @@
 from typing import Union
 
 from fastapi import APIRouter, Response, Header, Request
-from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser
+from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, BlockUnblock
 from services import user_service
 from utils import oauth2
 
@@ -65,4 +65,14 @@ async def update(id:int,user: UpdateUser,token: str = Header(alias="Authorizatio
                         content=f'A User with this email: {user.email} or phone number: {user.phone_number} already exists!')
 
     return await user_service.update(id,user)
+
+
+@users_router.post('/{id}/blocks')
+async def block_unblock(id:int,command: BlockUnblock,token: str = Header(alias="Authorization")):
+    if not await user_service.is_admin(token):
+        return Response(status_code=403)
+    if not await user_service.exists_by_id(id):
+        return Response(status_code=404)
+
+    return await user_service.block_unblock(id,command)
 

@@ -122,3 +122,7 @@ class AfterUpdateUser(BaseModel):
         return cls(username=username,password=password, email=email, phone_number=phone_number, first_name=first_name,
                    last_name=last_name, address=address,two_factor_method=two_factor_method,title=title,gender=gender,photo_selfie=photo_selfie,identity_document=identity_document)
 
+
+class BlockUnblock(BaseModel):
+    action:constr(regex='(?i)^(block|unblock)$')
+

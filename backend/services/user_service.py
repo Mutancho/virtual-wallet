@@ -1,5 +1,6 @@
 from database.database_queries import read_query,update_query,insert_query
-from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, AfterUpdateUser
+from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, AfterUpdateUser, \
+    BlockUnblock
 from utils.passwords import hash_password, verify_password
 from utils import oauth2
 from utils.send_emails import send_email
@@ -113,6 +114,18 @@ async def update(id:int,user:UpdateUser):
 
     return AfterUpdateUser.from_query_result(old_user_data[0][-2],unhashed, merged.email,  merged.first_name, merged.last_name,merged.phone_number,
      merged.two_factor_method,merged.title, merged.gender, merged.photo_selfie, merged.identity_document,merged.address)
+
+
+async def block_unblock(id: int,command: BlockUnblock):
+    if command.action == 'block':
+        is_blocked = 1
+        msg = 'User was blocked'
+    else:
+        is_blocked = 0
+        msg = 'User was unblocked'
+    await update_query('''UPDATE users SET is_blocked = %s WHERE id = %s''',(is_blocked,id))
+
+    return msg
 
 
 
