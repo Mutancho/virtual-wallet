@@ -55,7 +55,8 @@ async def all(username,phone,email,limit,offset):
         where_clauses.append(f"LOCATE('{email}',ud.email) > 0")
         # where_clauses.append(f"ud.email like '%{email}%'")
     if phone:
-        where_clauses.append(f"LOCATE('{phone}',ud.phone_number) > 0")
+        where_clauses.append(f"ud.phone_number regexp '{phone}'")
+        # where_clauses.append(f"LOCATE('{phone}',ud.phone_number) > 0")
         # where_clauses.append(f"ud.phone_number like '%{phone}%'")
     if where_clauses:
         sql += ' WHERE ' + ' AND '.join(where_clauses)
@@ -68,6 +69,14 @@ async def all(username,phone,email,limit,offset):
 
     return (DisplayUser.from_query_result(*row) for row in data)
 
+async def delete(id:int) -> DisplayUser|list[None]:
+    user = (DisplayUser.from_query_result(*row) for row in await read_query('''
+            SELECT u.username,ud.email,ud.phone_number,ud.first_name,ud.last_name,ud.address 
+            FROM users as u join user_details as ud on u.id = ud.user_id WHERE u.id = %s''',(id,)))
+
+    await update_query('''DELETE FROM users WHERE id = %s''',(id,))
+
+    return user
 
 
 
@@ -99,13 +108,10 @@ async def valid_password(credentials: EmailLogin | UsernameLogin):
 
 
 async def exists_by_username_email_phone(user: RegisterUser):
-    data = await read_query('''SELECT username FROM users WHERE username =%s ''',
-                            (user.username, ))
-    data2 = await read_query('''SELECT email,phone_number FROM user_details WHERE phone_number =%s or email = %s''',
-                            (user.phone_number, user.email))
-    if len(data) > 0 or len(data2) > 0:
-        return True
-    return False
+    data = await read_query('''SELECT u.username,ud.email,ud.phone_number FROM users as u JOIN user_details as ud on u.id = ud.user_id 
+    WHERE u.username = %s or ud.email = %s or ud.phone_number = %s ''',(user.username,user.email,user.phone_number))
+
+    return len(data) > 0
 
 async def is_admin(token: str):
     user_id = oauth2.get_current_user(token)
@@ -120,6 +126,13 @@ async def exists_by_id(token):
                             (id,))
 
     return len(data) > 0
+
+async def is_user_authorized_to_delete(token:str,id:int):
+    user_id = oauth2.get_current_user(token)
+    data = await read_query('''SELECT is_admin FROM users WHERE id = %s''',
+               (user_id,))
+    role = data[0][0]
+    return user_id == id or role == 1
 
 
 

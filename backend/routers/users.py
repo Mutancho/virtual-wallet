@@ -1,5 +1,7 @@
+from typing import Union
+
 from fastapi import APIRouter, Response, Header, Request
-from schemas.user_models import RegisterUser,EmailLogin,UsernameLogin
+from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser
 from services import user_service
 from utils import oauth2
 
@@ -43,3 +45,13 @@ async def get_all(username: str | None = None,
         return Response(status_code=403)
 
     return await user_service.all(username,phone,email,limit,offset)
+
+
+@users_router.delete('/{id}',response_model=Union[DisplayUser|list[None]])
+async def delete(id:int,token: str = Header(alias="Authorization")):
+    if not await user_service.is_user_authorized_to_delete(token,id):
+        return Response(status_code=403,content="You are not allowed to delete this user!")
+    if not await user_service.exists_by_id(token):
+        return Response(status_code=404)
+
+    return await user_service.delete(id)
