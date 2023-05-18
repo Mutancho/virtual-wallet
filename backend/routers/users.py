@@ -76,3 +76,18 @@ async def block_unblock(id:int,command: BlockUnblock,token: str = Header(alias="
 
     return await user_service.block_unblock(id,command)
 
+
+@users_router.get('/search')
+async def get_user(username: str | None = None,
+                  phone: str | None = None,
+                  email: str | None = None,
+                  token: str = Header(alias="Authorization")):
+    if username is None and phone is None and email is None:
+        return Response(status_code=400,content="You must provide either a username, an email or a phone number as a query parameter in order to search!")
+    if not await user_service.auth_exists_by_id(token):
+        return Response(status_code=401)
+
+    user = await user_service.get_user(username,email,phone)
+    if isinstance(user,str):
+        return Response(status_code=404,content=user)
+    return user

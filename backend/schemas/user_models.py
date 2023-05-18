@@ -126,3 +126,6 @@ class AfterUpdateUser(BaseModel):
 class BlockUnblock(BaseModel):
     action:constr(regex='(?i)^(block|unblock)$')
 
+class Username(BaseModel):
+    username:str
+

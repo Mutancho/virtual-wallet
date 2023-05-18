@@ -1,6 +1,6 @@
 from database.database_queries import read_query,update_query,insert_query
 from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, AfterUpdateUser, \
-    BlockUnblock
+    BlockUnblock, Username
 from utils.passwords import hash_password, verify_password
 from utils import oauth2
 from utils.send_emails import send_email
@@ -86,7 +86,7 @@ async def update(id:int,user:UpdateUser):
 
     old =UpdateUser.from_query_result(*old_user_data[0][:-2])
     email_verified = old_user_data[0][-1]
-
+    unhashed = '********'
     if user.password:
         unhashed = user.password
         user.password = await hash_password(user.password)
@@ -128,6 +128,25 @@ async def block_unblock(id: int,command: BlockUnblock):
     return msg
 
 
+async def get_user(username,email,phone):
+    sql = '''SELECT u.username FROM users as u join user_details as ud on u.id = ud.user_id'''
+
+    where_clauses = []
+    if username:
+        where_clauses.append(f"LOCATE('{username}',u.username) > 0")
+    if email:
+        where_clauses.append(f"LOCATE('{email}',ud.email) > 0")
+    if phone:
+        where_clauses.append(f"ud.phone_number regexp '{phone}'")
+    if where_clauses:
+        sql += ' WHERE ' + ' AND '.join(where_clauses)
+
+    data = await read_query(sql)
+    if data:
+        return (Username(username=row[0])for row in data)
+    else:
+        return "User not found"
+
 
 
 
@@ -157,7 +176,7 @@ async def valid_password(credentials: EmailLogin | UsernameLogin):
     return await verify_password(credentials.password, actual_password)
 
 
-async def exists_by_username_email_phone(user: RegisterUser):
+async def exists_by_username_email_phone(user):
     data = await read_query('''SELECT u.username,ud.email,ud.phone_number FROM users as u JOIN user_details as ud on u.id = ud.user_id 
     WHERE u.username = %s or ud.email = %s or ud.phone_number = %s ''',(user.username,user.email,user.phone_number))
 
