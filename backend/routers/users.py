@@ -1,7 +1,7 @@
 from typing import Union
 
 from fastapi import APIRouter, Response, Header, Request
-from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser
+from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser
 from services import user_service
 from utils import oauth2
 
@@ -39,7 +39,7 @@ async def get_all(username: str | None = None,
                   limit: int | None = None,
                   offset: int | None = None,
                   token: str = Header(alias="Authorization")):
-    if not await user_service.exists_by_id(token):
+    if not await user_service.auth_exists_by_id(token):
         return Response(status_code=404)
     if not await user_service.is_admin(token):
         return Response(status_code=403)
@@ -47,11 +47,22 @@ async def get_all(username: str | None = None,
     return await user_service.all(username,phone,email,limit,offset)
 
 
-@users_router.delete('/{id}',response_model=Union[DisplayUser|list[None]])
+@users_router.delete('/{id}',response_model=DisplayUser)
 async def delete(id:int,token: str = Header(alias="Authorization")):
     if not await user_service.is_user_authorized_to_delete(token,id):
         return Response(status_code=403,content="You are not allowed to delete this user!")
-    if not await user_service.exists_by_id(token):
+    if not await user_service.exists_by_id(id):
         return Response(status_code=404)
 
     return await user_service.delete(id)
+
+@users_router.put('/{id}')
+async def update(id:int,user: UpdateUser,token: str = Header(alias="Authorization")):
+    if not await user_service.can_update(id,token):
+        return Response(status_code=400,content="You can't perform this action!")
+    if await user_service.check_exists_by_email_phone_for_updating(id,user):
+        return Response(status_code=400,
+                        content=f'A User with this email: {user.email} or phone number: {user.phone_number} already exists!')
+
+    return await user_service.update(id,user)
+

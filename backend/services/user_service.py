@@ -1,5 +1,5 @@
 from database.database_queries import read_query,update_query,insert_query
-from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser
+from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, AfterUpdateUser
 from utils.passwords import hash_password, verify_password
 from utils import oauth2
 from utils.send_emails import send_email
@@ -69,14 +69,51 @@ async def all(username,phone,email,limit,offset):
 
     return (DisplayUser.from_query_result(*row) for row in data)
 
-async def delete(id:int) -> DisplayUser|list[None]:
-    user = (DisplayUser.from_query_result(*row) for row in await read_query('''
+async def delete(id:int) -> DisplayUser:
+    user = [DisplayUser.from_query_result(*row) for row in await read_query('''
             SELECT u.username,ud.email,ud.phone_number,ud.first_name,ud.last_name,ud.address 
-            FROM users as u join user_details as ud on u.id = ud.user_id WHERE u.id = %s''',(id,)))
+            FROM users as u join user_details as ud on u.id = ud.user_id WHERE u.id = %s''',(id,))][0]
 
     await update_query('''DELETE FROM users WHERE id = %s''',(id,))
 
     return user
+
+async def update(id:int,user:UpdateUser):
+    old_user_data = await read_query('''
+    SELECT password, email,first_name, last_name, phone_number, two_factor_method,title,gender,photo_selfie,identity_document,address,username,email_verified
+    FROM users as u join user_details as ud on u.id = ud.user_id WHERE u.id = %s''',(id,))
+
+    old =UpdateUser.from_query_result(*old_user_data[0][:-2])
+    email_verified = old_user_data[0][-1]
+
+    if user.password:
+        unhashed = user.password
+        user.password = await hash_password(user.password)
+
+    merged = UpdateUser(password=user.password or old.password, email=user.email or old.email,
+                        phone_number=user.phone_number or old.phone_number, first_name=user.first_name or old.first_name,
+                        last_name=user.last_name or old.last_name, address=user.address or old.address,
+                        two_factor_method=user.two_factor_method or old.two_factor_method,title=user.title or old.title,
+                        gender=user.gender or old.gender,photo_selfie=user.photo_selfie or old.photo_selfie,identity_document=user.identity_document or old.identity_document)
+    if user.email and user.email != old.email:
+        email_verified = 0
+        subject = "Virtual Wallet Account Confirmation"
+        confirmation_link = f'http://127.0.0.1:8000/users/confirmation/{id}'
+        message = f"Please click the link below to confirm your email address:\n\n{confirmation_link}"
+
+        await send_email(user.email, confirmation_link, subject, message)
+
+
+    await update_query('''
+    UPDATE users as u,user_details as ud 
+    SET u.password = %s,u.email_verified = %s,ud.email = %s,ud.phone_number = %s,ud.first_name = %s,ud.last_name = %s,ud.address = %s,
+    u.two_factor_method = %s,ud.title = %s,ud.gender = %s,ud.photo_selfie = %s,ud.identity_document = %s Where u.id = %s and ud.user_id = %s''',
+    (merged.password, email_verified, merged.email, merged.phone_number, merged.first_name, merged.last_name,
+     merged.address, merged.two_factor_method,merged.title, merged.gender, merged.photo_selfie, merged.identity_document, id,id))
+
+    return AfterUpdateUser.from_query_result(old_user_data[0][-2],unhashed, merged.email,  merged.first_name, merged.last_name,merged.phone_number,
+     merged.two_factor_method,merged.title, merged.gender, merged.photo_selfie, merged.identity_document,merged.address)
+
 
 
 
@@ -113,6 +150,12 @@ async def exists_by_username_email_phone(user: RegisterUser):
 
     return len(data) > 0
 
+async def check_exists_by_email_phone_for_updating(id:int,user: UpdateUser):
+    data = await read_query('''SELECT ud.email,ud.phone_number FROM users as u JOIN user_details as ud on u.id = ud.user_id 
+    WHERE (ud.email = %s or ud.phone_number = %s ) and u.id <> %s''',(user.email,user.phone_number,id))
+
+    return len(data) > 0
+
 async def is_admin(token: str):
     user_id = oauth2.get_current_user(token)
     data = await read_query('''SELECT is_admin FROM users WHERE id = %s''',
@@ -120,8 +163,14 @@ async def is_admin(token: str):
     role = data[0][0]
     return role == 1
 
-async def exists_by_id(token):
+async def auth_exists_by_id(token):
     id = oauth2.get_current_user(token)
+    data = await read_query('''SELECT id FROM users WHERE id = %s''',
+                            (id,))
+
+    return len(data) > 0
+
+async def exists_by_id(id):
     data = await read_query('''SELECT id FROM users WHERE id = %s''',
                             (id,))
 
@@ -133,6 +182,20 @@ async def is_user_authorized_to_delete(token:str,id:int):
                (user_id,))
     role = data[0][0]
     return user_id == id or role == 1
+
+async def can_update(id: int,token: str):
+    '''
+    This function checks if the user exists and
+    if he exists checks whether that user is the same as the logged in user.
+    :param id: int
+    :param token: str
+    :return: bool
+    '''
+    auth_id = oauth2.get_current_user(token)
+    data = await read_query('''SELECT id FROM users WHERE id = %s''',
+                            (id,))
+
+    return len(data) > 0 and auth_id == id
 
 
 
