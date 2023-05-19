@@ -24,14 +24,28 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`users` (
   `is_admin` TINYINT(4) NOT NULL DEFAULT '0',
   `is_blocked` TINYINT(4) NOT NULL DEFAULT '0',
   `two_factor_method` ENUM('email', 'sms') NULL DEFAULT NULL,
-  `anti_money_laundery_checked` TINYINT(4) NOT NULL DEFAULT '0',
+  `anti_money_laundry_checked` TINYINT(4) NOT NULL DEFAULT '0',
   `email_verified` TINYINT(4) NOT NULL DEFAULT '0',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `stripe_id` VARCHAR(255),
+  `token` VARCHAR(255) DEFAULT NULL,
+  `title` ENUM('Mr', 'Mrs', 'Miss', 'Ms', 'Dr', 'Prof') NULL DEFAULT NULL,
+  `first_name` VARCHAR(255) NOT NULL,
+  `last_name` VARCHAR(255) NOT NULL,
+  `gender` ENUM('male', 'female', 'other') NOT NULL,
+  `dob` DATE NOT NULL,
+  `address` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `phone_number` VARCHAR(10) NOT NULL,
+  `photo_selfie` BLOB NULL DEFAULT NULL,
+  `identity_document` BLOB NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `username_UNIQUE` (`username` ASC),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+  UNIQUE INDEX `phone_number_UNIQUE` (`phone_number` ASC) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) )
+
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -96,11 +110,11 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `e-wallet`.`wallets`
+-- Table `e-wallet`.`wallets.py`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `e-wallet`.`wallets` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `balance` DECIMAL(10,2) NOT NULL,
+  `balance` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   `type` ENUM('personal', 'joint') NOT NULL,
   `is_active` TINYINT(4) NOT NULL DEFAULT '1',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -257,35 +271,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
--- -----------------------------------------------------
--- Table `e-wallet`.`user_details`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `e-wallet`.`user_details` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `title` ENUM('Mr', 'Mrs', 'Miss', 'Ms', 'Dr', 'Prof') NULL DEFAULT NULL,
-  `first_name` VARCHAR(255) NOT NULL,
-  `last_name` VARCHAR(255) NOT NULL,
-  `gender` ENUM('male', 'female', 'other') NOT NULL,
-  `dob` DATE NOT NULL,
-  `address` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `phone_number` VARCHAR(10) NOT NULL,
-  `photo_selfie` BLOB NULL DEFAULT NULL,
-  `identity_document` BLOB NULL DEFAULT NULL,
-  `user_id` INT(11) NOT NULL,
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
-  UNIQUE INDEX `phone_number_UNIQUE` (`phone_number` ASC) ,
-  INDEX `fk_user_details_users_idx` (`user_id` ASC) ,
-  CONSTRAINT `fk_user_details_users`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `e-wallet`.`users` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Table `e-wallet`.`user_notes`
@@ -322,6 +307,7 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`users_wallets` (
   `is_creator` TINYINT(4) NOT NULL DEFAULT '0',
   `added_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `access_level` ENUM(null,'top_up_only', 'full') DEFAULT 'full',
   PRIMARY KEY (`user_id`, `wallet_id`),
   INDEX `fk_users_has_wallets_wallets1_idx` (`wallet_id` ASC) ,
   INDEX `fk_users_has_wallets_users1_idx` (`user_id` ASC) ,
