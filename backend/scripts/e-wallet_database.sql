@@ -307,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`users_wallets` (
   `is_creator` TINYINT(4) NOT NULL DEFAULT '0',
   `added_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `access_level` ENUM(null,'top_up_only', 'full') DEFAULT 'full',
+  `access_level` ENUM('top_up_only', 'full') NULL DEFAULT 'full',
   PRIMARY KEY (`user_id`, `wallet_id`),
   INDEX `fk_users_has_wallets_wallets1_idx` (`wallet_id` ASC) ,
   INDEX `fk_users_has_wallets_users1_idx` (`user_id` ASC) ,
