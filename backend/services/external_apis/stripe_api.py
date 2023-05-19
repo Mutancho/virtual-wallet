@@ -23,9 +23,8 @@ async def attach_payment_method(payment_method_id: str, customer_id: str) -> Pay
 async def list_payment_methods(customer_id: str) -> list[PaymentMethod]:
     return PaymentMethod.list(customer=customer_id, type='card')
 
-
 async def detach_payment_method(payment_method_id: str) -> PaymentMethod:
-    return PaymentMethod.detach(payment_method_id)
+    return await PaymentMethod.detach(payment_method_id)
 
 
 # todo add constants for wallet descriptions
@@ -40,8 +39,9 @@ async def create_payment_intent(amount: int, payment_method_id: str) -> PaymentI
     return payment_intent
 
 
-async def get_stripe_id(user_id: str):
+async def get_stripe_id(token: str):
+    user_id = get_current_user(token)
     stripe_id = await read_query("SELECT stripe_id FROM users WHERE id=%s", (user_id,))
     if not stripe_id:
         return None
-    return stripe_id
+    return stripe_id[0][0]
