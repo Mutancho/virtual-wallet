@@ -1,9 +1,7 @@
-from typing import Union
-
 from fastapi import APIRouter, Response, Header, Request
 from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, BlockUnblock
 from services import user_service
-from utils import oauth2
+
 
 users_router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -39,8 +37,8 @@ async def get_all(username: str | None = None,
                   limit: int | None = None,
                   offset: int | None = None,
                   token: str = Header(alias="Authorization")):
-    if not await user_service.auth_exists_by_id(token):
-        return Response(status_code=404)
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
     if not await user_service.is_admin(token):
         return Response(status_code=403)
 
@@ -49,6 +47,8 @@ async def get_all(username: str | None = None,
 
 @users_router.delete('/{id}',response_model=DisplayUser)
 async def delete(id:int,token: str = Header(alias="Authorization")):
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
     if not await user_service.is_user_authorized_to_delete(token,id):
         return Response(status_code=403,content="You are not allowed to delete this user!")
     if not await user_service.exists_by_id(id):
@@ -58,7 +58,9 @@ async def delete(id:int,token: str = Header(alias="Authorization")):
 
 @users_router.put('/{id}')
 async def update(id:int,user: UpdateUser,token: str = Header(alias="Authorization")):
-    if not await user_service.can_update(id,token):
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
+    if not await user_service.can_update(id,token,user.old_password,user.new_password,user.repeat_password):
         return Response(status_code=400,content="You can't perform this action!")
     if await user_service.check_exists_by_email_phone_for_updating(id,user):
         return Response(status_code=400,
@@ -67,8 +69,10 @@ async def update(id:int,user: UpdateUser,token: str = Header(alias="Authorizatio
     return await user_service.update(id,user)
 
 
-@users_router.post('/{id}/blocks')
+@users_router.post('/{id}/blocks')#maybe change method to patch/put
 async def block_unblock(id:int,command: BlockUnblock,token: str = Header(alias="Authorization")):
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
     if not await user_service.is_admin(token):
         return Response(status_code=403)
     if not await user_service.exists_by_id(id):
@@ -82,10 +86,10 @@ async def get_user(username: str | None = None,
                   phone: str | None = None,
                   email: str | None = None,
                   token: str = Header(alias="Authorization")):
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
     if username is None and phone is None and email is None:
         return Response(status_code=400,content="You must provide either a username, an email or a phone number as a query parameter in order to search!")
-    if not await user_service.auth_exists_by_id(token):
-        return Response(status_code=401)
 
     user = await user_service.get_user(username,email,phone)
     if isinstance(user,str):

@@ -69,7 +69,9 @@ class DisplayUser(BaseModel):
 
 
 class UpdateUser(BaseModel):
-    password: str | None
+    old_password: str | None
+    new_password: str | None
+    repeat_password: str | None
     email: EmailStr | None
     first_name: constr(min_length=1, max_length=20) | None
     last_name: constr(min_length=1, max_length=20) | None
@@ -81,12 +83,20 @@ class UpdateUser(BaseModel):
     photo_selfie: bytes | None
     identity_document: bytes | None
 
-    @validator('password')
-    def password_validation(cls, password):
-        if not validate_password(password):
+    @validator('new_password')
+    def password_validation(cls, new_password,allow_reuse=True):
+        if not validate_password(new_password):
             raise ValueError(
                 "Password must contain at least one uppercase letter, one digit, one special symbol, and have a minimum length of 8 characters")
-        return password
+        return new_password
+
+    @validator('repeat_password',allow_reuse=True)
+    def password_validation(cls, repeat_password):
+        if not validate_password(repeat_password):
+            raise ValueError(
+                "Password must contain at least one uppercase letter, one digit, one special symbol, and have a minimum length of 8 characters")
+
+        return repeat_password
 
     @validator('phone_number')
     def phone_number_validation(cls, phone_number):
