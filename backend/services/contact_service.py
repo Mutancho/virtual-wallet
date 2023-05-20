@@ -10,6 +10,14 @@ async def add_contact(username: str,token):
 
     return 'Contact added'
 
+async def remove_contact(username,token):
+    id = oauth2.get_current_user(token)
+    contact_id = await read_query('''SELECT id from users where username = %s''', (username,))
+
+    await update_query('''DELETE FROM contacts WHERE user_id =%s and contact_id = %s''', (id, contact_id[0][0]))
+
+    return 'Contact removed'
+
 async def is_contact(username: str,token: str):
     id = oauth2.get_current_user(token)
     data = await read_query('''select c.user_id,c.contact_id from contacts as c 
