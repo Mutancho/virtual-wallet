@@ -1,5 +1,6 @@
 from database.database_queries import read_query,update_query,insert_query
 from utils import oauth2
+from schemas.user_models import Username
 
 
 async def add_contact(username: str,token):
@@ -17,6 +18,14 @@ async def remove_contact(username,token):
     await update_query('''DELETE FROM contacts WHERE user_id =%s and contact_id = %s''', (id, contact_id[0][0]))
 
     return 'Contact removed'
+
+async def get_contacts(token):
+    id = oauth2.get_current_user(token)
+    usernames = await read_query('''select username from users where id in (SELECT contact_id from contacts where user_id = %s)''',(id,))
+
+    return (Username(username=u[0]) for u in usernames)
+
+
 
 async def is_contact(username: str,token: str):
     id = oauth2.get_current_user(token)
