@@ -1,0 +1,2 @@
+class BalanceNotNull(Exception):
+    pass

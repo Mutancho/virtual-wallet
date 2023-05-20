@@ -1,7 +1,9 @@
+from database.connection import init_db, get_connection
 from fastapi import FastAPI
 from routers.users import users_router
-
-from database.connection import init_db, get_connection
+from routers.cards import cards_router
+from routers.transfers import transfers_router
+from routers.wallets import wallets_router
 
 app = FastAPI()
 
@@ -18,3 +20,6 @@ async def shutdown_event():
 
 
 app.include_router(users_router)
+app.include_router(cards_router)
+app.include_router(transfers_router)
+app.include_router(wallets_router)
