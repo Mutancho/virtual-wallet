@@ -43,6 +43,12 @@ async def login(credentials: EmailLogin | UsernameLogin):
 
     return dict(access_token=token, token_type="bearer")
 
+async def logout(token):
+    id = oauth2.get_current_user(token)
+    await update_query('''UPDATE users SET token = NULL WHERE id = %s''',(id,))
+
+    return 'Logged out successfully'
+
 async def all(username,phone,email,limit,offset):
 
     sql = '''SELECT u.username,u.email,u.phone_number,u.first_name,u.last_name,u.address FROM users as u '''

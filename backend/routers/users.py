@@ -30,6 +30,12 @@ async def login(credentials: EmailLogin | UsernameLogin):
 
     return await user_service.login(credentials)
 
+@users_router.post('/logout')
+async def logout(token: str = Header(alias="Authorization")):
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
+    return await user_service.logout(token)
+
 @users_router.get('/')
 async def get_all(username: str | None = None,
                   phone: str | None = None,
