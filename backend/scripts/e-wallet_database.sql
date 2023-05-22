@@ -114,6 +114,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `e-wallet`.`wallets` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(30) NOT NULL,
   `balance` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   `type` ENUM('personal', 'joint') NOT NULL,
   `is_active` TINYINT(4) NOT NULL DEFAULT '1',
@@ -222,13 +223,13 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `e-wallet`.`referals`
+-- Table `e-wallet`.`referrals`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `e-wallet`.`referals` (
+CREATE TABLE IF NOT EXISTS `e-wallet`.`referrals` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `expiary_date` DATE NOT NULL,
+  `expiry_date` DATE NOT NULL,
   `is_used` TINYINT(4) NOT NULL DEFAULT '0',
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -307,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`users_wallets` (
   `is_creator` TINYINT(4) NOT NULL DEFAULT '0',
   `added_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `access_level` ENUM('top_up_only', 'full') NULL DEFAULT 'full',
+  `access_level` ENUM('null','top_up_only', 'full') NULL DEFAULT 'full',
   PRIMARY KEY (`user_id`, `wallet_id`),
   INDEX `fk_users_has_wallets_wallets1_idx` (`wallet_id` ASC) ,
   INDEX `fk_users_has_wallets_users1_idx` (`user_id` ASC) ,

@@ -1,7 +1,8 @@
 from fastapi import HTTPException, status, APIRouter, Header, Response
-from schemas.wallet_models import NewWallet
-from services.wallets import create, wallet_by_id, all_wallets, delete, set_default_wallet
-from services.custom_errors import BalanceNotNull
+from schemas.wallet_models import NewWallet, WalletSettings
+from services.wallets import create, wallet_by_id, all_wallets, delete, set_default_wallet, settings
+from services.custom_errors.wallets import BalanceNotNull, NotWalletAdmin, \
+    CannotRemoveWalletAdmin, UserAlreadyInGroup
 
 wallets_router = APIRouter(prefix="/users/{user_id}/wallets", tags=["Wallets"])
 
@@ -37,10 +38,10 @@ async def delete_wallet(wallet_id: int, token: str = Header(alias="Authorization
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     except BalanceNotNull:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=BalanceNotNull.error_message)
 
 
-@wallets_router.put("/{wallet_id}/default")
+@wallets_router.patch("/{wallet_id}")
 async def make_default_wallet(wallet_id: int, token: str = Header(alias="Authorization")):
     defaulted_wallet = await set_default_wallet(wallet_id, token)
     if not defaulted_wallet:
@@ -48,6 +49,16 @@ async def make_default_wallet(wallet_id: int, token: str = Header(alias="Authori
     return Response(status_code=status.HTTP_200_OK)
 
 
-# todo add/remove users from wallets
-# todo user rights for joint wallets
-# todo ensure endpoints are restful
+@wallets_router.put("/{wallet_id}/settings")
+async def wallet_settings(wallet: WalletSettings, wallet_id: int, token: str = Header(alias="Authorization")):
+    try:
+        set_settings = await settings(wallet, wallet_id, token)
+        if not set_settings:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        return Response(status_code=status.HTTP_200_OK)
+    except NotWalletAdmin:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=NotWalletAdmin.error_message)
+    except UserAlreadyInGroup:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=UserAlreadyInGroup.error_message)
+    except CannotRemoveWalletAdmin:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=CannotRemoveWalletAdmin.error_message)
