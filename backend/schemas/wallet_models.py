@@ -27,3 +27,6 @@ class ViewWallet(NewWallet):
 class ViewAllWallets(BaseModel):
     owner: str
     wallets: list[ViewWallet]
+
+class ChooseWallet(BaseModel):
+    wallet: int
