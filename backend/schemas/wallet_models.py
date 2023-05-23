@@ -39,6 +39,10 @@ class ViewAllWallets(BaseModel):
     wallets: list[ViewWallet]
 
 
+class ChooseWallet(BaseModel):
+    wallet: int
+
+
 class WalletSettings(BaseModel):
     name: str | None
     status: bool | None
@@ -46,3 +50,4 @@ class WalletSettings(BaseModel):
     remove_username: str | None
     username: str | None
     change_user_access: constr(regex="^(null|top_up_only|full)$") | None
+

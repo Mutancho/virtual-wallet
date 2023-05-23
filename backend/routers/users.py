@@ -9,7 +9,7 @@ users_router = APIRouter(prefix='/users', tags=['Users'])
 async def create_user(user:RegisterUser):
     if await user_service.exists_by_username_email_phone(user):
         return Response(status_code=400,
-                        content=f'A User with this username: {user.username}, email: {user.email} or phone number: {user.phone_number} already exists!')
+                        content=f'A User with this username, email or phone number already exists!')
 
     return await user_service.create(user)
 
