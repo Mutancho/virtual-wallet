@@ -107,6 +107,13 @@ async def settings(wallet: WalletSettings, wallet_id: int, token: str):
     return True
 
 
+async def update_wallet_balance(wallet_id: int, amount: int):
+    await update_query(
+        "UPDATE wallets SET balance = balance + %s WHERE id = %s",
+        (amount, wallet_id)
+    )
+
+
 async def _create_joint_wallet(user_id: int, wallet_id):
     await insert_query("INSERT INTO users_wallets(is_creator, user_id, wallet_id) VALUES(%s, %s, %s)",
                        (IS_TRUE, user_id, wallet_id))
