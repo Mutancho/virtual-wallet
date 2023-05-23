@@ -230,17 +230,17 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`referrals` (
   `email` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expiry_date` DATE NOT NULL,
+  `link` VARCHAR(255) NOT NULL,
   `is_used` TINYINT(4) NOT NULL DEFAULT '0',
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_referals_users1_idx` (`user_id` ASC) ,
-  CONSTRAINT `fk_referals_users1`
+  INDEX `fk_referrals_users1_idx` (`user_id`),
+  CONSTRAINT `fk_referrals_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `e-wallet`.`users` (`id`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
