@@ -2,6 +2,7 @@ from database.database_queries import read_query,update_query,insert_query
 from utils import oauth2,send_emails
 from schemas.transaction_models import Transaction, DisplayTransaction, DisplayTransactionInfo
 from datetime import date,datetime
+from currency_converter import CurrencyConverter
 
 async def create_transaction(transaction,token):
     user_id = oauth2.get_current_user(token)
@@ -15,13 +16,14 @@ async def create_transaction(transaction,token):
     if transaction.amount <= 10000:
         recepient_email = await read_query('''SELECT email FROM users WHERE id = %s''',(transaction.recipient,))
         await acceptence_email(transaction_id,recepient_email[0][0])
+        info = "Transaction created successfully. Awaiting recipient response."
     else:
         user_email = await read_query('''SELECT email FROM users WHERE id = %s''',(user_id,))
         subject = "Outgoing transaction"
         confirmation_link = f'http://127.0.0.1:8000/transactions/confirmation/{transaction_id}'
         msg = f"Please click the link below to confirm this transaction:\n\n{confirmation_link}\n\n"
         await send_emails.send_email(user_email[0][0],confirmation_link, subject,msg)
-    info = "Transaction created successfully. Awaiting recipient response."
+        info = "Transaction created successfully. Awaiting your confirmation."
 
     return DisplayTransaction.from_query_result(info,transaction.amount,transaction.category,transaction.recipient,transaction.wallet,transaction.is_recurring)
 
@@ -31,6 +33,15 @@ async def accept(id,wallet):
     transaction_info = await read_query('''SELECT amount,category,recipient_id,wallet_id,is_recurring FROM transactions WHERE id = %s''',(id,))
     transaction = Transaction.from_query_result(*transaction_info[0])
     await update_query('''UPDATE wallets SET balance = balance - %s Where id = %s''', (transaction.amount,transaction.wallet))
+    sender_currency = await read_query('''SELECT c.currency FROM wallets as w JOIN currencies c on c.id = w.currency_id WHERE w.id = %s''',(transaction.wallet,))
+    reciver_currency = await read_query('''SELECT c.currency FROM wallets as w JOIN currencies c on c.id = w.currency_id WHERE w.id = %s''',(wallet.wallet,))
+
+    if sender_currency[0][0] != reciver_currency[0][0]:
+        c = CurrencyConverter()
+        amount = c.convert(transaction.amount, sender_currency[0][0], reciver_currency[0][0])
+        transaction.amount = round(amount,2)
+
+
     await update_query('''UPDATE wallets SET balance = balance + %s Where id = %s''',(transaction.amount,wallet.wallet))
 
     return 'Transaction Accepted'

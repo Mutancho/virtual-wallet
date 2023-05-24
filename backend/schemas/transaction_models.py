@@ -21,6 +21,8 @@ class DisplayTransaction(BaseModel):
     recipient: int
     wallet: int
     is_recurring: bool | None
+    interval: constr(regex='(?i)^\d+\s(days|weeks|months|years)$')| None
+
 
     @classmethod
     def from_query_result(cls,information,amount,category,recipient,wallet,is_recuring):
