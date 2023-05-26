@@ -1,0 +1,16 @@
+/* InfoSection.css */
+.info {
+    text-align: center;
+    padding: 50px;
+}
+
+.info h1 {
+    color: #333;
+    font-size: 2.5em;
+}
+
+.info p {
+    color: #666;
+    font-size: 1.2em;
+}
+

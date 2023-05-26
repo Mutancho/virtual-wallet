@@ -1,0 +1,22 @@
+/* EmailVerificationPage.css */
+
+.email-verification-container {
+  max-width: 600px;
+  margin: 2em auto;
+  padding: 2em;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.email-verification-container h2 {
+  margin-bottom: 1em;
+  color: #007BFF;
+}
+
+.email-verification-container p {
+  font-size: 1.1em;
+  line-height: 1.6em;
+  color: #333;
+}

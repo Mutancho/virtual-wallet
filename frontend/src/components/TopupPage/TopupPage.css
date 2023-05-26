@@ -1,0 +1,77 @@
+.container {
+  width: 115%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+label {
+  display: block;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+form {
+  margin-top: 20px;
+}
+
+label[for="amount"],
+label[for="card-element"] {
+  margin-top: 10px;
+  display: block;
+}
+
+input[type="number"],
+#card-element {
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+  padding: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+button[type="submit"]:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
