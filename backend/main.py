@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from database.connection import init_db, get_connection
 from fastapi import FastAPI
 from routers.referrals import referrals_router
@@ -21,6 +22,20 @@ async def shutdown_event():
     pool = await get_connection()
     await pool.close()
 
+
+# CORS middleware configuration
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["Content-Type", "Authorization"],
+)
 
 app.include_router(users_router)
 app.include_router(cards_router)

@@ -17,7 +17,12 @@ const fetchPaymentMethods = async () => {
   }
 
   const data = await response.json();
-  return data;
+  if (!Array.isArray(data)) {
+    console.error('Data is not an array:', data);
+    return [];
+  }
+  
+  return data.data;
 };
 
 const TopupPage = () => {
@@ -50,36 +55,34 @@ const TopupPage = () => {
       return;
     }
 
-    const cardElement = elements.getElement(CardElement);
+    if (!selectedCard) {
+      console.error("No card selected");
+      return;
+    }
 
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
+    const response = await fetch('/users/transfers/payment-intent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer "${localStorage.getItem('token')}"`
+      },
+      body: JSON.stringify({
+        amount,
+        wallet_id: walletId,
+        currency,
+        payment_method_id: selectedCard,
+      }),
     });
 
-    if (error) {
-      console.error(error);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data.message === 'Payment succeeded') {
+      console.log('Payment was successful');
     } else {
-      const response = await fetch('/users/transfers/payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          amount,
-          wallet_id: walletId,
-          currency,
-          payment_method_id: paymentMethod.id,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
+      console.log('Payment failed');
     }
   };
 
@@ -90,7 +93,7 @@ const TopupPage = () => {
 
       <h2>Saved Cards</h2>
       <ul>
-        {paymentMethods.map((method) => (
+        {paymentMethods && paymentMethods.map((method) => (
           <li key={method.id}>
             <label>
               <input
@@ -100,7 +103,7 @@ const TopupPage = () => {
                 checked={selectedCard === method.id}
                 onChange={handleCardSelection}
               />
-              **** **** **** {method.last4}
+              **** **** **** {method.card && method.card.last4}
             </label>
           </li>
         ))}
