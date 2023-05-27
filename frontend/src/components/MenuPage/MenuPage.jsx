@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MenuPage.css';
 import { Link } from 'react-router-dom';
+import Sidebar from '../SideBar/SideBar';
 
 const Wallet = ({ wallet }) => {
     const [showDetails, setShowDetails] = useState(false);
@@ -28,7 +29,9 @@ const Wallet = ({ wallet }) => {
           
           <button className="action-button">WITHDRAW</button>
 
-          <Link to={{pathname: '/users/transactions'}}>
+          <Link to={{pathname: '/users/transactions',
+          state: { walletId: wallet.wallet_id }}}
+          >
               <button className="action-button">TRANSACTIONS</button>
           </Link>
           
@@ -68,6 +71,7 @@ const MenuPage = ({ user }) => {
 
   return (
     <div className="menu-page">
+      <Sidebar />
       <h1 class="welcome_user">Welcome {owner}</h1>
       <div className="wallets">
         {wallets.map((wallet, index) => (
