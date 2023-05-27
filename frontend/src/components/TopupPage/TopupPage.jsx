@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useLocation } from 'react-router-dom';
 import './TopupPage.css';
+import Sidebar from '../SideBar/SideBar';
 
 
 const fetchPaymentMethods = async () => {
@@ -87,6 +88,7 @@ const TopupPage = () => {
 
   return (
     <div className="container">
+      <Sidebar />
       <h1>Top Up Page</h1>
 
       <h2>Saved Cards</h2>

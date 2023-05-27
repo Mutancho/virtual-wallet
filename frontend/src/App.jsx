@@ -10,32 +10,71 @@ import EmailVerificationPage from './components/EmailVerificationPage/EmailVerif
 import MenuPage from './components/MenuPage/MenuPage';
 import BankDetailsForm from './components/TopupPage/TopupPage';
 import TransactionsPage from './components/TransactionsPage/TransactionsPage'
+import Sidebar from './components/SideBar/SideBar';
+import ContactsPage from './components/ContactsPage/ContactsPage';
 
 
 
 const stripePromise = loadStripe('pk_test_51N8aWKBoGCspooGJW8aKWZUM6W8IOJTjhJcwwN3Mez7j9lWGxazkmyPxNM1jcCPNAeOko2GlrAyFYmyitl7c8Fnu00njr03PIO');
-
-function App() {
+const App = () => {
+    const shouldShowSidebar = !(
+      window.location.pathname === '/users/menu' ||
+      window.location.pathname === '/users/transactions' ||
+      window.location.pathname === '//users/payments/top-up' ||
+      window.location.pathname === '/contacts' 
+    );
+  
     return (
-        <Router>
-            <Routes>
+      <Router>
+        <div className="app">
+          
+          <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegistrationPage />} />
-                <Route path="/verify-email" element={<EmailVerificationPage />} />
-                <Route path="/users/menu" element={<MenuPage />} />
+               <Route path="/register" element={<RegistrationPage />} />
+               <Route path="/verify-email" element={<EmailVerificationPage />} />
+               <Route path="/users/menu" element={<MenuPage />} />
                 {<Route path='/users/transactions' element={<TransactionsPage />} />}
                 <Route path='/users/payments/top-up' 
-                    element={
-                        <Elements stripe={stripePromise}>
-                            <BankDetailsForm />
+                   element={
+                       <Elements stripe={stripePromise}>
+                           <BankDetailsForm />
                         </Elements>
                     } 
                 />
+                <Route path="/contacts" element={<ContactsPage />} />
                 {/* Other routes go here */}
-            </Routes>
-        </Router>
+             </Routes>
+        </div>
+      </Router>
     );
-}
+  };
+  
+  export default App;
+// function App() {
+    
+//     return (
+//         <Router>
+            
+//             <Routes>
+//                 <Route path="/" element={<HomePage />} />
+//                 <Route path="/login" element={<LoginPage />} />
+//                 <Route path="/register" element={<RegistrationPage />} />
+//                 <Route path="/verify-email" element={<EmailVerificationPage />} />
+//                 <Route path="/users/menu" element={<MenuPage />} />
+//                 {<Route path='/users/transactions' element={<TransactionsPage />} />}
+//                 <Route path='/users/payments/top-up' 
+//                     element={
+//                         <Elements stripe={stripePromise}>
+//                             <BankDetailsForm />
+//                         </Elements>
+//                     } 
+//                 />
+//                 {/* Other routes go here */}
+//             </Routes>
+           
+//         </Router>
+//     );
+// }
 
-export default App;
+// export default App;

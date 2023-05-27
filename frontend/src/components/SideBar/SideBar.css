@@ -1,4 +1,60 @@
-body {
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #FEF3D7;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu-item {
+  margin-bottom: 10px;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 8px 16px;
+  font-size: 18px;
+  color: #555;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-link:hover {
+  background-color: #ddd;
+}
+
+.sidebar-link.active {
+  background-color: #ccc;
+  color: #333;
+}
+
+
+
+
+
+
+
+
+/* body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
 }
@@ -15,7 +71,9 @@ main {
   overflow-y: hidden;
 }
 
-.dropdown-toggle { outline: 0; }
+.dropdown-toggle {
+  outline: 0;
+}
 
 .btn-toggle {
   padding: .25rem .5rem;
@@ -23,6 +81,7 @@ main {
   color: var(--bs-emphasis-color);
   background-color: transparent;
 }
+
 .btn-toggle:hover,
 .btn-toggle:focus {
   color: rgba(var(--bs-emphasis-color-rgb), .85);
@@ -44,6 +103,7 @@ main {
 .btn-toggle[aria-expanded="true"] {
   color: rgba(var(--bs-emphasis-color-rgb), .85);
 }
+
 .btn-toggle[aria-expanded="true"]::before {
   transform: rotate(90deg);
 }
@@ -53,6 +113,7 @@ main {
   margin-top: .125rem;
   margin-left: 1.25rem;
 }
+
 .btn-toggle-nav a:hover,
 .btn-toggle-nav a:focus {
   background-color: var(--bs-tertiary-bg);
@@ -60,4 +121,4 @@ main {
 
 .scrollarea {
   overflow-y: auto;
-}
+} */
