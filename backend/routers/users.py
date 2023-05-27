@@ -58,7 +58,7 @@ async def get_all(username: str | None = None,
 
 
 @users_router.delete('/{id}', response_model=DisplayUser)
-async def delete(id: int, token: str = Header(alias="Authorization")):
+async def delete(id: int|None, token: str = Header(alias="Authorization")):
     if not await user_service.is_logged_in(token):
         return Response(status_code=401)
     if not await user_service.is_user_authorized_to_delete(token, id):

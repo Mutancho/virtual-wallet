@@ -42,11 +42,13 @@ const Sidebar = () => {
           </Link>
         </li>
         )}
+        {location.pathname !== '/users/update' && (
         <li className="sidebar-menu-item">
-          <Link to="/settings" className="sidebar-link">
-            Settings
+          <Link to="/users/update" className="sidebar-link">
+            Update Profile
           </Link>
         </li>
+        )}
         <li className="sidebar-menu-item">
           <button className="sidebar-link" onClick={handleLogout}>
             Logout

@@ -12,6 +12,7 @@ import BankDetailsForm from './components/TopupPage/TopupPage';
 import TransactionsPage from './components/TransactionsPage/TransactionsPage'
 import Sidebar from './components/SideBar/SideBar';
 import ContactsPage from './components/ContactsPage/ContactsPage';
+import UserUpdatePage from "./components/UserUpdatePage/UserUpdatePage";
 
 
 
@@ -43,6 +44,7 @@ const App = () => {
                     } 
                 />
                 <Route path="/contacts" element={<ContactsPage />} />
+              <Route path="/users/update" element={<UserUpdatePage />} />
                 {/* Other routes go here */}
              </Routes>
         </div>

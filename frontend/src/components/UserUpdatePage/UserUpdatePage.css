@@ -1,0 +1,81 @@
+/* UserUpdatePage.css */
+
+.user-update-form {
+    max-width: 400px;
+    margin: 2em auto 0;
+    padding: 2em;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-update-form h2 {
+    text-align: center;
+    color: #333;
+}
+
+.user-update-form label {
+    font-weight: normal;
+    display: block;
+    margin-bottom: 0.5em;
+    position: relative;
+}
+
+.user-update-form input,
+.user-update-form select {
+    width: 100%;
+    padding: 0.5em;
+    margin-bottom: 1em;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+    box-sizing: border-box;
+}
+
+.user-update-form .error-message {
+    color: red;
+}
+
+.user-update-form button {
+    width: 100%;
+    padding: 0.7em;
+    color: #fff;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-update-form button:hover {
+    background-color: #0056b3;
+}
+
+.user-update-form .form-submit {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    color: white;
+    background-color: #007BFF;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-update-form .form-submit:hover {
+    background-color: #0056b3;
+}
+
+.user-update-form .form-label {
+    display: block;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.user-update-form .form-label.required::after {
+    content: "*";
+    color: red;
+    margin-left: 2px;
+}
