@@ -28,7 +28,7 @@ async def remove_contact(username: str,token: str = Header(alias="Authorization"
 
     return await contact_service.remove_contact(username,token)
 
-@contacts_router.get('/')
+@contacts_router.get('')
 async def view_contact_list(token: str = Header(alias="Authorization")):
     if not await user_service.is_logged_in(token):
         return Response(status_code=401)

@@ -4,7 +4,7 @@ from services.wallets import create, wallet_by_id, all_wallets, delete, set_defa
 from services.custom_errors.wallets import BalanceNotNull, NotWalletAdmin, \
     CannotRemoveWalletAdmin, UserAlreadyInGroup
 
-wallets_router = APIRouter(prefix="/users/{user_id}/wallets", tags=["Wallets"])
+wallets_router = APIRouter(prefix="/users/wallets", tags=["Wallets"])
 
 
 @wallets_router.post("/")
@@ -13,7 +13,7 @@ async def create_wallet(wallet: NewWallet, token: str = Header(alias="Authorizat
     return Response(status_code=status.HTTP_201_CREATED)
 
 
-@wallets_router.get("/")
+@wallets_router.get("")
 async def get_all(token: str = Header(alias="Authorization")):
     wallets = await all_wallets(token)
     if not wallets.wallets:
