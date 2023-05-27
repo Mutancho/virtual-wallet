@@ -7,7 +7,7 @@ from services.custom_errors.wallets import BalanceNotNull, NotWalletAdmin, \
 wallets_router = APIRouter(prefix="/users/wallets", tags=["Wallets"])
 
 
-@wallets_router.post("/")
+@wallets_router.post("")
 async def create_wallet(wallet: NewWallet, token: str = Header(alias="Authorization")):
     await create(wallet, token)
     return Response(status_code=status.HTTP_201_CREATED)
