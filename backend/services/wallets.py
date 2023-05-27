@@ -15,11 +15,11 @@ async def create(wallet: NewWallet, token: str):
     if has_wallets:
         new_wallet_id = await insert_query(
             "INSERT INTO wallets(name, type, currency_id, creator_id, default_wallet) VALUES(%s,%s,%s,%s,%s)",
-            (wallet.name, wallet.type, currency_id, user_id, 0))
+            (wallet.name.title(), wallet.type.capitalize(), currency_id, user_id, 0))
     else:
         new_wallet_id = await insert_query(
             "INSERT INTO wallets(name, type, currency_id, creator_id) VALUES(%s,%s,%s,%s)",
-            (wallet.name, wallet.type, currency_id, user_id))
+            (wallet.name.title(), wallet.type.capitalize(), currency_id, user_id))
 
     if wallet.type == JOINT:
         await _create_joint_wallet(user_id, new_wallet_id)
@@ -30,10 +30,16 @@ async def create(wallet: NewWallet, token: str):
 async def all_wallets(token: str) -> ViewAllWallets:
     user_id = get_current_user(token)
     get_wallets = await read_query(
-        "SELECT w.id,w.name,w.type,c.currency,w.balance,w.is_active,w.default_wallet,w.created_at "
-        "FROM wallets w "
-        "JOIN currencies c on c.id = w.currency_id "
-        "WHERE w.creator_id=%s", (user_id,))
+        'SELECT w.id, w.name, w.type, c.currency, w.balance, w.is_active, w.default_wallet, w.created_at '
+        'FROM wallets w '
+        'JOIN currencies c ON c.id = w.currency_id '
+        'WHERE w.creator_id = %s '
+        'UNION '
+        'SELECT w.id, w.name, w.type, c.currency, w.balance, w.is_active, w.default_wallet, w.created_at '
+        'FROM wallets w '
+        'JOIN currencies c ON c.id = w.currency_id '
+        'JOIN users_wallets uw ON uw.wallet_id = w.id '
+        'WHERE uw.user_id = %s AND uw.is_creator = 0', (user_id, user_id))
     get_owner = await read_query("SELECT username FROM users WHERE id=%s", (user_id,))
     wallets = [ViewWallet.from_query_result(*wallet) for wallet in get_wallets]
     for wallet in wallets:
@@ -108,10 +114,15 @@ async def settings(wallet: WalletSettings, wallet_id: int, token: str):
 
 
 async def update_wallet_balance(wallet_id: int, amount: int):
-    await update_query(
-        "UPDATE wallets SET balance = balance + %s WHERE id = %s",
-        (amount, wallet_id)
-    )
+    balance_change = await update_query("UPDATE wallets SET balance = balance + %s WHERE id = %s", (amount, wallet_id))
+    return True if balance_change else False
+
+
+async def get_user_id_from_username(username: str):
+    other_user_id = await read_query("SELECT id FROM users WHERE username =%s", (username,))
+    if not other_user_id:
+        return None
+    return other_user_id[0][0]
 
 
 async def _create_joint_wallet(user_id: int, wallet_id):
@@ -135,7 +146,8 @@ async def _user_has_wallet(user_id: int) -> bool:
 async def _add_user_to_joint_wallet(other_user_id: str, wallet_id: int):
     if not other_user_id:
         return False
-    is_added = await read_query("SELECT user_id FROM users_wallets WHERE user_id = %s", (other_user_id,))
+    is_added = await read_query("SELECT user_id FROM users_wallets WHERE user_id = %s and wallet_id = %s",
+                                (other_user_id, wallet_id))
     if is_added and is_added[0][0] == other_user_id:
         raise UserAlreadyInGroup()
     add_user = await update_query("INSERT INTO users_wallets(user_id, wallet_id) VALUES(%s,%s)",
@@ -158,13 +170,6 @@ async def _amend_user_access_joint_wallet(access: str, user_id: int) -> bool:
     update_access = await update_query("UPDATE users_wallets SET access_level = %s WHERE user_id = %s",
                                        (access, user_id))
     return True if update_access else False
-
-
-async def get_user_id_from_username(username: str):
-    other_user_id = await read_query("SELECT id FROM users WHERE username =%s", (username,))
-    if not other_user_id:
-        return None
-    return other_user_id[0][0]
 
 
 async def _is_wallet_admin(user_id: int) -> bool:
