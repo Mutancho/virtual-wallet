@@ -4,7 +4,7 @@ from pydantic import BaseModel, constr
 
 class NewWallet(BaseModel):
     name: str
-    type: str
+    type: constr(regex=r"(?i)^(joint|personal)$")
     currency: constr(regex=r"(?i)^(USD|EUR|GBP|JPY|CAD|AUD|TRY|BGN)$")
 
 
@@ -30,7 +30,9 @@ class ViewWallet(NewWallet):
     def from_query_result(cls, wallet_id, name, type, currency, balance, is_active, default_wallet, created_at,
                           members=None):
         default_wallet = True if default_wallet == 1 else False
-        return cls(wallet_id=wallet_id, name=name, type=type, currency=currency, balance=balance, is_active=is_active,
+
+        return cls(wallet_id=wallet_id, name=name, type=type.capitalize(), currency=currency, balance=balance,
+                   is_active=is_active,
                    default_wallet=default_wallet, created_at=created_at, members=members)
 
 
@@ -50,4 +52,3 @@ class WalletSettings(BaseModel):
     remove_username: str | None
     username: str | None
     change_user_access: constr(regex="^(null|top_up_only|full)$") | None
-
