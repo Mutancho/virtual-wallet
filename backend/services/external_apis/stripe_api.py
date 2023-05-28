@@ -12,7 +12,7 @@ async def create_customer(email: str, user_id: str, first_name: str, last_name: 
     customer = Customer.create(email=email,
                                name=full_name,
                                metadata={'user_id': user_id})
-    return customer
+    return customer.id
 
 
 async def attach_payment_method(payment_method_id: str, customer_id: str) -> PaymentMethod:
