@@ -76,7 +76,7 @@ class UpdateUser(BaseModel):
     first_name: constr(min_length=1, max_length=20) | None
     last_name: constr(min_length=1, max_length=20) | None
     phone_number: str | None
-    two_factor_method: constr(regex='(?i)\b(?:email|sms)\b') | None
+    two_factor_method: constr(regex='(?i)(email|sms)') | None
     title: constr(regex='^(Mr|Mrs|Miss|Ms|Dr|Prof)$') | None
     gender: constr(regex='^(male|female|other)$') | None
     address: str | None

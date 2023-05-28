@@ -18,17 +18,16 @@ function LoginPage() {
         password: password,
       });
       const token = response.data.access_token;
-      // Store the token in local storage
+
       localStorage.setItem('token', token);
-      // Set the default header for all axios requests
+
       axios.defaults.headers.common['Authorization'] = `Bearer "${token}"`;
-      // After successful login, make a request to /users/1/wallets
-      // Navigate to the specified URL
+
       navigate('/users/menu');
     } catch (error) {
       if (error.response && error.response.data) {
         const { data } = error.response;
-        // Access the error response data here
+
         console.log(data);
       } else {
         console.error('An unexpected error occurred:', error);
