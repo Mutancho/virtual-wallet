@@ -20,10 +20,9 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     pool = await get_connection()
-    await pool.close()
+    pool.close()
 
 
-# CORS middleware configuration
 origins = [
     "http://localhost",
     "http://localhost:3000",
