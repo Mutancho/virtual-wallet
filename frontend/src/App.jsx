@@ -12,6 +12,8 @@ import BankDetailsForm from './components/TopupPage/TopupPage';
 import TransactionsPage from './components/TransactionsPage/TransactionsPage'
 import Sidebar from './components/SideBar/SideBar';
 import ContactsPage from './components/ContactsPage/ContactsPage';
+import SuccessfulPaymentPage from './components/SuccessfulPaymentPage/SuccessfulPaymentPage';
+import ManageCards from './components/ManageCards/ManageCards';
 
 
 
@@ -34,7 +36,9 @@ const App = () => {
                <Route path="/register" element={<RegistrationPage />} />
                <Route path="/verify-email" element={<EmailVerificationPage />} />
                <Route path="/users/menu" element={<MenuPage />} />
-                {<Route path='/users/transactions' element={<TransactionsPage />} />}
+               <Route path="/payment/successful" element={<SuccessfulPaymentPage />} />
+                <Route path='/users/transactions' element={<TransactionsPage />} />
+                <Route path='/users/payment-cards' element={<ManageCards />} />
                 <Route path='/users/payments/top-up' 
                    element={
                        <Elements stripe={stripePromise}>
