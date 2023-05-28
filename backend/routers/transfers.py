@@ -1,27 +1,31 @@
-from fastapi import APIRouter, Request, Form
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Request, Form, Header, Body, status
+from fastapi.responses import JSONResponse
+
 from services.external_apis.stripe_api import create_payment_intent
+from services.external_apis.stripe_api import create_payout
+from services.wallets import update_wallet_balance
 
-# todo add prefix
-transfers_router = APIRouter()
-templates = Jinja2Templates(directory="../frontend/templates")
+transfers_router = APIRouter(prefix="/users/transfers", tags=["Transfers"])
 
-
-@transfers_router.post("/create-payment-intent", response_class=HTMLResponse)
-async def create_payment_intent_route(request: Request, amount: int = Form(...), payment_method_id: str = Form(...)):
-    payment_intent = await create_payment_intent(amount, payment_method_id)
+@transfers_router.post("/payment-intent")
+async def create_payment_intent_route(amount: int = Body(...), wallet_id: int = Body(...),
+                                      currency: str = Body(...), payment_method_id: str = Body(...),
+                                      token: str = Header(alias="Authorization")):
+    payment_intent = await create_payment_intent(amount, payment_method_id, currency, token)
     if payment_intent.status == 'succeeded':
-        return templates.TemplateResponse("success.html", {"request": request})
+        await update_wallet_balance(wallet_id, amount)
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Payment succeeded"})
     else:
-        return templates.TemplateResponse("cancel.html", {"request": request})
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "Payment failed"})
 
 
-@transfers_router.get("/success", response_class=HTMLResponse)
-async def success(request: Request):
-    return templates.TemplateResponse("success.html", {"request": request})
-
-
-@transfers_router.get("/cancel", response_class=HTMLResponse)
-async def cancel(request: Request):
-    return templates.TemplateResponse("cancel.html", {"request": request})
+@transfers_router.post("/create-payout")
+async def create_payout_route(wallet_id: int = Form(...),
+                              amount: int = Form(...), currency: str = Form(...),
+                              destination: str = Form(...), token: str = Header(alias="Authorization")):
+    payout = await create_payout(amount, currency, destination)
+    if payout.status == 'succeeded':
+        await update_wallet_balance(wallet_id, -amount)
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Payout succeeded"})
+    else:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "Payout failed"})

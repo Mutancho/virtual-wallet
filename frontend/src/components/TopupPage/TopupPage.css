@@ -12,10 +12,6 @@ h1 {
   margin-bottom: 20px;
 }
 
-h2 {
-  margin-bottom: 10px;
-}
-
 ul {
   list-style-type: none;
   padding: 0;
@@ -45,7 +41,8 @@ label[for="card-element"] {
 }
 
 input[type="number"],
-#card-element {
+#card-element,
+select {
   width: 100%;
   box-sizing: border-box; /* Ensure padding is included in the width */
   padding: 10px;
@@ -53,6 +50,7 @@ input[type="number"],
   border-radius: 3px;
   font-size: 14px;
   margin-bottom: 10px;
+  outline: none; /* Remove default outline */
 }
 
 button[type="submit"] {
@@ -74,4 +72,19 @@ button[type="submit"]:hover {
 button[type="submit"]:disabled {
   background-color: #ddd;
   cursor: not-allowed;
+}
+
+/* Add specific styles for select dropdown */
+select {
+  appearance: none; /* Remove default select dropdown arrow */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom dropdown arrow */
+  background-repeat: no-repeat;
+  background-position: right .7em top 50%;
+  background-size: .65em auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow .15s ease-in-out;
+}
+
+select:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }

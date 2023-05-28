@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './TopupPage.css';
 import Sidebar from '../SideBar/SideBar';
-
 
 const fetchPaymentMethods = async () => {
   const response = await fetch('/users/cards/payment-methods/list', {
@@ -17,12 +16,8 @@ const fetchPaymentMethods = async () => {
   }
 
   const data = await response.json();
-  if (!Array.isArray(data)) {
-    console.error('Data is not an array:', data);
-    return [];
-  }
-  
-  return data.data;
+
+  return data.data || [];
 };
 
 const TopupPage = () => {
@@ -34,6 +29,7 @@ const TopupPage = () => {
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedCard, setSelectedCard] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state) {
@@ -55,22 +51,35 @@ const TopupPage = () => {
       return;
     }
 
+    let paymentMethodId = selectedCard;
+
     if (!selectedCard) {
-      console.error("No card selected");
-      return;
+      const cardElement = elements.getElement(CardElement);
+
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+      });
+
+      if (error) {
+        console.log('Stripe error:', error);
+        return;
+      }
+
+      paymentMethodId = paymentMethod.id;
     }
 
     const response = await fetch('/users/transfers/payment-intent', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer "${localStorage.getItem('token')}"`
+        'Authorization': `Bearer "${localStorage.getItem('token')}"`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         amount,
         wallet_id: walletId,
         currency,
-        payment_method_id: selectedCard,
+        payment_method_id: paymentMethodId,
       }),
     });
 
@@ -81,6 +90,7 @@ const TopupPage = () => {
     const data = await response.json();
     if (data.message === 'Payment succeeded') {
       console.log('Payment was successful');
+      navigate('/payment/successful');
     } else {
       console.log('Payment failed');
     }
@@ -91,23 +101,14 @@ const TopupPage = () => {
       <Sidebar />
       <h1>Top Up Page</h1>
 
-      <h2>Saved Cards</h2>
-      <ul>
-        {paymentMethods && paymentMethods.map((method) => (
-          <li key={method.id}>
-            <label>
-              <input
-                type="radio"
-                name="selectedCard"
-                value={method.id}
-                checked={selectedCard === method.id}
-                onChange={handleCardSelection}
-              />
-              **** **** **** {method.card && method.card.last4}
-            </label>
-          </li>
+      <select value={selectedCard} onChange={handleCardSelection}>
+        <option value="">Select a saved card (Optional)</option>
+        {paymentMethods.map((method) => (
+          <option key={method.id} value={method.id}>
+            **** **** **** {method.card && method.card.last4}
+          </option>
         ))}
-      </ul>
+      </select>
 
       <form onSubmit={handleSubmit}>
         <label htmlFor="amount">Amount</label>
@@ -119,9 +120,12 @@ const TopupPage = () => {
           required
         />
 
-        <label htmlFor="card-element">Card Details</label>
-        <CardElement id="card-element" />
-
+        {!selectedCard && (
+          <>
+            <label htmlFor="card-element">Card Details</label>
+            <CardElement id="card-element" />
+          </>
+        )}
         <button type="submit" disabled={!stripe}>
           Pay
         </button>
