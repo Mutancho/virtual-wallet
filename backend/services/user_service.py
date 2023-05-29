@@ -36,17 +36,17 @@ async def confirm(id):
 
 async def login(credentials: EmailLogin | UsernameLogin):
     if isinstance(credentials, EmailLogin):
-        data = await read_query('''SELECT id,email,is_blocked FROM users WHERE email = %s''',
+        data = await read_query('''SELECT id,email,is_admin FROM users WHERE email = %s''',
                                 (credentials.email,))
     if isinstance(credentials, UsernameLogin):
-        data = await read_query('''SELECT id,username,is_blocked FROM users WHERE username = %s''',
+        data = await read_query('''SELECT id,username,is_admin FROM users WHERE username = %s''',
                                 (credentials.username,))
     id = data[0][0]
-    blocked = data[0][2]
+    admin = data[0][2]
     token = oauth2.create_access_token(id)
     await insert_query('''UPDATE users SET token = %s WHERE id = %s''', (token, id))
 
-    return dict(access_token=token, token_type="bearer",is_blocked=bool(blocked))
+    return dict(access_token=token, token_type="bearer",is_admin=bool(admin))
 
 
 async def logout(token):

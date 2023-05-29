@@ -18,10 +18,10 @@ function LoginPage() {
         password: password,
       });
       const token = response.data.access_token;
-      const is_blocked = response.data.is_blocked;
+      const is_admin = response.data.is_admin;
 
       localStorage.setItem('token', token);
-      localStorage.setItem('is_blocked',is_blocked);
+      localStorage.setItem('is_admin',is_admin);
 
       axios.defaults.headers.common['Authorization'] = `Bearer "${token}"`;
 

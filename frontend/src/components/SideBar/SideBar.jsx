@@ -17,7 +17,7 @@ const Sidebar = () => {
         }
       });
       localStorage.removeItem('token');
-      localStorage.removeItem('is_blocked');
+      localStorage.removeItem('is_admin');
       navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
@@ -47,6 +47,20 @@ const Sidebar = () => {
         <li className="sidebar-menu-item">
           <Link to="/users/update" className="sidebar-link">
             Update Profile
+          </Link>
+        </li>
+        )}
+        {localStorage.getItem('is_admin') !== 'false' && location.pathname !== '/users/admin/view' && (
+        <li className="sidebar-menu-item">
+          <Link to='/users/admin/view' className="sidebar-link">
+            Admin View Users
+          </Link>
+        </li>
+        )}
+        {localStorage.getItem('is_admin') !== 'false' && location.pathname !== '/transactions/admin/view' && (
+        <li className="sidebar-menu-item">
+          <Link to='/transactions/admin/view' className="sidebar-link">
+            Admin View Transactions
           </Link>
         </li>
         )}
