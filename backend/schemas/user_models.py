@@ -107,7 +107,7 @@ class UpdateUser(BaseModel):
     @classmethod
     def from_query_result(cls, password: str, email: str,first_name: str, last_name: str, phone_number: str, two_factor_method:str,title:str,
                           gender:str,photo_selfie:bytes,identity_document:bytes,address: str):
-        return cls(password=password, email=email, phone_number=phone_number, first_name=first_name,
+        return cls(old_password=password, email=email, phone_number=phone_number, first_name=first_name,
                    last_name=last_name, address=address,two_factor_method=two_factor_method,title=title,gender=gender,photo_selfie=photo_selfie,identity_document=identity_document)
 
 
