@@ -18,6 +18,7 @@ import ManageCards from './components/ManageCards/ManageCards';
 import WithdrawPage from './components/WithdrawPage/WithdrawPage';
 import AdminViewUsersPage from "./components/AdminViewUsersPage/AdminViewUsersPage";
 import AdminViewTransactionPage from "./components/AdminViewTransactionPage/AdminViewTransactionPage";
+import BlockUsersPage from "./components/BlockUsersPage/BlockUsersPage";
 
 const stripePromise = loadStripe('pk_test_51N8aWKBoGCspooGJW8aKWZUM6W8IOJTjhJcwwN3Mez7j9lWGxazkmyPxNM1jcCPNAeOko2GlrAyFYmyitl7c8Fnu00njr03PIO');
 
@@ -65,6 +66,7 @@ const App = () => {
           />
             <Route path='/users/admin/view' element={<AdminViewUsersPage />} />
             <Route path='/transactions/admin/view' element={<AdminViewTransactionPage />} />
+          <Route path='/admin/block' element={<BlockUsersPage />} />
         </Routes>
       </div>
     </Router>

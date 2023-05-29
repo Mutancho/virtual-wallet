@@ -64,6 +64,13 @@ const Sidebar = () => {
           </Link>
         </li>
         )}
+        {localStorage.getItem('is_admin') !== 'false' && location.pathname !== '/admin/block' && (
+        <li className="sidebar-menu-item">
+          <Link to='/admin/block' className="sidebar-link">
+            Admin Block/Unblock Users
+          </Link>
+        </li>
+        )}
         <li className="sidebar-menu-item">
           <button className="sidebar-link" onClick={handleLogout}>
             Logout

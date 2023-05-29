@@ -94,13 +94,15 @@ async def update(id: int, user: UpdateUser):
     FROM users as u WHERE u.id = %s''', (id,))
 
     old = UpdateUser.from_query_result(*old_user_data[0][:-2])
+    print(old)
+    print(old_user_data)
     email_verified = old_user_data[0][-1]
     unhashed = '********'
     if user.new_password:
         unhashed = user.new_password
         user.new_password = await hash_password(user.new_password)
 
-    merged = UpdateUser(new_password=user.new_password or old.password, email=user.email or old.email,
+    merged = UpdateUser(new_password=user.new_password or old.old_password , email=user.email or old.email,
                         phone_number=user.phone_number or old.phone_number,
                         first_name=user.first_name or old.first_name,
                         last_name=user.last_name or old.last_name, address=user.address or old.address,
