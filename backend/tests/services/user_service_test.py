@@ -70,7 +70,7 @@ class UserService_Should(unittest.TestCase):
                 result_usernameLogin = await user_service.login(credentials)
 
                 self.assertEqual(UsernameLogin, type(credentials))
-                self.assertEqual(dict(access_token=token, token_type="bearer",is_blocked=True), result_usernameLogin)
+                self.assertEqual(dict(access_token=token, token_type="bearer",is_admin=True), result_usernameLogin)
 
         run(async_test())
 

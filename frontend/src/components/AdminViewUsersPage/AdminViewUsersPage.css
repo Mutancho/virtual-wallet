@@ -1,0 +1,56 @@
+.admin-view-users {
+  margin: 2em;
+}
+
+h2 {
+  margin-bottom: 1em;
+}
+
+.search-bar {
+  display: flex;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
+.search-bar input {
+  padding: 0.5em;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9em;
+  box-sizing: border-box;
+}
+
+.pagination-controls {
+  margin-bottom: 1em;
+}
+
+.pagination-controls label {
+  margin-right: 1em;
+}
+
+.user-table-wrapper {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2em;
+}
+
+.user-table th,
+.user-table td {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+}
+
+.user-table th {
+  background-color: #f0f0f0;
+  text-align: left;
+  font-weight: bold;
+}
+
+.user-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
