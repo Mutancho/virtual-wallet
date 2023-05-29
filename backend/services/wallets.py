@@ -4,7 +4,7 @@ from utils.oauth2 import get_current_user
 from services.currencies import select_currency
 from services.constants import JOINT, IS_TRUE
 from services.custom_errors.wallets import BalanceNotNull, NotWalletAdmin, \
-    UserAlreadyInGroup, CannotRemoveWalletAdmin
+    UserAlreadyInGroup, CannotRemoveWalletAdmin, WithdrawMoreThanBalance, NoWithdrawalAccess, NoTopUpAccess
 
 
 async def create(wallet: NewWallet, token: str):
@@ -109,12 +109,28 @@ async def settings(wallet: WalletSettings, wallet_id: int, token: str):
 
     if wallet.change_user_access is not None:
         other_user = await get_user_id_from_username(wallet.username)
-        await _amend_user_access_joint_wallet(wallet.change_user_access, other_user)
+        await _amend_user_access_joint_wallet(wallet.change_user_access, other_user, wallet_id)
     return True
 
 
-async def update_wallet_balance(wallet_id: int, amount: int):
-    balance_change = await update_query("UPDATE wallets SET balance = balance + %s WHERE id = %s", (amount, wallet_id))
+async def update_wallet_balance(wallet_id: int, amount: int, token: str):
+    user_id = get_current_user(token)
+
+    is_wallet_joint = await read_query("SELECT type FROM wallets WHERE id = %s", (wallet_id,))
+    if is_wallet_joint and is_wallet_joint[0][0] == "joint":
+        access_level = await read_query("SELECT access_level FROM users_wallets WHERE user_id = %s", (user_id,))
+        if amount < 0:
+            if not access_level[0][0] == "full":
+                raise NoWithdrawalAccess()
+        else:
+            if access_level[0][0] not in ["top_up_only", "full"]:
+                raise NoTopUpAccess()
+    if amount < 0:
+        get_current_balance = await read_query("SELECT balance FROM wallets WHERE id = %s", (wallet_id,))
+        if get_current_balance[0][0] + amount < 0:
+            raise WithdrawMoreThanBalance()
+    balance_change = await update_query("UPDATE wallets SET balance = balance + %s WHERE id = %s",
+                                        (amount, wallet_id))
     return True if balance_change else False
 
 
@@ -166,9 +182,10 @@ async def _remove_user_from_joint_wallet(user_id: int, wallet_id: int):
     return True if delete_user else False
 
 
-async def _amend_user_access_joint_wallet(access: str, user_id: int) -> bool:
-    update_access = await update_query("UPDATE users_wallets SET access_level = %s WHERE user_id = %s",
-                                       (access, user_id))
+async def _amend_user_access_joint_wallet(access: str, user_id: int, wallet_id: int) -> bool:
+    update_access = await update_query(
+        "UPDATE users_wallets SET access_level = %s WHERE user_id = %s and wallet_id = %s",
+        (access, user_id, wallet_id))
     return True if update_access else False
 
 

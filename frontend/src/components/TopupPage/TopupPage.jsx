@@ -82,17 +82,15 @@ const TopupPage = () => {
         payment_method_id: paymentMethodId,
       }),
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
+    
     const data = await response.json();
-    if (data.message === 'Payment succeeded') {
+    
+    if (response.status === 200 && data.message === 'Payment succeeded') {
       console.log('Payment was successful');
       navigate('/payment/successful');
     } else {
       console.log('Payment failed');
+      navigate('/payment/unsuccessful')
     }
   };
 
@@ -123,7 +121,7 @@ const TopupPage = () => {
         {!selectedCard && (
           <>
             <label htmlFor="card-element">Card Details</label>
-            <CardElement id="card-element" />
+            <CardElement options={{hidePostalCode: true}} id="card-element" />
           </>
         )}
         <button type="submit" disabled={!stripe}>

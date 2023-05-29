@@ -19,7 +19,7 @@ USERNAME = "example_username"
 WALLET_NULL_ACCESS = "null"
 ACCESS_LEVEL = "full"
 SUCCESSFUL_INSERT_QUERY = 0
-
+WALLET_BALANCE_100 = 100
 SUCCESSFUL_WALLET_QUERY_RESULT = [
     (1, "Wallet 1", "personal", "USD", 100.0, True, True, "2023-05-25 12:00:00"),
     (2, "Wallet 2", "joint", "EUR", 200.0, False, False, "2023-05-24 10:00:00"),

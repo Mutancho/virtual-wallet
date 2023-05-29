@@ -14,6 +14,7 @@ import Sidebar from './components/SideBar/SideBar';
 import ContactsPage from './components/ContactsPage/ContactsPage';
 import UserUpdatePage from "./components/UserUpdatePage/UserUpdatePage";
 import SuccessfulPaymentPage from './components/SuccessfulPaymentPage/SuccessfulPaymentPage';
+import UnsuccessfulPaymentPage from './components/UnsuccessfulPaymentPage/UnsuccessfulPaymentPage';
 import ManageCards from './components/ManageCards/ManageCards';
 import WithdrawPage from './components/WithdrawPage/WithdrawPage';
 import AdminViewUsersPage from "./components/AdminViewUsersPage/AdminViewUsersPage";
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/verify-email" element={<EmailVerificationPage />} />
           <Route path="/users/menu" element={<MenuPage />} />
           <Route path="/payment/successful" element={<SuccessfulPaymentPage />} />
+          <Route path="/payment/unsuccessful" element={<UnsuccessfulPaymentPage />} />
           <Route path='/users/transactions' element={<TransactionsPage />} />
           <Route path='/users/payment-cards' 
             element={

@@ -2,8 +2,9 @@ import pytest
 from unittest.mock import patch
 from pydantic import ValidationError
 from schemas.wallet_models import NewWallet, ViewAllWallets, ViewWallet, WalletSettings, Member
-from services.custom_errors.wallets import NotWalletAdmin, UserAlreadyInGroup
-from services.wallets import create, all_wallets, wallet_by_id, settings
+from services.custom_errors.wallets import NotWalletAdmin, UserAlreadyInGroup, NoWithdrawalAccess, NoTopUpAccess, \
+    WithdrawMoreThanBalance
+from services.wallets import create, all_wallets, wallet_by_id, settings, update_wallet_balance
 import tests.constants as C
 
 
@@ -283,7 +284,7 @@ class TestWalletSettingsShould:
         mock_is_wallet_admin.assert_called_once_with(C.CURRENT_USER_ID)
         mock_wallet_exists.assert_called_once_with(C.VALID_WALLET_ID)
         mock_get_user_id.assert_called_once_with(C.USERNAME)
-        mock_amend_user_access.assert_called_once_with(C.WALLET_NULL_ACCESS, C.USER_ID)
+        mock_amend_user_access.assert_called_once_with(C.WALLET_NULL_ACCESS, C.USER_ID, C.VALID_WALLET_ID)
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
@@ -313,7 +314,8 @@ class TestWalletSettingsShould:
         mock_wallet_exists.assert_called_once_with(C.VALID_WALLET_ID)
         mock_is_wallet_admin.assert_called_once_with(C.CURRENT_USER_ID)
         mock_get_user_id.assert_called_once_with(wallet_settings.username)
-        mock_amend_user_access.assert_called_once_with(wallet_settings.change_user_access, C.OTHER_USER_ID)
+        mock_amend_user_access.assert_called_once_with(wallet_settings.change_user_access, C.OTHER_USER_ID,
+                                                       C.VALID_WALLET_ID)
         mock_add_user.assert_not_called()
 
     @pytest.mark.asyncio
@@ -379,3 +381,68 @@ class TestViewGroupMembersShould:
                 pass
             else:
                 assert False, "ValidationError not raised"
+
+
+class TestUpdateWalletBalance:
+    @pytest.mark.asyncio
+    @patch('services.wallets.get_current_user')
+    @patch('services.wallets.read_query')
+    @patch('services.wallets.update_query')
+    async def test_update_wallet_balance(self, mock_update_query, mock_read_query, mock_get_current_user):
+        mock_get_current_user.return_value = C.CURRENT_USER_ID
+        mock_read_query.return_value = [(C.NEW_PERSONAL_WALLET.type,)]
+        mock_update_query.return_value = C.SUCCESSFUL_WALLET_CREATION
+
+        result = await update_wallet_balance(C.VALID_WALLET_ID, C.WALLET_BALANCE_100, C.TOKEN)
+        assert result is True
+
+        mock_read_query.assert_called_once_with("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
+        mock_update_query.assert_called_once_with("UPDATE wallets SET balance = balance + %s WHERE id = %s",
+                                                  (C.WALLET_BALANCE_100, C.VALID_WALLET_ID))
+
+    @pytest.mark.asyncio
+    @patch('services.wallets.get_current_user')
+    @patch('services.wallets.read_query')
+    @patch('services.wallets.update_query')
+    async def test_update_wallet_balance_joint_no_withdrawal_access(self, mock_update_query, mock_read_query,
+                                                                    mock_get_current_user):
+        mock_get_current_user.return_value = C.CURRENT_USER_ID
+        mock_read_query.side_effect = [[(C.NEW_JOINT_WALLET.type,)], [(C.WALLET_NULL_ACCESS,)]]
+
+        with pytest.raises(NoWithdrawalAccess):
+            await update_wallet_balance(C.VALID_WALLET_ID, -C.WALLET_BALANCE_100, C.TOKEN)
+
+        mock_read_query.assert_any_call("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
+        mock_read_query.assert_any_call("SELECT access_level FROM users_wallets WHERE user_id = %s",
+                                        (C.CURRENT_USER_ID,))
+
+    @pytest.mark.asyncio
+    @patch('services.wallets.get_current_user')
+    @patch('services.wallets.read_query')
+    @patch('services.wallets.update_query')
+    async def test_update_wallet_balance_joint_no_top_up_access(self, mock_update_query, mock_read_query,
+                                                                mock_get_current_user):
+        mock_get_current_user.return_value = C.CURRENT_USER_ID
+        mock_read_query.side_effect = [[(C.NEW_JOINT_WALLET.type,)], [(C.WALLET_NULL_ACCESS,)]]
+
+        with pytest.raises(NoTopUpAccess):
+            await update_wallet_balance(C.VALID_WALLET_ID, C.WALLET_BALANCE_100, C.TOKEN)
+
+        mock_read_query.assert_any_call("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
+        mock_read_query.assert_any_call("SELECT access_level FROM users_wallets WHERE user_id = %s",
+                                        (C.CURRENT_USER_ID,))
+
+    @pytest.mark.asyncio
+    @patch('services.wallets.get_current_user')
+    @patch('services.wallets.read_query')
+    @patch('services.wallets.update_query')
+    async def test_update_wallet_balance_withdraw_more_than_balance(self, mock_update_query, mock_read_query,
+                                                                    mock_get_current_user):
+        mock_get_current_user.return_value = C.CURRENT_USER_ID
+        mock_read_query.side_effect = [[(C.NEW_PERSONAL_WALLET.type,)], [(0,)]]
+
+        with pytest.raises(WithdrawMoreThanBalance):
+            await update_wallet_balance(C.VALID_WALLET_ID, -C.WALLET_BALANCE_100, C.TOKEN)
+
+        mock_read_query.assert_any_call("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
+        mock_read_query.assert_any_call("SELECT balance FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
