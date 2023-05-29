@@ -11,6 +11,8 @@ transactions_router = APIRouter(prefix='/transactions', tags=['Transactions'])
 async def make_transaction(transaction: Transaction,token: str = Header(alias="Authorization")):
     if not await user_service.is_logged_in(token):
         return Response(status_code=401)
+    if await user_service.is_blocked(token):
+        return Response(status_code=403)
     wallet = await wallets.wallet_by_id(transaction.wallet,token)
     if wallet.balance < transaction.amount:
         return Response(status_code=400,content='Insufficient funds')

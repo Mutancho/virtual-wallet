@@ -17,6 +17,7 @@ const Sidebar = () => {
         }
       });
       localStorage.removeItem('token');
+      localStorage.removeItem('is_blocked');
       navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
