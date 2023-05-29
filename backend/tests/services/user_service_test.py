@@ -48,13 +48,13 @@ class UserService_Should(unittest.TestCase):
         async def async_test():
             with patch('services.user_service.read_query') as mock_read_query:
                 credentials = EmailLogin(email=EMAIL, password=PASSWORD)
-                mock_read_query.return_value = [(1,EMAIL)]
+                mock_read_query.return_value = [(1,EMAIL,0)]
                 token = oauth2.create_access_token(1)
 
                 result_emailLogin = await user_service.login(credentials)
 
                 self.assertEqual(EmailLogin,type(credentials))
-                self.assertEqual(dict(access_token=token, token_type="bearer"),result_emailLogin)
+                self.assertEqual(dict(access_token=token, token_type="bearer",is_blocked=False),result_emailLogin)
 
 
         run(async_test())
@@ -64,13 +64,13 @@ class UserService_Should(unittest.TestCase):
         async def async_test():
             with patch('services.user_service.read_query') as mock_read_query:
                 credentials = UsernameLogin(username=USERNAME,password=PASSWORD)
-                mock_read_query.return_value = [(1, USERNAME)]
+                mock_read_query.return_value = [(1, USERNAME,1)]
                 token = oauth2.create_access_token(1)
 
                 result_usernameLogin = await user_service.login(credentials)
 
                 self.assertEqual(UsernameLogin, type(credentials))
-                self.assertEqual(dict(access_token=token, token_type="bearer"), result_usernameLogin)
+                self.assertEqual(dict(access_token=token, token_type="bearer",is_blocked=True), result_usernameLogin)
 
         run(async_test())
 
