@@ -96,11 +96,17 @@ async def get_transactions(from_date:date,to_date,user,direction,limit,offset,to
     where_clauses = []
     if user:
         if direction and direction.lower() == 'incoming':
-            where_clauses.append(f"t.recipient_id = (SELECT id From users where username = '{user}')")
+            where_clauses.append(
+                f"t.wallet_id in (SELECT id FROM wallets WHERE creator_id = (SELECT id From users where username = '{user}')) AND t.recipient_id = {user_id}")
         elif direction and direction.lower() == 'outgoing':
-            where_clauses.append(f"t.wallet_id in (SELECT id FROM wallets WHERE creator_id = (SELECT id From users where username = '{user}')) AND t.recipient_id = {user_id}")
+            where_clauses.append(f"t.recipient_id = (SELECT id From users where username = '{user}')")
     elif user is None or direction is None:
-        where_clauses.append(f"(wallet_id in (SELECT id FROM wallets WHERE creator_id = {user_id}) or t. recipient_id = {user_id})")
+        where_clauses.append(f"(wallet_id in (SELECT w.id FROM wallets as w left join users_wallets as uw on w.id = uw.wallet_id WHERE w.creator_id = {user_id} or uw.user_id = {user_id}) or t. recipient_id = {user_id})")
+    if user is None and direction and direction.lower() == 'incoming':
+        where_clauses.append(f"t.recipient_id = {user_id}")
+    if user is None and direction and direction.lower() == 'outgoing':
+        where_clauses.append(
+            f"t.wallet_id in (SELECT w.id FROM wallets as w left join users_wallets as uw on w.id = uw.wallet_id WHERE w.creator_id = {user_id} or uw.user_id = {user_id})")
     if from_date:
         where_clauses.append(f"t.sent_at >= '{from_date}'")
     if to_date:
@@ -112,8 +118,9 @@ async def get_transactions(from_date:date,to_date,user,direction,limit,offset,to
             sql += f" limit {offset},{limit}"
         else:
             sql += f" limit {limit}"
-
+    print(sql)
     data = await read_query(sql)
+
 
 
     return (DisplayTransactionInfo.from_query_result(*row) for row in data)
