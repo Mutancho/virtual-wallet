@@ -26,7 +26,11 @@ const Wallet = ({ wallet }) => {
             <button className="action-button">TOP UP</button>
           </Link>
 
+          <Link to='/users/payments/withdraws'
+          state={{ walletId: wallet.wallet_id, currency: wallet.currency }}
+          >
           <button className="action-button">WITHDRAW</button>
+          </Link>
 
           <Link 
             to='/users/transactions'
