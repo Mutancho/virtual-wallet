@@ -41,17 +41,6 @@ async def create_payment_intent(amount: int, payment_method_id: str, currency: s
     return payment_intent
 
 
-async def create_payout(amount: int, currency: str, destination: str):
-    payout = stripe.Payout.create(
-        amount=amount * 100,
-        currency=currency.lower(),
-        description="Withdrawal",
-        method="instant",
-        destination=destination,
-    )
-    return payout
-
-
 async def get_stripe_id(token: str):
     user_id = get_current_user(token)
     stripe_id = await read_query("SELECT stripe_id FROM users WHERE id=%s", (user_id,))

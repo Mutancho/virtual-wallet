@@ -1,0 +1,46 @@
+.payment-unsuccessful-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+    max-height: 70%; 
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+
+.payment-unsuccessful-title {
+    color: #a83434;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.payment-unsuccessful-message {
+    color: #202020;
+    font-size: 1.2em;
+    margin-bottom: 40px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.payment-unsuccessful-btn {
+    color: white;
+    background-color: #34a853;
+    border: none;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.payment-unsuccessful-btn:hover {
+    background-color: #288d3a;
+}
