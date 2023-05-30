@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import './ManageCards.css';
+import Sidebar from '../SideBar/SideBar';
 
 const fetchPaymentMethods = async () => {
   const response = await fetch('/users/cards/payment-methods/list', {
@@ -89,7 +90,9 @@ const ManageCards = () => {
   };
 
   return (
+    
     <div id="manage-cards-container" className="container">
+      <Sidebar />
       <h1 id="manage-cards-title">Manage Cards</h1>
       <form id="manage-cards-form" onSubmit={addCard} className="add-card-container">
         <CardElement options={{ hidePostalCode: true }} id="card-element" />
