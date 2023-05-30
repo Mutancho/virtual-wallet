@@ -53,7 +53,7 @@ const Sidebar = () => {
         {location.pathname !== '/users/payment-cards' && (
           <li className="sidebar-menu-item">
             <Link to="/users/payment-cards" className="sidebar-link">
-              Card Manager
+              Manage Cards
             </Link>
           </li>
         )}
