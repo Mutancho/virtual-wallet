@@ -71,6 +71,13 @@ const Sidebar = () => {
           </Link>
         </li>
         )}
+        {location.pathname !== '/users/referrals' && (
+        <li className="sidebar-menu-item">
+          <Link to='/users/referrals' className="sidebar-link">
+            Referrals
+          </Link>
+        </li>
+        )}
         <li className="sidebar-menu-item">
           <button className="sidebar-link" onClick={handleLogout}>
             Logout
