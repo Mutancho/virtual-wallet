@@ -28,10 +28,7 @@ async def create(user: RegisterUser) -> RegisterUser:
     return user
 
 
-async def confirm(id):
-    await update_query('''UPDATE users set email_verified = 1 where id = %s''', (id,))
 
-    return 'Verified'
 
 
 async def login(credentials: EmailLogin | UsernameLogin):
@@ -94,8 +91,7 @@ async def update(id: int, user: UpdateUser):
     FROM users as u WHERE u.id = %s''', (id,))
 
     old = UpdateUser.from_query_result(*old_user_data[0][:-2])
-    print(old)
-    print(old_user_data)
+
     email_verified = old_user_data[0][-1]
     unhashed = '********'
     if user.new_password:
@@ -164,7 +160,36 @@ async def get_user(username, email, phone):
     else:
         return "User not found"
 
+async def confirm(id):
+    await update_query('''UPDATE users set email_verified = 1 where id = %s''', (id,))
 
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Email Verification</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin-top: 100px;
+            }
+
+            h1 {
+                color: #336699;
+            }
+
+            p {
+                color: #666666;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Your Email was Verified</h1>
+        <p></p>
+    </body>
+    </html>
+    '''
 async def verify_credentials(credentials: EmailLogin | UsernameLogin):
     data = None
     if isinstance(credentials, EmailLogin):

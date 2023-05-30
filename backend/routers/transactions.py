@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Response, Header, Request, Query
+from fastapi.responses import HTMLResponse
 from schemas.transaction_models import Transaction
 from schemas.wallet_models import ChooseWallet
 from services import transaction_service,user_service,wallets
@@ -23,12 +24,12 @@ async def make_transaction(transaction: Transaction,token: str = Header(alias="A
 @transactions_router.get("/accept_confirmation/{id}")
 async def confirmation_email(id: int,wallet: ChooseWallet):
 
-    return await transaction_service.accept(id,wallet)
+    return HTMLResponse(content=await transaction_service.accept(id,wallet), status_code=200, media_type='text/html')
 
 @transactions_router.get("/confirmation/{id}")
 async def confirmation_email(id: int):
 
-    return await transaction_service.confirm(id)
+    return HTMLResponse(content=await transaction_service.confirm(id), status_code=200, media_type='text/html')
 
 @transactions_router.get('/')
 async def get_all(from_date: date | None = None,

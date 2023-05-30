@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Response, Header, Query, Request
+from fastapi.responses import HTMLResponse
 from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, BlockUnblock
 from services import user_service
 from services.referrals import referral_used
@@ -20,7 +21,8 @@ async def create_user(user: RegisterUser, referral_id: int = Query(None)):
 
 @users_router.get("/confirmation/{id}")
 async def confirmation_email(id: int):
-    return await user_service.confirm(id)
+
+    return HTMLResponse(content=await user_service.confirm(id), status_code=200, media_type='text/html')
 
 
 @users_router.post('/login')

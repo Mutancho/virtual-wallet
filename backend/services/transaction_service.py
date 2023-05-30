@@ -47,7 +47,33 @@ async def accept(id,wallet):
 
     await update_query('''UPDATE wallets SET balance = balance + %s Where id = %s''',(transaction.amount,wallet.wallet))
 
-    return 'Transaction Accepted'
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Transaction Accepted</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin-top: 100px;
+            }
+
+            h1 {
+                color: #336699;
+            }
+
+            p {
+                color: #666666;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Transaction Accepted</h1>
+        <p>This transaction has been successfully accepted.</p>
+    </body>
+    </html>
+    '''
 
 async def confirm(id):
 
@@ -57,7 +83,33 @@ async def confirm(id):
 
     await acceptence_email(id,recepient_email[0][0])
 
-    return 'Transaction Confirmed'
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Transaction Confirmed</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin-top: 100px;
+            }
+
+            h1 {
+                color: #336699;
+            }
+
+            p {
+                color: #666666;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Transaction Confirmed</h1>
+        <p>Your transaction has been successfully confirmed.</p>
+    </body>
+    </html>
+    '''
 
 async def acceptence_email(transaction_id,recepient_email):
     subject = "Incoming transaction"
