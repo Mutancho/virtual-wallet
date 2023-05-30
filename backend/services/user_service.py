@@ -5,17 +5,20 @@ from utils.passwords import hash_password, verify_password
 from utils import oauth2
 from utils.send_emails import send_email
 from services.external_apis.stripe_api import create_customer
+import base64
 
 
 async def create(user: RegisterUser) -> RegisterUser:
     hashed = await hash_password(user.password)
+    photo_selfie = base64.b64decode(user.photo_selfie)
+    identity_document = base64.b64decode(user.identity_document)
 
     generate_id = await insert_query('''
     INSERT INTO users(username,password,title, first_name, last_name, gender, dob, address, email, phone_number, photo_selfie, identity_document) 
     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
                                      (user.username, hashed, user.title, user.first_name, user.last_name, user.gender,
                                       user.date_of_birth, user.address, user.email, user.phone_number,
-                                      user.photo_selfie, user.identity_document))
+                                      photo_selfie, identity_document))
 
     user.id = generate_id
     subject = "Virtual Wallet Account Confirmation"

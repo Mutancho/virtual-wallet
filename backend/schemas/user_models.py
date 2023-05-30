@@ -16,7 +16,7 @@ class RegisterUser(BaseModel):
     first_name: constr(min_length=1,max_length=20)
     last_name: constr(min_length=1,max_length=20)
     phone_number: str
-    two_factor_method: constr(regex='(?i)\b(?:email|sms)\b')|None
+    two_factor_method: constr(regex='(?i)(email|sms)')|None
     title: constr(regex='^(Mr|Mrs|Miss|Ms|Dr|Prof)$')|None
     gender: constr(regex='^(male|female|other)$')|None
     date_of_birth: str
@@ -41,7 +41,7 @@ class RegisterUser(BaseModel):
     @validator('date_of_birth')
     def validate_birth_date(cls, value):
         try:
-            date_obj = datetime.strptime(value, '%d.%m.%Y').date()
+            date_obj = datetime.strptime(value, '%Y-%m-%d').date()
         except ValueError:
             raise ValueError('Invalid date format. Expected format: day.month.year')
         return date_obj

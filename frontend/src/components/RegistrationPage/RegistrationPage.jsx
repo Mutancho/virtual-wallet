@@ -30,10 +30,17 @@ function RegistrationPage() {
   };
 
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.files[0],
-    });
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setFormData({
+        ...formData,
+        [e.target.name]: reader.result,
+      });
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
@@ -51,7 +58,7 @@ function RegistrationPage() {
     try {
       const response = await axios.post('/users/register', data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       navigate('/verify-email');
