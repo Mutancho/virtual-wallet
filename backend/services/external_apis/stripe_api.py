@@ -19,12 +19,12 @@ async def attach_payment_method(payment_method_id: str, customer_id: str) -> Pay
     return PaymentMethod.attach(payment_method_id, customer=customer_id)
 
 
+async def detach_payment_method(payment_method_id: str) -> PaymentMethod:
+    return PaymentMethod.detach(payment_method_id)
+
+
 async def list_payment_methods(customer_id: str) -> list[PaymentMethod]:
     return PaymentMethod.list(customer=customer_id, type='card')
-
-
-async def detach_payment_method(payment_method_id: str) -> PaymentMethod:
-    return await PaymentMethod.detach(payment_method_id)
 
 
 async def create_payment_intent(amount: int, payment_method_id: str, currency: str, token: str) -> PaymentIntent:

@@ -14,7 +14,6 @@ const fetchPaymentMethods = async () => {
   }
 
   const data = await response.json();
-
   return data.data || [];
 };
 
@@ -24,7 +23,12 @@ const ManageCards = () => {
   const [paymentMethods, setPaymentMethods] = useState([]);
 
   useEffect(() => {
-    fetchPaymentMethods().then(setPaymentMethods).catch(error => console.error(error));
+    fetchPaymentMethods()
+      .then((data) => {
+        console.log(data); // Check if data is being fetched
+        setPaymentMethods(data);
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   const addCard = async (event) => {
@@ -36,9 +40,14 @@ const ManageCards = () => {
 
     const cardElement = elements.getElement(CardElement);
 
-    const {error, paymentMethod} = await stripe.createPaymentMethod({
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
       card: cardElement,
+      billing_details: {
+        address: {
+          postal_code: '', // Empty string to omit zip code
+        },
+      },
     });
 
     if (error) {
@@ -52,7 +61,7 @@ const ManageCards = () => {
         'Authorization': `Bearer "${localStorage.getItem('token')}"`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ payment_method_id: paymentMethod.id }),
+      body: JSON.stringify({ id: paymentMethod.id }),
     });
 
     if (!response.ok) {
@@ -69,7 +78,7 @@ const ManageCards = () => {
         'Authorization': `Bearer "${localStorage.getItem('token')}"`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ payment_method_id: cardId }),
+      body: JSON.stringify({ id: cardId }),
     });
 
     if (!response.ok) {
@@ -80,17 +89,19 @@ const ManageCards = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Manage Cards</h1>
-      <form onSubmit={addCard} className="add-card-container">
-        <CardElement />
-        <button type="submit" className="add-card" disabled={!stripe}>Add Card</button>
+    <div id="manage-cards-container" className="container">
+      <h1 id="manage-cards-title">Manage Cards</h1>
+      <form id="manage-cards-form" onSubmit={addCard} className="add-card-container">
+        <CardElement options={{ hidePostalCode: true }} id="card-element" />
+        <button id="manage-cards-add-card-btn" type="submit" className="add-card" disabled={!stripe}>Add Card</button>
       </form>
-      <ul>
+      <ul id="manage-cards-list">
         {paymentMethods.map((method) => (
           <li key={method.id} className="card-item">
-            **** **** **** {method.card && method.card.last4}
-            <button onClick={() => detachCard(method.id)} className="remove-card">Remove</button>
+            <div className="card-details">
+              <span className="card-number">**** **** **** {method.card && method.card.last4}</span>
+              <button id={`remove-card-${method.id}`} onClick={() => detachCard(method.id)} className="remove-card-button">Remove</button>
+            </div>
           </li>
         ))}
       </ul>
