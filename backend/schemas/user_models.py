@@ -21,8 +21,8 @@ class RegisterUser(BaseModel):
     gender: constr(regex='^(male|female|other)$')|None
     date_of_birth: str
     address: str
-    photo_selfie: bytes|None
-    identity_document: bytes|None
+    photo_selfie: str|None
+    identity_document: str|None
 
 
     @validator('password')
@@ -80,8 +80,8 @@ class UpdateUser(BaseModel):
     title: constr(regex='^(Mr|Mrs|Miss|Ms|Dr|Prof)$') | None
     gender: constr(regex='^(male|female|other)$') | None
     address: str | None
-    photo_selfie: bytes | None
-    identity_document: bytes | None
+    photo_selfie: str | None
+    identity_document: str | None
 
     @validator('new_password')
     def password_validation(cls, new_password,allow_reuse=True):
@@ -122,8 +122,8 @@ class AfterUpdateUser(BaseModel):
     title: constr(regex='^(Mr|Mrs|Miss|Ms|Dr|Prof)$') | None
     gender: constr(regex='^(male|female|other)$') | None
     address: str | None
-    photo_selfie: bytes | None
-    identity_document: bytes | None
+    photo_selfie: str | None
+    identity_document: str | None
 
 
     @classmethod

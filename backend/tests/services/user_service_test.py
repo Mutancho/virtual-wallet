@@ -37,9 +37,36 @@ class UserService_Should(unittest.TestCase):
     @patch('services.user_service.update_query', autospec=True)
     def test_confirm(self, mock_update_query):
         async def async_test():
+            expected_html = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Email Verification</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin-top: 100px;
+            }
+
+            h1 {
+                color: #336699;
+            }
+
+            p {
+                color: #666666;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Your Email was Verified</h1>
+        <p></p>
+    </body>
+    </html>
+    '''
             result = await user_service.confirm(1)
 
-            self.assertEqual('Verified',result)
+            self.assertEqual(expected_html,result)
 
         run(async_test())
 
@@ -54,7 +81,7 @@ class UserService_Should(unittest.TestCase):
                 result_emailLogin = await user_service.login(credentials)
 
                 self.assertEqual(EmailLogin,type(credentials))
-                self.assertEqual(dict(access_token=token, token_type="bearer",is_blocked=False),result_emailLogin)
+                self.assertEqual(dict(access_token=token, token_type="bearer",is_admin=False),result_emailLogin)
 
 
         run(async_test())

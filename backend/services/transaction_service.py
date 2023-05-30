@@ -17,7 +17,7 @@ async def create_transaction(transaction,token):
     transaction_id = await insert_query('''INSERT INTO transactions(amount, is_recurring, recipient_id, category, wallet_id) VALUES(%s,%s,%s,%s,%s)''',
                        (transaction.amount,transaction.is_recurring,recipient,transaction.category,transaction.wallet))
     if transaction.amount <= 10000:
-        recepient_email = await read_query('''SELECT email FROM users WHERE id = %s''',(recipient))
+        recepient_email = await read_query('''SELECT email FROM users WHERE id = %s''',(recipient,))
         await acceptence_email(transaction_id,recepient_email[0][0])
         info = "Transaction created successfully. Awaiting recipient response."
     else:
@@ -173,7 +173,7 @@ async def get_transactions(from_date:date,to_date,user,direction,limit,offset,to
             sql += f" limit {offset},{limit}"
         else:
             sql += f" limit {limit}"
-    print(sql)
+
     data = await read_query(sql)
 
 
