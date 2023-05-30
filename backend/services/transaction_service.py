@@ -3,18 +3,21 @@ from utils import oauth2,send_emails
 from schemas.transaction_models import Transaction, DisplayTransaction, DisplayTransactionInfo
 from datetime import date,datetime
 from currency_converter import CurrencyConverter
-
+from services.wallets import get_user_id_from_username
 async def create_transaction(transaction,token):
     user_id = oauth2.get_current_user(token)
+
+    recipient = await get_user_id_from_username(transaction.recipient)
+
     if not transaction.category:
         transaction.category = 'Other'
     if not transaction.is_recurring:
         transaction.is_recurring = False
 
     transaction_id = await insert_query('''INSERT INTO transactions(amount, is_recurring, recipient_id, category, wallet_id) VALUES(%s,%s,%s,%s,%s)''',
-                       (transaction.amount,transaction.is_recurring,transaction.recipient,transaction.category,transaction.wallet))
+                       (transaction.amount,transaction.is_recurring,recipient,transaction.category,transaction.wallet))
     if transaction.amount <= 10000:
-        recepient_email = await read_query('''SELECT email FROM users WHERE id = %s''',(transaction.recipient,))
+        recepient_email = await read_query('''SELECT email FROM users WHERE id = %s''',(recipient))
         await acceptence_email(transaction_id,recepient_email[0][0])
         info = "Transaction created successfully. Awaiting recipient response."
     else:

@@ -4,10 +4,12 @@ from datetime import datetime,date
 
 class Transaction(BaseModel):
     amount: PositiveFloat
-    category: constr(regex='''(?i)^(Rent|Utilities|Food & Groceries|Transportation|Health & Fitness|Shopping & Entertainment|Travel|Education|Personal Care|Invesments & Savings|Other)$''') | None
-    recipient: int
+    category: constr(regex=r'^(Rent|Utilities|Food & Groceries|Transportation|Health & Fitness|Shopping & Entertainment|Travel|Education|Personal Care|Investments & Savings|Other)$') | None
+    recipient: str
     wallet: int
     is_recurring: bool | None
+    start_date: date | None
+    interval: int | None
 
     @classmethod
     def from_query_result(cls, amount, category, recipient, wallet, is_recuring):
@@ -18,10 +20,10 @@ class DisplayTransaction(BaseModel):
     information: str
     amount: PositiveFloat
     category: str
-    recipient: int
+    recipient: str
     wallet: int
     is_recurring: bool | None
-    interval: constr(regex='(?i)^\d+\s(days|weeks|months|years)$')| None
+    interval: int | None
 
 
     @classmethod
@@ -31,7 +33,7 @@ class DisplayTransaction(BaseModel):
 class DisplayTransactionInfo(BaseModel):
     amount: PositiveFloat
     category: str
-    recipient: int
+    recipient: str
     wallet: int
     is_recurring: bool
     sent_at: date

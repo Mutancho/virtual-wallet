@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../SideBar/SideBar';
-import { useLocation } from 'react-router-dom';
+import { json, useLocation } from 'react-router-dom';
+import './TransactionsPage.css'; 
 
 const TransactionsPage = () => {
-  const [searchParams, setSearchParams] = useState({
-    from_date: null,
-    to_date: null,
-    user: null,
-    direction: null,
-    limit: null,
-    offset: null,
-    sort: null,
-    sort_by: null,
-  });
-  const [userSearchParams, setUserSearchParams] = useState({
-    username: null
-  });
+  const [activeTab, setActiveTab] = useState('contacts');
+  const [searchResult, setSearchResult] = useState(null);
+  const [searchParams, setSearchParams] = useState({ username: null });
   const categories = [
     'Rent',
     'Utilities',
@@ -33,16 +24,24 @@ const TransactionsPage = () => {
   const [recipients, setRecipients] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedRecipient, setSelectedRecipient] = useState('');
-  const [transactionAmount, setTransactionAmount] = useState(0); // Added missing declaration
+  const [transactionAmount, setTransactionAmount] = useState('');
+  const location = useLocation();
+
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringTransaction, setRecurringTransaction] = useState({
+    startDate: '',
+    interval: '',
+  });
 
   const fetchContacts = async () => {
+    setActiveTab('contacts');
     try {
       const response = await axios.get('/contacts', {
         headers: {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
+          'Content-Type': 'application/json',
         },
       });
-      // Set the recipients state with the fetched contacts
       setRecipients(response.data);
       console.log(response.data);
     } catch (error) {
@@ -51,6 +50,7 @@ const TransactionsPage = () => {
   };
 
   const handleSearch = async () => {
+    setActiveTab('search');
     try {
       const response = await axios.get('/users/search', {
         params: searchParams,
@@ -58,16 +58,11 @@ const TransactionsPage = () => {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
         },
       });
-
-      // Extract usernames from the response data
-      const usernames = Object.values(response.data);
-
-      // Check if the usernames array is not empty
-      if (Array.isArray(usernames) && usernames.length > 0) {
-        setRecipients(usernames);
+      const user = response.data;
+      if (user && user.username) {
+        setSearchResult(user.username);
       } else {
-        // Show a message indicating no user found
-        setRecipients([]);
+        setSearchResult(null);
         console.log('No user found.');
       }
     } catch (error) {
@@ -76,32 +71,53 @@ const TransactionsPage = () => {
   };
 
   const handleSendMoney = async () => {
-    const location = useLocation();
+    if (transactionAmount > 10000) {
+      const confirmation = window.confirm(
+        "Your transaction amount exceeds $10,000. For your security, we have sent a confirmation link to your registered email address. Please check your email and click the link to authorize this transaction."
+      );
+      if (!confirmation) {
+        return;
+      }
+      // Maybe you need to handle email confirmation here.
+      // After the user confirms, you could let the transaction go through.
+    }
     try {
       const transactionData = {
         amount: transactionAmount,
         category: selectedCategory,
         recipient: selectedRecipient,
-        wallet: location.state.walletId, // Example wallet (replace with the actual wallet ID)
-        is_recurring: false, // Example recurring
+        wallet: location.state.walletId,
+        is_recurring: isRecurring,
+        recurring_transaction: isRecurring ? recurringTransaction : null,
       };
-
+  
       const response = await axios.post('/transactions', transactionData, {
         headers: {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
         },
       });
-      // Handle the response data
+  
       console.log(response.data);
     } catch (error) {
-      // Handle errors
       console.error(error);
     }
   };
+  
 
   const handleRecipientSelection = (username) => {
     setSelectedRecipient(username);
     console.log(`Recipient set as: ${username}`);
+  };
+
+  const handleRecurringOptionChange = (e) => {
+    setIsRecurring(e.target.checked);
+  };
+
+  const handleRecurringDataChange = (field, value) => {
+    setRecurringTransaction((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
   };
 
   return (
@@ -116,7 +132,11 @@ const TransactionsPage = () => {
               type="number"
               id="amount"
               value={transactionAmount}
-              onChange={(e) => setTransactionAmount(Number(e.target.value))}
+              onChange={(e) => {
+                const amount = Number(e.target.value);
+                setTransactionAmount(amount !== 0 ? amount : '');
+              }}
+              min={0}
             />
           </div>
           <div className="form-group">
@@ -137,48 +157,96 @@ const TransactionsPage = () => {
           <div className="form-group">
             <label>Recipient:</label>
             <div className="recipient-options">
-              <div className="contacts-option">
-                <button className="contacts-button" onClick={fetchContacts}>
+              <div className="option-tabs">
+                <button
+                  className={`tab-button ${activeTab === 'contacts' ? 'active' : ''}`}
+                  onClick={fetchContacts}
+                >
                   Contacts
                 </button>
-                {recipients.length > 0 && (
-                  <select
-                    id="recipient-contacts"
-                    value={selectedRecipient}
-                    onChange={(e) => setSelectedRecipient(e.target.value)}
-                  >
-                    <option value="">Select Recipient from Contacts</option>
-                    {recipients.map((recipient) => (
-                      <option key={recipient.username}>{recipient.username}</option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <span className="or-divider">or</span>
-              <div className="search-option">
-                <input
-                  type="text"
-                  placeholder="Search for App Users"
-                  className={`search-input ${selectedRecipient ? 'user-found' : 'user-not-found'}`}
-                  onChange={(e) =>
-                    setSearchParams((prevParams) => ({
-                      ...prevParams,
-                      username: e.target.value,
-                    }))
-                  }
-                />
-                <button className="search-button" onClick={handleSearch}>
-                  Search
+                <button
+                  className={`tab-button ${activeTab === 'search' ? 'active' : ''}`}
+                  onClick={handleSearch}
+                >
+                  Search Users
                 </button>
-                {selectedRecipient && (
-                  <button className="select-button" onClick={() => handleRecipientSelection(selectedRecipient)}>
-                    Select
-                  </button>
-                )}
               </div>
+              {activeTab === 'contacts' && recipients.length > 0 && (
+                <select
+                  id="recipient-contacts"
+                  value={selectedRecipient}
+                  onChange={(e) => setSelectedRecipient(e.target.value)}
+                >
+                  <option value="">Select Recipient from Contacts</option>
+                  {recipients.map((recipient) => (
+                    <option key={recipient.username}>{recipient.username}</option>
+                  ))}
+                </select>
+              )}
+              {activeTab === 'search' && (
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Search for App Users"
+                    className={`search-input ${selectedRecipient ? 'user-found' : 'user-not-found'}`}
+                    onChange={(e) =>
+                      setSearchParams((prevParams) => ({
+                        ...prevParams,
+                        username: e.target.value,
+                      }))
+                    }
+                  />
+                  {searchResult && (
+                    <div>
+                      <p>Search Result: {searchResult}</p>
+                      <button
+                        className="select-button"
+                        onClick={() => handleRecipientSelection(searchResult)}
+                      >
+                        Select
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             {selectedRecipient && <p>Recipient set as: {selectedRecipient}</p>}
           </div>
+          <div className="form-group">
+            <div className="recurring-transaction-option">
+              <input
+                type="checkbox"
+                id="recurring-option"
+                checked={isRecurring}
+                onChange={handleRecurringOptionChange}
+              />
+              <label htmlFor="recurring-option">Enable recurring transaction</label>
+            </div>
+          </div>
+          {isRecurring && (
+            <div className="recurring-transaction-section">
+              <div className="form-group">
+                <label htmlFor="start-date">Start Date:</label>
+                <input
+                  type="date"
+                  id="start-date"
+                  value={recurringTransaction.startDate}
+                  onChange={(e) => handleRecurringDataChange('startDate', e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="interval">Interval (in days):</label>
+                <input
+                  type="number"
+                  id="interval"
+                  value={recurringTransaction.interval}
+                  onChange={(e) => handleRecurringDataChange('interval', e.target.value)}
+                  min={1}
+                  max={1000}
+                />
+              </div>
+            </div>
+          )}
         </div>
         <button className="send-money" onClick={handleSendMoney}>
           Send Money
