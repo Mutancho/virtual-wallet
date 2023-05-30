@@ -20,6 +20,9 @@ import WithdrawPage from './components/WithdrawPage/WithdrawPage';
 import AdminViewUsersPage from "./components/AdminViewUsersPage/AdminViewUsersPage";
 import AdminViewTransactionPage from "./components/AdminViewTransactionPage/AdminViewTransactionPage";
 import BlockUsersPage from "./components/BlockUsersPage/BlockUsersPage";
+import ReferralPage from './components/ReferralPage/ReferralPage';
+import NewWalletPage from './components/AddWalletPage/AddWalletPage';
+import WalletSettingsPage from './components/WalletSettings/WalletSettingsPage';
 
 const stripePromise = loadStripe('pk_test_51N8aWKBoGCspooGJW8aKWZUM6W8IOJTjhJcwwN3Mez7j9lWGxazkmyPxNM1jcCPNAeOko2GlrAyFYmyitl7c8Fnu00njr03PIO');
 
@@ -43,6 +46,7 @@ const App = () => {
           <Route path="/payment/successful" element={<SuccessfulPaymentPage />} />
           <Route path="/payment/unsuccessful" element={<UnsuccessfulPaymentPage />} />
           <Route path='/users/transactions' element={<TransactionsPage />} />
+          <Route path='/users/wallets/settings' element={<WalletSettingsPage />} />
           <Route path='/users/payment-cards' 
             element={
               <Elements stripe={stripePromise}>
@@ -59,6 +63,7 @@ const App = () => {
           />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/users/update" element={<UserUpdatePage />} />
+          <Route path="/users/wallets" element={<NewWalletPage />} />
           <Route path="/users/payments/withdraws" 
             element={
               <Elements stripe={stripePromise}>
@@ -69,6 +74,7 @@ const App = () => {
             <Route path='/users/admin/view' element={<AdminViewUsersPage />} />
             <Route path='/transactions/admin/view' element={<AdminViewTransactionPage />} />
           <Route path='/admin/block' element={<BlockUsersPage />} />
+          <Route path='/users/referrals' element={<ReferralPage />} />
         </Routes>
       </div>
     </Router>

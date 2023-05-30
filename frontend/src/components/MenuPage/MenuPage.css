@@ -66,7 +66,7 @@ h1::after {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
   font-size: 1.5em;
   width: 450px;
-  height: 250px;
+  height: 285px;
 }
 
 .wallet h2 {
@@ -178,4 +178,23 @@ h1::after {
 .action-button:hover {
   background-color: #FF4B2B;
   color: white;
+}
+
+.add-wallet-button {
+  margin: 20px 0; 
+  background-color: #ff7f50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 35px; 
+  font-size: 1.2em; 
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-sizing: border-box; 
+  text-align: left; 
+  width: fit-content; 
+}
+
+.add-wallet-button:hover {
+  background-color: #FF4B2B;
 }
