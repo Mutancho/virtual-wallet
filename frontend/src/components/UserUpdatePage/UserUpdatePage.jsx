@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './UserUpdatePage.css';
 import Sidebar from '../SideBar/SideBar';
 import jwt_decode from 'jwt-decode';
 
-
-const decoded = jwt_decode(localStorage.getItem('token'));
-console.log(decoded);
 function UserUpdatePage() {
+  const [decoded, setDecoded] = useState(null);
   const [formData, setFormData] = useState({
     old_password: '',
     new_password: '',
@@ -27,6 +25,17 @@ function UserUpdatePage() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    try {
+      const decodedToken = jwt_decode(localStorage.getItem('token'));
+      setDecoded(decodedToken);
+      console.log(decodedToken);
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      setDecoded(null);
+    }
+  }, []);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -43,6 +52,12 @@ function UserUpdatePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(!decoded) {
+      console.error('Token not decoded properly.');
+      setErrorMessage('Error while decoding token.');
+      return;
+    }
 
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
@@ -71,7 +86,7 @@ function UserUpdatePage() {
       }
     }
   };
-
+  
   return (
     <div className="user-update-form">
         <Sidebar />
