@@ -1,240 +1,96 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 import './UserUpdatePage.css';
 import Sidebar from '../SideBar/SideBar';
-import jwt_decode from 'jwt-decode';
 
-function UserUpdatePage() {
-  const [decoded, setDecoded] = useState(null);
-  const [formData, setFormData] = useState({
-    old_password: undefined ,
-    new_password: undefined,
-    repeat_password: undefined,
-    email: undefined,
-    first_name: undefined,
-    last_name: undefined,
-    phone_number: undefined,
-    two_factor_method: undefined,
-    title: undefined,
-    gender: undefined,
-    address: undefined,
-    photo_selfie: null,
-    identity_document: null,
-  });
-  const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
+function UpdateUser() {
+    const [data, setData] = useState({});
 
-  useEffect(() => {
-    try {
-      const decodedToken = jwt_decode(localStorage.getItem('token'));
-      setDecoded(decodedToken);
-      console.log(decodedToken);
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      setDecoded(null);
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setFormData({
-        ...formData,
-        [e.target.name]: reader.result,
-      });
+    const handleChange = e => {
+        setData({
+            ...data,
+            [e.target.name]: e.target.value || null
+        });
     };
 
-    reader.readAsDataURL(file);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleChangeFile = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
 
-    if(!decoded) {
-      console.error('Token not decoded properly.');
-      setErrorMessage('Error while decoding token.');
-      return;
-    }
+        reader.onloadend = () => {
+            setData({
+                ...data,
+                [e.target.name]: reader.result
+            });
+        };
 
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value instanceof File) {
-        data.append(key, value, value.name);
-      } else {
-        data.append(key, value);
-      }
-    });
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
 
-    try {
-      const response = await axios.put(`/users/${decoded.user_id}`, data, {
-        headers: {
-          Authorization: `Bearer "${localStorage.getItem('token')}"`,
-          'Content-Type': 'application/json',
-        },
-      });
-      navigate('/profile');
-    } catch (error) {
-      if (error.response && error.response.data) {
-        const { data } = error.response;
-        alert(error)
-        setErrorMessage('Failed to update user. Please try again later.');
-        console.log(data);
-      } else {
-        console.error('An unexpected error occurred:', error);
-      }
-    }
-  };
-  
-  return (
-    <div className="user-update-form">
-        <Sidebar />
-      <h2>Update User Information</h2>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Old Password:
-          <input
-            type="password"
-            name="old_password"
-            value={formData.old_password}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          New Password:
-          <input
-            type="password"
-            name="new_password"
-            value={formData.new_password}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Repeat Password:
-          <input
-            type="password"
-            name="repeat_password"
-            value={formData.repeat_password}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          First Name:
-          <input
-            type="text"
-            name="first_name"
-            value={formData.first_name}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Last Name:
-          <input
-            type="text"
-            name="last_name"
-            value={formData.last_name}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Phone Number:
-          <input
-            type="text"
-            name="phone_number"
-            value={formData.phone_number}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Two Factor Method:
-          <select
-            name="two_factor_method"
-            value={formData.two_factor_method}
-            onChange={handleChange}
-          >
-            <option value="">--Please choose an option--</option>
-            <option value="email">Email</option>
-            <option value="sms">SMS</option>
-          </select>
-        </label>
-        <label>
-          Title:
-          <select
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-          >
-            <option value="">--Please choose an option--</option>
-            <option value="Mr">Mr</option>
-            <option value="Mrs">Mrs</option>
-            <option value="Miss">Miss</option>
-            <option value="Ms">Ms</option>
-            <option value="Dr">Dr</option>
-            <option value="Prof">Prof</option>
-          </select>
-        </label>
-        <label>
-          Gender:
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-          >
-            <option value="">--Please choose an option--</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
-        <label>
-          Address:
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Photo Selfie:
-          <input
-            type="file"
-            name="photo_selfie"
-            onChange={handleFileChange}
-          />
-        </label>
-        <label>
-          Identity Document:
-          <input
-            type="file"
-            name="identity_document"
-            onChange={handleFileChange}
-          />
-        </label>
-        <button className="form-submit" type="submit">
-          Update User
-        </button>
-      </form>
-    </div>
-  );
+    const handleSubmit = async e => {
+        e.preventDefault();
+        
+        try {
+            const token = localStorage.getItem('token');
+            const decoded = jwt_decode(token);
+            const res = await axios.put(`/users/${decoded.user_id}`, data, {
+                headers: {
+                    Authorization: `Bearer "${token}"`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            console.log(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <Sidebar/>
+            <h2>Update Personal Info</h2>
+            <input name="old_password" type="password" placeholder="Old password" onChange={handleChange} />
+            <input name="new_password" type="password" placeholder="New password" onChange={handleChange} />
+            <input name="repeat_password" type="password" placeholder="Repeat password" onChange={handleChange} />
+            <input name="email" type="email" placeholder="Email" onChange={handleChange} />
+            <input name="first_name" placeholder="First name" onChange={handleChange} />
+            <input name="last_name" placeholder="Last name" onChange={handleChange} />
+            <input name="phone_number" placeholder="Phone number" onChange={handleChange} />
+            <select name="two_factor_method" onChange={handleChange}>
+                <option value="">Select two-factor method</option>
+                <option value="email">Email</option>
+                <option value="sms">SMS</option>
+            </select>
+            <select name="title" onChange={handleChange}>
+                <option value="">Select title</option>
+                <option value="Mr">Mr</option>
+                <option value="Mrs">Mrs</option>
+                <option value="Miss">Miss</option>
+                <option value="Ms">Ms</option>
+                <option value="Dr">Dr</option>
+                <option value="Prof">Prof</option>
+            </select>
+            <select name="gender" onChange={handleChange}>
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+            <input name="address" placeholder="Address" onChange={handleChange} />
+            <label>
+                Photo Selfie:
+                <input name="photo_selfie" type="file" onChange={handleChangeFile} />
+            </label>
+            <label>
+                Identity Document:
+                <input name="identity_document" type="file" onChange={handleChangeFile} />
+            </label>
+            <button type="submit">Update User</button>
+        </form>
+    );
 }
 
-export default UserUpdatePage;
+export default UpdateUser;
