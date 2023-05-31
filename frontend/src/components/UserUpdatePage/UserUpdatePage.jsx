@@ -32,7 +32,7 @@ function UpdateUser() {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        
+
         try {
             const token = localStorage.getItem('token');
             const decoded = jwt_decode(token);
@@ -43,28 +43,68 @@ function UpdateUser() {
                 }
             });
             console.log(res.data);
+            alert("Profile Successfully updated");
         } catch (err) {
             console.error(err);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <Sidebar/>
+        <form className="update-user-form" onSubmit={handleSubmit}>
+            <Sidebar />
             <h2>Update Personal Info</h2>
-            <input name="old_password" type="password" placeholder="Old password" onChange={handleChange} />
-            <input name="new_password" type="password" placeholder="New password" onChange={handleChange} />
-            <input name="repeat_password" type="password" placeholder="Repeat password" onChange={handleChange} />
-            <input name="email" type="email" placeholder="Email" onChange={handleChange} />
-            <input name="first_name" placeholder="First name" onChange={handleChange} />
-            <input name="last_name" placeholder="Last name" onChange={handleChange} />
-            <input name="phone_number" placeholder="Phone number" onChange={handleChange} />
-            <select name="two_factor_method" onChange={handleChange}>
+            <input
+                className="form-input"
+                name="old_password"
+                type="password"
+                placeholder="Old password"
+                onChange={handleChange}
+            />
+            <input
+                className="form-input"
+                name="new_password"
+                type="password"
+                placeholder="New password"
+                onChange={handleChange}
+            />
+            <input
+                className="form-input"
+                name="repeat_password"
+                type="password"
+                placeholder="Repeat password"
+                onChange={handleChange}
+            />
+            <input
+                className="form-input"
+                name="email"
+                type="email"
+                placeholder="Email"
+                onChange={handleChange}
+            />
+            <input
+                className="form-input"
+                name="first_name"
+                placeholder="First name"
+                onChange={handleChange}
+            />
+            <input
+                className="form-input"
+                name="last_name"
+                placeholder="Last name"
+                onChange={handleChange}
+            />
+            <input
+                className="form-input"
+                name="phone_number"
+                placeholder="Phone number"
+                onChange={handleChange}
+            />
+            <select className="form-input" name="two_factor_method" onChange={handleChange}>
                 <option value="">Select two-factor method</option>
                 <option value="email">Email</option>
                 <option value="sms">SMS</option>
             </select>
-            <select name="title" onChange={handleChange}>
+            <select className="form-input" name="title" onChange={handleChange}>
                 <option value="">Select title</option>
                 <option value="Mr">Mr</option>
                 <option value="Mrs">Mrs</option>
@@ -73,22 +113,37 @@ function UpdateUser() {
                 <option value="Dr">Dr</option>
                 <option value="Prof">Prof</option>
             </select>
-            <select name="gender" onChange={handleChange}>
+            <select className="form-input" name="gender" onChange={handleChange}>
                 <option value="">Select gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
             </select>
-            <input name="address" placeholder="Address" onChange={handleChange} />
+            <input
+                className="form-input"
+                name="address"
+                placeholder="Address"
+                onChange={handleChange}
+            />
             <label>
                 Photo Selfie:
-                <input name="photo_selfie" type="file" onChange={handleChangeFile} />
+                <input
+                    className="form-file-input"
+                    name="photo_selfie"
+                    type="file"
+                    onChange={handleChangeFile}
+                />
             </label>
             <label>
                 Identity Document:
-                <input name="identity_document" type="file" onChange={handleChangeFile} />
+                <input
+                    className="form-file-input"
+                    name="identity_document"
+                    type="file"
+                    onChange={handleChangeFile}
+                />
             </label>
-            <button type="submit">Update User</button>
+            <button className="form-submit-button" type="submit">Update User</button>
         </form>
     );
 }
