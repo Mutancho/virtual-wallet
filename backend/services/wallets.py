@@ -57,8 +57,9 @@ async def wallet_by_id(wallet_id: int, token: str) -> ViewWallet | None:
         "WHERE w.id=%s and w.creator_id=%s", (wallet_id, user_id))
     if not get_wallet:
         return None
+
     wallet = ViewWallet.from_query_result(*get_wallet[0])
-    if wallet.type == JOINT:
+    if wallet.type.lower() == JOINT.lower():
         wallet.members = await _view_group_members(wallet_id)
     return wallet
 
@@ -66,7 +67,7 @@ async def wallet_by_id(wallet_id: int, token: str) -> ViewWallet | None:
 async def delete(wallet_id: int, token: str):
     user_id = get_current_user(token)
     wallet_balance = await read_query("SELECT balance FROM wallets WHERE id=%s", (wallet_id,))
-    if wallet_balance:
+    if wallet_balance and wallet_balance[0][0] != 0:
         raise BalanceNotNull()
     delete_row = await update_query("DELETE FROM wallets WHERE id=%s and creator_id=%s", (wallet_id, user_id))
     return delete_row > 0

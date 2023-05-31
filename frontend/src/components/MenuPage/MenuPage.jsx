@@ -40,10 +40,9 @@ const Wallet = ({ wallet }) => {
           >
             <button className="action-button">TRANSACTIONS</button>
           </Link>
-
           <Link
             to='/users/wallets/settings'
-            state={{ walletId: wallet.wallet_id }}
+            state={{ walletId: wallet.wallet_id, type: wallet.type }}
           >
             <button className="action-button">SETTINGS</button>
           </Link>
