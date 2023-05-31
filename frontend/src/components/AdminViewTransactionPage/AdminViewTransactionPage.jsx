@@ -3,14 +3,14 @@ import axios from 'axios';
 import Sidebar from "../SideBar/SideBar";
 
 const AdminViewTransactionPage = () => {
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [sender, setSender] = useState('');
-  const [recipient, setRecipient] = useState('');
+  const [fromDate, setFromDate] = useState(undefined);
+  const [toDate, setToDate] = useState(undefined);
+  const [sender, setSender] = useState(undefined);
+  const [recipient, setRecipient] = useState(undefined);
   const [limit, setLimit] = useState(''|10);
   const [offset, setOffset] = useState(''|0);
-  const [sort, setSort] = useState('');
-  const [sortBy, setSortBy] = useState('');
+  const [sort, setSort] = useState(undefined);
+  const [sortBy, setSortBy] = useState(undefined);
   const [transactions, setTransactions] = useState([]);
 
   const handleSearch = async () => {
@@ -148,7 +148,7 @@ const AdminViewTransactionPage = () => {
                 <strong>Accepted:</strong> {transaction.accepted ? 'Yes' : 'No'}
               </div>
                 <div>
-                <strong>Received_at:</strong> {transaction.received_at}
+                <strong>Received_at:</strong> {transaction.received_at ? transaction.received_at:"Outstanding"}
               </div>
 
 
