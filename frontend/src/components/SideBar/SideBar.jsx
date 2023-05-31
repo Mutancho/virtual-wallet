@@ -43,6 +43,13 @@ const Sidebar = () => {
           </Link>
         </li>
         )}
+        {location.pathname !== '/pending/transactions' && (
+        <li className="sidebar-menu-item">
+          <Link to="/pending/transactions" className="sidebar-link">
+            Pending Transactions
+          </Link>
+        </li>
+        )}
         {location.pathname !== '/users/update' && (
         <li className="sidebar-menu-item">
           <Link to="/users/update" className="sidebar-link">

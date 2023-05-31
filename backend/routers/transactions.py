@@ -21,8 +21,8 @@ async def make_transaction(transaction: Transaction,token: str = Header(alias="A
 
     return await transaction_service.create_transaction(transaction,token)
 
-@transactions_router.get("/accept_confirmation/{id}")
-async def confirmation_email(id: int,wallet: ChooseWallet):
+@transactions_router.post("/accept_confirmation/{id}")
+async def accept(id: int,wallet: ChooseWallet):
 
     return HTMLResponse(content=await transaction_service.accept(id,wallet), status_code=200, media_type='text/html')
 
@@ -68,3 +68,10 @@ async def get_transactions(from_date: date | None = None,
         return transaction_service.sort(result, reverse=sort.lower() == 'desc', attribute=sort_by)
 
     return result
+
+@transactions_router.get('/pending')
+async def pending_transactions(token: str = Header(alias="Authorization")):
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
+
+    return await transaction_service.get_pending_transactions(token)

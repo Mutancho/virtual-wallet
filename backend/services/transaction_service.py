@@ -1,6 +1,6 @@
 from database.database_queries import read_query,update_query,insert_query
 from utils import oauth2,send_emails
-from schemas.transaction_models import Transaction, DisplayTransaction, DisplayTransactionInfo
+from schemas.transaction_models import Transaction, DisplayTransaction, DisplayTransactionInfo,PendingTransaction
 from datetime import date,datetime
 from currency_converter import CurrencyConverter
 from services.wallets import get_user_id_from_username
@@ -8,16 +8,19 @@ async def create_transaction(transaction,token):
     user_id = oauth2.get_current_user(token)
 
     recipient = await get_user_id_from_username(transaction.recipient)
-
+    confirmed = 1
+    if transaction.amount > 10000:
+        confirmed = 0
     if not transaction.category:
         transaction.category = 'Other'
     if not transaction.is_recurring:
         transaction.is_recurring = False
 
-    transaction_id = await insert_query('''INSERT INTO transactions(amount, is_recurring, recipient_id, category, wallet_id) VALUES(%s,%s,%s,%s,%s)''',
-                       (transaction.amount,transaction.is_recurring,recipient,transaction.category,transaction.wallet))
+    transaction_id = await insert_query('''INSERT INTO transactions(amount, is_recurring, recipient_id, category, wallet_id,confirmed) VALUES(%s,%s,%s,%s,%s,%s)''',
+                       (transaction.amount,transaction.is_recurring,recipient,transaction.category,transaction.wallet,confirmed))
     if transaction.amount <= 10000:
         recepient_email = await read_query('''SELECT email FROM users WHERE id = %s''',(recipient,))
+        print(recepient_email,recipient)
         await acceptence_email(transaction_id,recepient_email[0][0])
         info = "Transaction created successfully. Awaiting recipient response."
     else:
@@ -114,7 +117,7 @@ async def confirm(id):
 async def acceptence_email(transaction_id,recepient_email):
     subject = "Incoming transaction"
     confirmation_link = f'http://127.0.0.1:8000/transactions/accept_confirmation/{transaction_id}'
-    msg = f"Please click the link below to accept this transaction:\n\n{confirmation_link}\n\n If you don't want to accept ignore this email."  # could add more info from who and amount later
+    msg = f"Please go to the Pending Transactions section on the site to view and accept this transaction. \n\n If you don't want to accept you can ignore this email.\n\n    The Team at Virtual Wallet."
     await send_emails.send_email(recepient_email,confirmation_link, subject,msg)
 
 
@@ -175,10 +178,19 @@ async def get_transactions(from_date:date,to_date,user,direction,limit,offset,to
             sql += f" limit {limit}"
 
     data = await read_query(sql)
+    print(data)
 
 
 
     return (DisplayTransactionInfo.from_query_result(*row) for row in data)
+
+async def get_pending_transactions(token):
+    user_id = oauth2.get_current_user(token)
+    transaction_data = await read_query(f'''SELECT id, amount, category, is_recurring, sent_at, accepted_by_recipient FROM transactions 
+                                            WHERE confirmed = 1 AND accepted_by_recipient = 0 AND recipient_id = {user_id}''')
+
+
+    return (PendingTransaction.from_query_result(*t) for t in transaction_data)
 
 def sort(transactions: list[DisplayTransactionInfo], *, attribute='sent_at', reverse=False):
 
