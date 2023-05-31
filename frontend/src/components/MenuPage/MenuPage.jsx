@@ -6,10 +6,12 @@ import Sidebar from '../SideBar/SideBar';
 const Wallet = ({ wallet }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  const trimmedName = wallet.name.length > 15 ? wallet.name.substring(0, 12) + '...' : wallet.name;
+
   return (
     <div className={`wallet ${showDetails ? 'expanded' : ''}`} onClick={() => setShowDetails(!showDetails)}>
       <div className="wallet-header">
-        <h2>{wallet.name}</h2>
+        <h2>{trimmedName}</h2>
         <p>{wallet.currency}</p>
       </div>
       <div className={`wallet-details ${showDetails ? 'visible' : ''}`}>
@@ -37,6 +39,13 @@ const Wallet = ({ wallet }) => {
             state={{ walletId: wallet.wallet_id }}
           >
             <button className="action-button">TRANSACTIONS</button>
+          </Link>
+
+          <Link
+            to='/users/wallets/settings'
+            state={{ walletId: wallet.wallet_id }}
+          >
+            <button className="action-button">SETTINGS</button>
           </Link>
 
         </div>
@@ -77,6 +86,9 @@ const MenuPage = ({ user }) => {
     <div className="menu-page">
       <Sidebar />
       <h1 class="welcome_user">Welcome {owner}</h1>
+      <Link to='/users/wallets'>
+        <button className="add-wallet-button">Add Wallet</button>
+      </Link>
       <div className="wallets">
         {wallets.map((wallet, index) => (
           <Wallet key={index} wallet={wallet} />

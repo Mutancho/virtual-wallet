@@ -1,0 +1,58 @@
+.add-wallet-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 120%;  /* Adjust width as needed */
+    height: 80vh;  /* Adjust height as needed */
+    background-color: #f7f8fc;
+    margin: 0 auto; /* Center the div horizontally */
+  }
+  
+  .add-wallet-page h1 {
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .add-wallet-page form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    width: 70%; /* Adjust width as needed */
+  }
+  
+  .add-wallet-page label {
+    display: block;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .add-wallet-page input,
+  .add-wallet-page select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box; 
+  }
+  
+  .add-wallet-page button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4b8df8;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .add-wallet-page button:hover {
+    background-color: #436ec9;
+  }
