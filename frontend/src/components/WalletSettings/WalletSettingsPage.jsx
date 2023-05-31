@@ -119,6 +119,7 @@ const WalletSettingsPage = () => {
         }
       } catch (error) {
         console.error('Error:', error);
+        alert("Empty wallet before deleting!")
       }
     }
   };
