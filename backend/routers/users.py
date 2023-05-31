@@ -3,10 +3,8 @@ from fastapi.responses import HTMLResponse
 from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, BlockUnblock
 from services import user_service
 from services.referrals import referral_used
-from fastapi.templating import Jinja2Templates
 
 users_router = APIRouter(prefix='/users', tags=['Users'])
-templates = Jinja2Templates(directory="../frontend/templates")
 
 
 @users_router.post("/register")

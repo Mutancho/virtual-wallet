@@ -5,70 +5,89 @@
   justify-content: center; /* Center the content horizontally */
   align-items: center;
 }
+
 .contact-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: linear-gradient(to bottom, #87CEEB, #00BFFF);
-    border-radius: 8px;
-    padding: 40px;
-    margin-bottom: 20px;
-    
-  }
-  
-  .username {
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 25px;
-  }
-  
-  .remove-button {
-    background-color: rgb(148, 9, 9);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  .remove-button:hover {
-    opacity: 0.8;
-  }
-  
-  .add-contact {
-    display: flex;
-    justify-content: center; /* Center the content horizontally */
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .add-contact input[type="text"] {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
-  }
-  
-  .add-contact button {
-    background: linear-gradient(to bottom, #87CEEB, #00BFFF);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    
-  }
-  
-  .add-contact button:hover {
-    opacity: 0.8;
-  }
-  
-  .add-contact-error {
-    color: red;
-    margin-top: 10px;
-  }
-  h2 {
-    font-size: 40px; /* Adjust the font size to your preference */
-    text-align: center;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(to bottom, #87CEEB, #00BFFF);
+  border-radius: 8px;
+  padding: 20px;
+  height: 200px; /* Set a fixed height */
+  margin-top: 20px;
+
+}
+
+.username {
+  font-size: 30px; /* Reduced font size */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.photo {
+  width: 100px; /* Increased image size */
+  height: 100px; /* Increased image size */
+  object-fit: cover; /* This will ensure the image maintains its aspect ratio */
+  border-radius: 50%; /* This will make the image circular, remove if not needed */
+  margin-bottom: 10px;
+}
+
+.remove-button {
+  background-color: rgb(148, 9, 9);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.remove-button:hover {
+  opacity: 0.8;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.add-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-contact input[type="text"] {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 250px; /* Adjust the width of the input box */
+  height: 35px; /* Set the height of the input box */
+}
+
+.add-contact button {
+  background: linear-gradient(to bottom, #87CEEB, #00BFFF);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 35px; /* Set the height of the button */
+  width: 250px; /* Adjust the width of the button */
+}
+
+.add-contact button:hover {
+  opacity: 0.8;
+}
+
+.add-contact-error {
+  color: red;
+  margin-top: 10px;
+}
+
+h2 {
+  font-size: 40px; /* Adjust the font size to your preference */
+  text-align: center;
+}

@@ -34,7 +34,6 @@ const ContactsPage = () => {
           Authorization: `Bearer "${token}"`,
         },
       });
-      // Refresh the contact list after removal
       fetchContacts();
     } catch (error) {
       console.error('Error removing contact:', error);
@@ -53,7 +52,6 @@ const ContactsPage = () => {
           },
         }
       );
-      // Refresh the contact list after adding
       fetchContacts();
       setNewContactUsername('');
       setAddContactError('');
@@ -66,26 +64,29 @@ const ContactsPage = () => {
   return (
     <div>
       <Sidebar />
-      <h2 className="contacts-heading">Contacts</h2>
-      <div className="add-contact">
-        <input
-          type="text"
-          placeholder="Enter username"
-          value={newContactUsername}
-          onChange={(e) => setNewContactUsername(e.target.value)}
-        />
-        <button onClick={handleAddContact}>Add Contact</button>
+      <div className="header">
+        <h2 className="contacts-heading">Contacts</h2>
+        <div className="add-contact">
+          <input
+            type="text"
+            placeholder="Enter username"
+            value={newContactUsername}
+            onChange={(e) => setNewContactUsername(e.target.value)}
+          />
+          <button onClick={handleAddContact}>Add Contact</button>
+        </div>
       </div>
       {addContactError && <p className="add-contact-error">{addContactError}</p>}
       <div className="contacts-container">
         {contacts.map((contact) => (
           <div className="contact-box" key={contact.username}>
+            <img className="photo" src={contact.photo_selfie} alt="Contact Photo" />
             <span className="username">{contact.username}</span>
-            <img className="photo" src={`data:image/jpeg;base64,${contact.photo_selfie}`} alt="Contact Photo" />
             <button className="remove-button" onClick={() => removeContact(contact.username)}>Remove</button>
           </div>
         ))}
       </div>
+      <div className="div-spacer"></div> {/* Add the div spacer */}
     </div>
   );
 };

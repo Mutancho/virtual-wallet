@@ -26,7 +26,7 @@ async def get_contacts(token):
     # if usernames is not None:
     #     print(base64.b64encode(usernames[0][1]).decode('utf-8'))
 
-    return (Username(username=u[0],photo_selfie= None if u[1] is None else base64.b64encode(u[1]) ) for u in usernames)
+    return (Username(username=u[0],photo_selfie= None if u[1] is None else u[1]) for u in usernames)
 
 
 
