@@ -81,6 +81,7 @@ const ContactsPage = () => {
         {contacts.map((contact) => (
           <div className="contact-box" key={contact.username}>
             <span className="username">{contact.username}</span>
+            <img className="photo" src={`data:image/jpeg;base64,${contact.photo_selfie}`} alt="Contact Photo" />
             <button className="remove-button" onClick={() => removeContact(contact.username)}>Remove</button>
           </div>
         ))}

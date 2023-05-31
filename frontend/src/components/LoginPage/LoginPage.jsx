@@ -29,7 +29,8 @@ function LoginPage() {
     } catch (error) {
       if (error.response && error.response.data) {
         const { data } = error.response;
-
+        setErrorMessage(data)
+        // alert(data)
         console.log(data);
       } else {
         console.error('An unexpected error occurred:', error);

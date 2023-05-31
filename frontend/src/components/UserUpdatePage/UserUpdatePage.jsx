@@ -8,17 +8,17 @@ import jwt_decode from 'jwt-decode';
 function UserUpdatePage() {
   const [decoded, setDecoded] = useState(null);
   const [formData, setFormData] = useState({
-    old_password: '',
-    new_password: '',
-    repeat_password: '',
-    email: '',
-    first_name: '',
-    last_name: '',
-    phone_number: '',
-    two_factor_method: '',
-    title: '',
-    gender: '',
-    address: '',
+    old_password: undefined ,
+    new_password: undefined,
+    repeat_password: undefined,
+    email: undefined,
+    first_name: undefined,
+    last_name: undefined,
+    phone_number: undefined,
+    two_factor_method: undefined,
+    title: undefined,
+    gender: undefined,
+    address: undefined,
     photo_selfie: null,
     identity_document: null,
   });
@@ -43,13 +43,19 @@ function UserUpdatePage() {
     });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.files[0],
-    });
-  };
+   const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onloadend = () => {
+      setFormData({
+        ...formData,
+        [e.target.name]: reader.result,
+      });
+    };
+
+    reader.readAsDataURL(file);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -72,13 +78,14 @@ function UserUpdatePage() {
       const response = await axios.put(`/users/${decoded.user_id}`, data, {
         headers: {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       navigate('/profile');
     } catch (error) {
       if (error.response && error.response.data) {
         const { data } = error.response;
+        alert(error)
         setErrorMessage('Failed to update user. Please try again later.');
         console.log(data);
       } else {

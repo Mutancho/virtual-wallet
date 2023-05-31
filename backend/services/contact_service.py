@@ -1,6 +1,7 @@
 from database.database_queries import read_query,update_query,insert_query
 from utils import oauth2
 from schemas.user_models import Username
+import base64
 
 
 async def add_contact(username: str,token):
@@ -21,9 +22,11 @@ async def remove_contact(username,token):
 
 async def get_contacts(token):
     id = oauth2.get_current_user(token)
-    usernames = await read_query('''select username from users where id in (SELECT contact_id from contacts where user_id = %s)''',(id,))
+    usernames = await read_query('''select username,photo_selfie from users where id in (SELECT contact_id from contacts where user_id = %s)''',(id,))
+    # if usernames is not None:
+    #     print(base64.b64encode(usernames[0][1]).decode('utf-8'))
 
-    return (Username(username=u[0]) for u in usernames)
+    return (Username(username=u[0],photo_selfie= None if u[1] is None else base64.b64encode(u[1]) ) for u in usernames)
 
 
 

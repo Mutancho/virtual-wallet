@@ -138,4 +138,5 @@ class BlockUnblock(BaseModel):
 
 class Username(BaseModel):
     username:str
+    photo_selfie : str | None
 
