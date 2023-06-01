@@ -12,7 +12,7 @@ FIRST_NAME='Dean'
 LAST_NAME='Winchester'
 EMAIL='dean@gmail.com'
 PHONE_NUMBER='0888123456'
-DATE_OF_BIRTH='24.01.1979'
+DATE_OF_BIRTH='1979-01-24'
 ADDRESS='Lawrence, Kansas'
 TWO_FACTOR = None
 TITLE = 'Mr'
@@ -26,7 +26,7 @@ class UserService_Should(unittest.TestCase):
         async def async_test():
             user = RegisterUser(
                 username=USERNAME,password=PASSWORD,first_name=FIRST_NAME,last_name=LAST_NAME,
-            email=EMAIL, phone_number=PHONE_NUMBER, date_of_birth=DATE_OF_BIRTH, address=ADDRESS )
+            email=EMAIL, phone_number=PHONE_NUMBER, date_of_birth=DATE_OF_BIRTH, address=ADDRESS,identity_document='photo' )
             mock_insert_query.return_value = 1
             result = await user_service.create(user)
 
