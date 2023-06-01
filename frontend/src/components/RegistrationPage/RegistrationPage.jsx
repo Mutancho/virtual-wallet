@@ -265,6 +265,7 @@ function RegistrationPage() {
             type="file"
             name="identity_document"
             onChange={handleFileChange}
+            required
           />
         </label>
         <button className="form-submit" type="submit">
