@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`currency_conversions` (
   `quote_currency_id` TINYINT(4) NOT NULL,
   `fx_rate` DECIMAL(10,2) NOT NULL,
   `transaction_id` INT(11) NOT NULL,
-  PRIMARY KEY (`base_currency_id`, `quote_currency_id`),
+  PRIMARY KEY (`transaction_id`),
   INDEX `fk_currencies_has_currencies_currencies2_idx` (`quote_currency_id` ASC) ,
   INDEX `fk_currencies_has_currencies_currencies1_idx` (`base_currency_id` ASC) ,
   INDEX `fk_currency_conversions_transactions1_idx` (`transaction_id` ASC) ,
