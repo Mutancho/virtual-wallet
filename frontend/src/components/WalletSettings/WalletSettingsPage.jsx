@@ -125,7 +125,7 @@ const WalletSettingsPage = () => {
   };
   const accessLevelMapping = {
     "null": "View Only",
-    "top_up_only": "Withdraw Only",
+    "top_up_only": "Top Up Only",
     "full": "Full Access"
   };
 
@@ -136,13 +136,12 @@ const WalletSettingsPage = () => {
     <div id="wallet-settings-page" className="wallet-settings-page">
       <Sidebar />
       <h1 id="wallet-settings-title">Wallet Settings</h1>
+
       <form id="wallet-settings-form" onSubmit={handleFormSubmit}>
+
         {type !== 'Personal' && (
           <React.Fragment>
-            <label>
-              New Wallet Name:
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-            </label>
+            
             <label>
               Wallet Status:
               <select value={status} onChange={(e) => setStatus(e.target.value)}>
@@ -188,15 +187,16 @@ const WalletSettingsPage = () => {
                 User Access:
                 <select value={userAccess} onChange={(e) => setUserAccess(e.target.value)}>
                   <option value="">Select user access</option>
-                  <option value="full">Full</option>
+                  <option value="null">View Only</option>
                   <option value="top_up_only">Top Up Only</option>
+                  <option value="full">Full</option>
                 </select>
               </label>
             )}
           </React.Fragment>
         )}
         {isJointWallet && (
-          <button id="wallet-settings-submit" type="submit">Place User Action</button>
+          <button id="wallet-settings-submit" type="submit">Confirm Instruction</button>
         )}
       </form>
       <button id="wallet-set-default" onClick={handleDefaultWallet}>Set as Default Wallet</button>
