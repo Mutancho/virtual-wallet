@@ -22,7 +22,7 @@ async def create(wallet: NewWallet, token: str):
             "INSERT INTO wallets(name, type, currency_id, creator_id) VALUES(%s,%s,%s,%s)",
             (wallet.name.title(), wallet.type.capitalize(), currency_id, user_id))
 
-    if wallet.type == JOINT:
+    if wallet.type.lower() == JOINT.lower():
         await _create_joint_wallet(user_id, new_wallet_id)
 
     return new_wallet_id

@@ -132,12 +132,13 @@ h1::after {
 }
 
 .active-status {
+  margin-right: 325px;
   display: flex;
   align-items: center;
 }
 
 .active-status span {
-  margin-right: 30px; /* Adjust the value as needed */
+  margin-right: 10px;
 }
 
 .active-status .status-indicator {
@@ -162,7 +163,7 @@ h1::after {
 }
 
 .action-button {
-  justify-content: s;
+  justify-content: space-evenly;
   margin-right:  5px;
   margin-top: 10px;
   background-color: white;

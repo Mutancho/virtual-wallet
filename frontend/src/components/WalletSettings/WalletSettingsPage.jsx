@@ -78,6 +78,7 @@ const WalletSettingsPage = () => {
 
       if (response.status === 200) {
         console.log('Settings updated successfully.');
+        alert("Instructions was successful")
         fetchWalletData();
         fetchMembers();
       }
