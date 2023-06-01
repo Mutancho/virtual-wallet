@@ -6,6 +6,7 @@ import './TransactionsPage.css';
 
 const TransactionsPage = () => {
   const [activeTab, setActiveTab] = useState('contacts');
+  const [showSendMoneyConfirmation, setShowSendMoneyConfirmation] = useState(false);
   const [searchResult, setSearchResult] = useState(null);
   const [searchParams, setSearchParams] = useState({ username: null });
   const categories = [
@@ -248,11 +249,25 @@ const TransactionsPage = () => {
             </div>
           )}
         </div>
-        <button className="send-money" onClick={handleSendMoney}>
-          Send Money
-        </button>
+          <button
+            className="send-money"
+            type="button"
+            onClick={() => setShowSendMoneyConfirmation(true)}
+          >
+            Send Money
+          </button>
+
+      {showSendMoneyConfirmation && (
+        <div className="send-money-confirmation">
+          <div className="confirmation-text">Are you sure you want to finish this transaction?</div>
+          <div className="confirmation-buttons">
+            <button className="confirmation-button" onClick={handleSendMoney}>Yes</button>
+            <button className="confirmation-button" onClick={() => setShowSendMoneyConfirmation(false)}>No</button>
+          </div>
       </div>
+          )}
     </div>
+      </div>
   );
 };
 

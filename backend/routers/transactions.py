@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from schemas.transaction_models import Transaction
 from schemas.wallet_models import ChooseWallet
 from services import transaction_service,user_service,wallets
-from datetime import date,datetime
+from datetime import date,datetime,timedelta
 
 
 transactions_router = APIRouter(prefix='/transactions', tags=['Transactions'])
@@ -23,11 +23,16 @@ async def make_transaction(transaction: Transaction,token: str = Header(alias="A
 
 @transactions_router.post("/accept_confirmation/{id}")
 async def accept(id: int,wallet: ChooseWallet):
+    if not await transaction_service.get_transaction_sent_at(id)<datetime.now()+timedelta(1):
+        return Response(status_code=400,content='You are past the time to accept this transaction')
 
     return HTMLResponse(content=await transaction_service.accept(id,wallet), status_code=200, media_type='text/html')
 
 @transactions_router.get("/confirmation/{id}")
 async def confirmation_email(id: int):
+    if not await transaction_service.get_transaction_sent_at(id)<datetime.now()+timedelta(1):
+        html = '''<!DOCTYPE html><html><head><title>Transaction Confirmation Time Expired</title><style>body {font-family: Arial, sans-serif;text-align: center;margin-top: 100px;}h1 {color: #336699;}p {color: #666666;}</style></head><body><h1>Transaction Confirmation Time Expired</h1><p>We're sorry, but the confirmation time for this transaction has expired. Please contact our support team for further assistance.</p></body></html>'''
+        return HTMLResponse(content=html, status_code=400, media_type='text/html')
 
     return HTMLResponse(content=await transaction_service.confirm(id), status_code=200, media_type='text/html')
 
