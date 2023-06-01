@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './RegistrationPage.css';
 
 function RegistrationPage() {
@@ -18,9 +18,17 @@ function RegistrationPage() {
     address: '',
     photo_selfie: null,
     identity_document: null,
+    referral_id: null,
   });
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const { referralId } = useParams();
+
+  useEffect(() => {
+    if (referralId) {
+      setFormData((prevState) => ({ ...prevState, referral_id: referralId }));
+    }
+  }, [referralId]);
 
   const handleChange = (e) => {
     setFormData({
@@ -57,6 +65,9 @@ function RegistrationPage() {
 
     try {
       const response = await axios.post('/users/register', data, {
+        params: {
+          referral_id: formData.referral_id,
+        },
         headers: {
           'Content-Type': 'application/json',
         },
@@ -71,7 +82,6 @@ function RegistrationPage() {
         console.error('An unexpected error occurred:', error);
       }
     }
-
   };
 
   return (

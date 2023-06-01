@@ -1,0 +1,127 @@
+.referral-page-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .referral-container {
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  .referral-page-title {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .referral-input {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .referral-input input {
+    margin-right: 10px;
+    padding: 10px;
+    font-size: 1.2em;
+    width: 300px;
+  }
+  
+  .referral-input button {
+    padding: 10px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  
+  .referral-input button:hover {
+    background-color: #45a049;
+  }
+  
+  .referral-error {
+    color: red;
+    text-align: center;
+  }
+  
+  .referral-list {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .referral-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .status-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .status-indicator.green {
+    background-color: green;
+  }
+  
+  .status-indicator.red {
+    background-color: red;
+  }
+  
+  .referral-email-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+  }
+  
+  .referral-email {
+    font-size: 1.4em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+  
+  .copy-button {
+    padding: 10px;
+    background-color: #008CBA;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  
+  .copy-button:hover {
+    background-color: #007B9A;
+  }
+
+  .referral-legend {
+    display: flex;
+    justify-content: start;
+    margin-bottom: 20px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .legend-item .status-indicator {
+    margin-right: 5px;
+  }
+  

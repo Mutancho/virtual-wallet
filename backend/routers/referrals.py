@@ -5,10 +5,10 @@ from services.custom_errors.users import AdminAccessRequired
 from services.referrals import create_referral_link, view, delete, validate, base_url
 from schemas.referrals import Referral
 
-referrals_router = APIRouter(prefix="/users/{user_id}/referrals")
+referrals_router = APIRouter(prefix="/users/referrals", tags=["Referrals"])
 
 
-@referrals_router.post("/")
+@referrals_router.post("")
 async def create_link(referral: Referral, token: str = Header(alias="Authorization")):
     try:
         new_link = await create_referral_link(referral, token)
@@ -19,7 +19,7 @@ async def create_link(referral: Referral, token: str = Header(alias="Authorizati
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=UserHasBeenReferredAlready.error_message)
 
 
-@referrals_router.get("/")
+@referrals_router.get("")
 async def view_referrals(token: str = Header(alias="Authorization")):
     get_referrals = await view(token)
     if not get_referrals:

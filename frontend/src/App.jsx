@@ -41,7 +41,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/register/:referralId?" element={<RegistrationPage />} />
           <Route path="/verify-email" element={<EmailVerificationPage />} />
           <Route path="/users/menu" element={<MenuPage />} />
           <Route path="/payment/successful" element={<SuccessfulPaymentPage />} />

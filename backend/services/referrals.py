@@ -7,7 +7,7 @@ from schemas.referrals import Referral, ViewReferrals
 from services.user_service import is_admin
 from services.custom_errors.users import AdminAccessRequired
 
-base_url = "http://127.0.0.1:8000"
+base_url = "http://localhost:3000"
 
 
 async def create_referral_link(referral: Referral, token: str):
@@ -28,7 +28,7 @@ async def create_referral_link(referral: Referral, token: str):
         get_last_referral_id = 0
     else:
         get_last_referral_id = get_last_referral_id[0][0]
-    new_link = f"{base_url}/users/{user_id}/referrals/{get_last_referral_id + 1}"
+    new_link = f"{base_url}/register/{get_last_referral_id + 1}"
     # todo update above link to deployed host link
     expiry_date = datetime.now() + timedelta(days=30)
 
