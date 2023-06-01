@@ -44,3 +44,45 @@ label {
 .form-submit-button:hover {
     background-color: #007B9A;
 }
+.delete-button {
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #D32F2F;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #B71C1C;
+}
+
+.delete-confirmation {
+  width: 400px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  text-align: center;
+}
+
+.confirmation-buttons {
+  margin-top: 10px;
+}
+
+.confirmation-button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #008CBA;
+  color: white;
+  cursor: pointer;
+}
+
+.confirmation-button:hover {
+  background-color: #007B9A;
+}
