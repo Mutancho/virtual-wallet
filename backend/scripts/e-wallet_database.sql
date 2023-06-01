@@ -225,10 +225,8 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`transfers` (
   `type` ENUM('deposit', 'withdrawal') NOT NULL,
   `amount` DECIMAL(10,2) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `status` ENUM('pending', 'complete', 'failed', 'refunded') NOT NULL DEFAULT 'pending',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   `wallet_id` INT(11) NOT NULL,
-  `card` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_transfers_wallets1_idx` (`wallet_id` ASC) ,
   CONSTRAINT `fk_transfers_wallets1`
