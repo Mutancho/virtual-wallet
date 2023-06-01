@@ -186,8 +186,8 @@ async def get_transactions(from_date:date,to_date,user,direction,limit,offset,to
 
 async def get_pending_transactions(token):
     user_id = oauth2.get_current_user(token)
-    transaction_data = await read_query(f'''SELECT id, amount, category, is_recurring, sent_at, accepted_by_recipient FROM transactions 
-                                            WHERE confirmed = 1 AND accepted_by_recipient = 0 AND recipient_id = {user_id}''')
+    transaction_data = await read_query(f'''SELECT t.id, t.amount, t.category, t.is_recurring, t.sent_at, t.accepted_by_recipient,c.currency FROM transactions as t, currencies as c 
+                                            WHERE confirmed = 1 AND accepted_by_recipient = 0 AND recipient_id = {user_id} AND c.id = (SELECT currency_id FROM wallets WHERE id = t.wallet_id)''')
 
 
     return (PendingTransaction.from_query_result(*t) for t in transaction_data)
