@@ -24,6 +24,7 @@ import ReferralPage from './components/ReferralPage/ReferralPage';
 import NewWalletPage from './components/AddWalletPage/AddWalletPage';
 import WalletSettingsPage from './components/WalletSettings/WalletSettingsPage';
 import PendingTransactionsPage from "./components/PendingTransactionsPage/PendingTransactionsPage"
+import ViewTransactionsPage from "./components/ViewTransactionsPage/ViewTransactionsPage";
 
 const stripePromise = loadStripe('pk_test_51N8aWKBoGCspooGJW8aKWZUM6W8IOJTjhJcwwN3Mez7j9lWGxazkmyPxNM1jcCPNAeOko2GlrAyFYmyitl7c8Fnu00njr03PIO');
 
@@ -77,6 +78,7 @@ const App = () => {
           <Route path='/admin/block' element={<BlockUsersPage />} />
           <Route path='/pending/transactions' element={<PendingTransactionsPage />} />
           <Route path='/users/referrals' element={<ReferralPage />} />
+          <Route path='/transactions' element={<ViewTransactionsPage />} />
         </Routes>
       </div>
     </Router>

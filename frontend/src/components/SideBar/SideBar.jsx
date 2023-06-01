@@ -64,6 +64,13 @@ const Sidebar = () => {
             </Link>
           </li>
         )}
+        {location.pathname !== '/transactions' && (
+          <li className="sidebar-menu-item">
+            <Link to="/transactions" className="sidebar-link">
+              View Transactions
+            </Link>
+          </li>
+        )}
         {localStorage.getItem('is_admin') !== 'false' && location.pathname !== '/users/admin/view' && (
         <li className="sidebar-menu-item">
           <Link to='/users/admin/view' className="sidebar-link">
