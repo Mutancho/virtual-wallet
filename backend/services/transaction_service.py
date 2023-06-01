@@ -45,7 +45,11 @@ async def accept(id,wallet):
     if sender_currency[0][0] != reciver_currency[0][0]:
         c = CurrencyConverter()
         amount = c.convert(transaction.amount, sender_currency[0][0], reciver_currency[0][0])
+        fx_rate = round(amount,2)/transaction.amount
         transaction.amount = round(amount,2)
+        await insert_query('''INSERT INTO currency_conversions(base_currency_id,quote_currency_id,fx_rate,transaction_id)
+            VALUES((SELECT currency_id FROM wallets WHERE id = %s),(SELECT id FROM currencies WHERE currency = %s),%s,%s)''',
+                           (transaction.wallet,reciver_currency[0][0],fx_rate,id))
 
 
     await update_query('''UPDATE wallets SET balance = balance + %s Where id = %s''',(transaction.amount,wallet.wallet))
