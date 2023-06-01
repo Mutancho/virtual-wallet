@@ -1,91 +1,112 @@
 .container {
-    width: 115%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f2f2f2;
-    border-radius: 5px;
-    box-sizing: border-box; /* Ensure padding is included in the width */
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    margin-bottom: 5px;
-  }
-  
-  label {
-    display: block;
-    cursor: pointer;
-  }
-  
-  input[type="radio"] {
-    margin-right: 5px;
-  }
-  
-  form {
-    margin-top: 20px;
-  }
-  
-  label[for="amount"],
-  label[for="card-element"] {
-    margin-top: 10px;
-    display: block;
-  }
-  
-  input[type="number"],
-  #card-element,
-  select {
-    width: 100%;
-    box-sizing: border-box; /* Ensure padding is included in the width */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 14px;
-    margin-bottom: 10px;
-    outline: none; /* Remove default outline */
-  }
-  
-  button[type="submit"] {
-    width: 100%;
-    box-sizing: border-box; /* Ensure padding is included in the width */
-    padding: 10px;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #45a049;
-  }
-  
-  button[type="submit"]:disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
-  }
-  
-  /* Add specific styles for select dropdown */
-  select {
-    appearance: none; /* Remove default select dropdown arrow */
-    background-image: url('data:image/svg+xml;utf8,<svg fill="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom dropdown arrow */
-    background-repeat: no-repeat;
-    background-position: right .7em top 50%;
-    background-size: .65em auto;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: box-shadow .15s ease-in-out;
-  }
-  
-  select:hover {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  }
-  
+  width: 115%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+label {
+  display: block;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+form {
+  margin-top: 20px;
+}
+
+label[for="amount"],
+label[for="card-element"] {
+  margin-top: 10px;
+  display: block;
+}
+
+input[type="number"],
+#card-element,
+select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  outline: none; 
+}
+
+button[type="submit"] {
+  width: 100%;
+  box-sizing: border-box; 
+  padding: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+button[type="submit"]:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+
+select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom dropdown arrow */
+  background-repeat: no-repeat;
+  background-position: right .7em top 50%;
+  background-size: .65em auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow .15s ease-in-out;
+}
+
+select:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+
+.error {
+  height: 20px; 
+  color: red;
+  margin-bottom: 10px;
+}
+.withdraw-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.withdraw-button:hover {
+  background-color: #45a049;
+}
+
+.withdraw-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

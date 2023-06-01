@@ -5,6 +5,7 @@ from services.currencies import select_currency
 from services.constants import JOINT, IS_TRUE
 from services.custom_errors.wallets import BalanceNotNull, NotWalletAdmin, \
     UserAlreadyInGroup, CannotRemoveWalletAdmin, WithdrawMoreThanBalance, NoWithdrawalAccess, NoTopUpAccess
+from decimal import Decimal
 
 
 async def create(wallet: NewWallet, token: str):
@@ -114,13 +115,15 @@ async def settings(wallet: WalletSettings, wallet_id: int, token: str):
     return True
 
 
-async def update_wallet_balance(wallet_id: int, amount: int, token: str):
+async def update_wallet_balance(wallet_id: int, amount: str, token: str, is_withdrawal: bool):
     user_id = get_current_user(token)
-
+    amount = Decimal(amount)
+    if is_withdrawal:
+        amount *= -1
     is_wallet_joint = await read_query("SELECT type FROM wallets WHERE id = %s", (wallet_id,))
     if is_wallet_joint and is_wallet_joint[0][0] == "joint":
         access_level = await read_query("SELECT access_level FROM users_wallets WHERE user_id = %s", (user_id,))
-        if amount < 0:
+        if is_withdrawal:
             if not access_level[0][0] == "full":
                 raise NoWithdrawalAccess()
         else:

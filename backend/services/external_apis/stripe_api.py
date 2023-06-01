@@ -3,6 +3,7 @@ import stripe
 from config.config import settings
 from utils.oauth2 import get_current_user
 from database.database_queries import read_query
+from decimal import Decimal
 
 stripe.api_key = settings.stripe_secret_key
 
@@ -27,11 +28,13 @@ async def list_payment_methods(customer_id: str) -> list[PaymentMethod]:
     return PaymentMethod.list(customer=customer_id, type='card')
 
 
-async def create_payment_intent(amount: int, payment_method_id: str, currency: str, token: str) -> PaymentIntent:
+async def create_payment_intent(amount: str, payment_method_id: str, currency: str, token: str) -> PaymentIntent:
     user_id = get_current_user(token)
+    amount_decimal = Decimal(amount)
+    amount_in_cents = int(amount_decimal * 100)
     stripe_customer_id = await read_query("SELECT stripe_id from users WHERE id = %s", (user_id,))
     payment_intent = PaymentIntent.create(
-        amount=amount * 100,
+        amount=amount_in_cents,
         currency=currency.lower(),
         description="Wallet - " + currency.upper(),
         payment_method=payment_method_id,

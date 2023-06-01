@@ -47,7 +47,7 @@ const AddWalletPage = () => {
       <form onSubmit={handleFormSubmit}>
         <label>
           Name:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} maxLength={15} required />
         </label>
         <label>
           Type:
