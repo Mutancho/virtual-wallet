@@ -124,7 +124,7 @@ const PendingTransactionsPage = () => {
           <div className="transaction" key={transaction.id}>
             <div className="transaction-details">
               <p>
-                <span className="detail-label">Amount:</span> {transaction.amount}
+                <span className="detail-label">Amount:</span>{transaction.amount} {transaction.currency}
               </p>
               <p>
                 <span className="detail-label">Category:</span> {transaction.category}

@@ -9,13 +9,15 @@ from services.external_apis.stripe_api import create_customer
 
 async def create(user: RegisterUser) -> RegisterUser:
     hashed = await hash_password(user.password)
+    if user.identity_document:
+        anti_money_laundry_checked = 1
 
     generate_id = await insert_query('''
-    INSERT INTO users(username,password,title, first_name, last_name, gender, dob, address, email, phone_number, photo_selfie, identity_document) 
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
+    INSERT INTO users(username,password,title, first_name, last_name, gender, dob, address, email, phone_number, photo_selfie, identity_document,anti_money_laundry_checked) 
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
                                      (user.username, hashed, user.title, user.first_name, user.last_name, user.gender,
                                       user.date_of_birth, user.address, user.email, user.phone_number,
-                                      user.photo_selfie, user.identity_document))
+                                      user.photo_selfie, user.identity_document,anti_money_laundry_checked))
 
     user.id = generate_id
     subject = "Virtual Wallet Account Confirmation"

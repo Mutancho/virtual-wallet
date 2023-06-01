@@ -1,7 +1,7 @@
 from database.database_queries import read_query,update_query,insert_query
 from utils import oauth2,send_emails
 from schemas.transaction_models import Transaction, DisplayTransaction, DisplayTransactionInfo,PendingTransaction
-from datetime import date,datetime
+from datetime import date,datetime,timedelta
 from currency_converter import CurrencyConverter
 from services.wallets import get_user_id_from_username
 async def create_transaction(transaction,token):
@@ -45,7 +45,11 @@ async def accept(id,wallet):
     if sender_currency[0][0] != reciver_currency[0][0]:
         c = CurrencyConverter()
         amount = c.convert(transaction.amount, sender_currency[0][0], reciver_currency[0][0])
+        fx_rate = round(amount,2)/transaction.amount
         transaction.amount = round(amount,2)
+        await insert_query('''INSERT INTO currency_conversions(base_currency_id,quote_currency_id,fx_rate,transaction_id)
+            VALUES((SELECT currency_id FROM wallets WHERE id = %s),(SELECT id FROM currencies WHERE currency = %s),%s,%s)''',
+                           (transaction.wallet,reciver_currency[0][0],fx_rate,id))
 
 
     await update_query('''UPDATE wallets SET balance = balance + %s Where id = %s''',(transaction.amount,wallet.wallet))
@@ -186,11 +190,16 @@ async def get_transactions(from_date:date,to_date,user,direction,limit,offset,to
 
 async def get_pending_transactions(token):
     user_id = oauth2.get_current_user(token)
-    transaction_data = await read_query(f'''SELECT id, amount, category, is_recurring, sent_at, accepted_by_recipient FROM transactions 
-                                            WHERE confirmed = 1 AND accepted_by_recipient = 0 AND recipient_id = {user_id}''')
+    transaction_data = await read_query(f'''SELECT t.id, t.amount, t.category, t.is_recurring, t.sent_at, t.accepted_by_recipient,c.currency FROM transactions as t, currencies as c 
+                                            WHERE confirmed = 1 AND accepted_by_recipient = 0 AND recipient_id = {user_id} AND c.id = (SELECT currency_id FROM wallets WHERE id = t.wallet_id)''')
 
 
     return (PendingTransaction.from_query_result(*t) for t in transaction_data)
+
+async def get_transaction_sent_at(transaction_id: int):
+    sent_at = await read_query('''SELECT sent_at FROM transactions WHERE id = %s''',(transaction_id,))
+
+    return sent_at[0][0]
 
 def sort(transactions: list[DisplayTransactionInfo], *, attribute='sent_at', reverse=False):
 

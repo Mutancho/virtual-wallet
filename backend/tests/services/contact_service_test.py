@@ -36,8 +36,8 @@ class ContactService_Should(unittest.TestCase):
     @patch('services.contact_service.read_query', autospec=True)
     def test_getContacts(self, mock_read_query):
         async def async_test():
-            user1 = Username(username=USERNAME)
-            mock_read_query.return_value = [(USERNAME,)]
+            user1 = Username(username=USERNAME,photo_selfie='Photo')
+            mock_read_query.return_value = [(USERNAME,'Photo')]
 
             result = await contact_service.get_contacts(TOKEN)
 

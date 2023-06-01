@@ -52,8 +52,9 @@ class PendingTransaction(BaseModel):
     is_recurring: bool
     sent_at: date
     accepted: bool
+    currency: str
 
     @classmethod
-    def from_query_result(cls,id, amount, category,  is_recurring, sent_at, accepted):
-        return cls(id=id,amount=amount, category=category,is_recurring=bool(is_recurring), sent_at=sent_at, accepted=bool(accepted))
+    def from_query_result(cls,id, amount, category,  is_recurring, sent_at, accepted,currency):
+        return cls(id=id,amount=amount, category=category,is_recurring=bool(is_recurring), sent_at=sent_at, accepted=bool(accepted),currency=currency)
 

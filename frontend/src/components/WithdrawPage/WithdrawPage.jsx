@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './WithdrawPage.css';
-import Sidebar from '../SideBar/SideBar';
+import Sidebar from "../SideBar/SideBar";
 
 const fetchPaymentMethods = async () => {
   const response = await fetch('/users/cards/payment-methods/list', {
@@ -25,8 +25,8 @@ const WithdrawPage = () => {
   const { walletId } = location.state;
   const [amount, setAmount] = useState(0);
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const [selectedCard, setSelectedCard] = useState(null); // change here
-  const [error, setError] = useState(null); // add this line
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -35,12 +35,12 @@ const WithdrawPage = () => {
 
   const handleCardSelection = (event) => {
     setSelectedCard(event.target.value);
-    setError(null); // reset error when a new card is selected
+    setError(null);
   };
 
   const handleWithdraw = async () => {
     if (!selectedCard) {
-      setError('Please select a card.'); // set error message when no card is selected
+      setError('Please select a card.');
       return;
     }
 
@@ -74,7 +74,7 @@ const WithdrawPage = () => {
 
   return (
     <div className="container">
-      <Sidebar/>
+      <Sidebar />
       <h2>Withdraw</h2>
 
       <select value={selectedCard || ''} onChange={handleCardSelection}>

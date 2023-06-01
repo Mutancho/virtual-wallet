@@ -22,7 +22,7 @@ class RegisterUser(BaseModel):
     date_of_birth: str
     address: str
     photo_selfie: str|None
-    identity_document: str|None
+    identity_document: str
 
 
     @validator('password')
