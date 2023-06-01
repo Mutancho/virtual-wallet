@@ -28,6 +28,7 @@ const TopupPage = () => {
   const [amount, setAmount] = useState('');
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedCard, setSelectedCard] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -37,7 +38,9 @@ const TopupPage = () => {
       setCurrency(location.state.currency);
     }
 
-    fetchPaymentMethods().then(setPaymentMethods).catch(error => console.error(error));
+    fetchPaymentMethods()
+      .then(setPaymentMethods)
+      .catch(error => console.error(error));
   }, [location]);
 
   const handleCardSelection = (event) => {
@@ -47,50 +50,58 @@ const TopupPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
+    if (!stripe || !elements || isLoading) {
       return;
     }
 
-    let paymentMethodId = selectedCard;
+    setIsLoading(true);
 
-    if (!selectedCard) {
-      const cardElement = elements.getElement(CardElement);
+    try {
+      let paymentMethodId = selectedCard;
 
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-      });
+      if (!selectedCard) {
+        const cardElement = elements.getElement(CardElement);
 
-      if (error) {
-        console.log('Stripe error:', error);
-        return;
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: cardElement,
+        });
+
+        if (error) {
+          console.log('Stripe error:', error);
+          return;
+        }
+
+        paymentMethodId = paymentMethod.id;
       }
 
-      paymentMethodId = paymentMethod.id;
-    }
+      const response = await fetch('/users/transfers/payment-intent', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer "${localStorage.getItem('token')}"`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount,
+          wallet_id: walletId,
+          currency,
+          payment_method_id: paymentMethodId,
+        }),
+      });
 
-    const response = await fetch('/users/transfers/payment-intent', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer "${localStorage.getItem('token')}"`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        amount,
-        wallet_id: walletId,
-        currency,
-        payment_method_id: paymentMethodId,
-      }),
-    });
-    
-    const data = await response.json();
-    
-    if (response.status === 200 && data.message === 'Payment succeeded') {
-      console.log('Payment was successful');
-      navigate('/payment/successful');
-    } else {
-      console.log('Payment failed');
-      navigate('/payment/unsuccessful')
+      const data = await response.json();
+
+      if (response.status === 200 && data.message === 'Payment succeeded') {
+        console.log('Payment was successful');
+        navigate('/payment/successful');
+      } else {
+        console.log('Payment failed');
+        navigate('/payment/unsuccessful');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,8 +135,8 @@ const TopupPage = () => {
             <CardElement options={{hidePostalCode: true}} id="card-element" />
           </>
         )}
-        <button type="submit" disabled={!stripe}>
-          Pay
+        <button type="submit" disabled={!stripe || isLoading}>
+          {isLoading ? 'Processing...' : 'Pay'}
         </button>
       </form>
     </div>
