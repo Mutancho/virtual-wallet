@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './WithdrawPage.css';
+import Sidebar from "../SideBar/SideBar";
 
 const fetchPaymentMethods = async () => {
   const response = await fetch('/users/cards/payment-methods/list', {
@@ -66,6 +67,7 @@ const WithdrawPage = () => {
 
   return (
     <div className="container">
+      <Sidebar />
       <h2>Withdraw</h2>
 
       <select value={selectedCard} onChange={handleCardSelection}>

@@ -96,7 +96,7 @@ const TransactionsPage = () => {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
         },
       });
-  
+      alert('Money sent successfully')
       console.log(response.data);
     } catch (error) {
       console.error(error);
