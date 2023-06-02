@@ -183,7 +183,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `e-wallet`.`recurring_transactions` (
   `transaction_id` INT(11) NOT NULL,
-  `interval` DATE NOT NULL,
+  `interval` INT(11) NOT NULL,
   `next_occurrence` DATE NOT NULL,
   `status` ENUM('active', 'paused', 'cancelled') NOT NULL DEFAULT 'active',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
