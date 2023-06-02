@@ -3,21 +3,21 @@ import Navbar from '../Navbar/Navbar';
 import './HomePage.css';
 
 import image1 from '../../images/wallet.png';
-import image2 from '../../images/currency_exchange.png';
-import image3 from '../../images/saving.png';
-import image4 from '../../images/wallet.png';
-import image5 from '../../images/wallet.png';
-import image6 from '../../images/wallet.png';
+import image2 from '../../images/group_wallet.jpg';
+import image3 from '../../images/currency_exchange.png';
+import image4 from '../../images/lightning.jpg';
+import image5 from '../../images/saving.png';
+import image6 from '../../images/recurring_transaction.jpg';
 
 
 function HomePage() {
   const [cardData, setCardData] = useState([
     { id: 1, frontTitle: 'Wallets', backTitle: 'Experience seamless financial management with our sophisticated virtual wallet', image: image1 },
-    { id: 2, frontTitle: 'Group Wallets', backTitle: 'Unlock the power of collaborative finance with our Group Wallets, enabling effortless group money management and sharing', image: image1},
-    { id: 3, frontTitle: 'Currency Exchange', backTitle: 'Secure currency exchange for hassle-free international transactions, ensuring your funds are seamlessly converted at competitive rates', image: image2 },
-    { id: 4, frontTitle: 'Instant Cash Transfer', backTitle: ' Enjoy the convenience of instant cash transfers, allowing you to send and receive funds swiftly, anytime, anywhere', image: image1},
-    { id: 5, frontTitle: 'Budget Assistant', backTitle: 'Effortlessly track and optimize expenses with our intuitive budgeting tool, providing you with better control over your finances', image: image1},
-    { id: 6, frontTitle: 'Recurring Transactions', backTitle: 'Streamline your finances with our recurring transactions feature. Automate regular payments and save time managing your bills', image: image1},
+    { id: 2, frontTitle: 'Group Wallets', backTitle: 'Unlock the power of collaborative finance with our Group Wallets, enabling effortless group money management and sharing', image: image2},
+    { id: 3, frontTitle: 'Currency Exchange', backTitle: 'Secure currency exchange for hassle-free international transactions, ensuring your funds are seamlessly converted at competitive rates', image: image3},
+    { id: 4, frontTitle: 'Instant Cash Transfer', backTitle: ' Enjoy the convenience of instant cash transfers, allowing you to send and receive funds swiftly, anytime, anywhere', image: image4},
+    { id: 5, frontTitle: 'Budget Assistant', backTitle: 'Effortlessly track and optimize expenses with our intuitive budgeting tool, providing you with better control over your finances', image: image5},
+    { id: 6, frontTitle: 'Recurring Transactions', backTitle: 'Streamline your finances with our recurring transactions feature. Automate regular payments and save time managing your bills', image: image6},
   ]);
 
   const handleCardFlip = (id) => {
