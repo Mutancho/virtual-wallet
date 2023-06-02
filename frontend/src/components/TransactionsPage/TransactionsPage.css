@@ -117,3 +117,11 @@
   color: white;
   cursor: pointer;
 }
+.select-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  background-color: #1a5276;
+  color: white;
+  cursor: pointer;
+}
