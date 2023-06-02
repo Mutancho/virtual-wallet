@@ -136,7 +136,7 @@ const ViewTransactionsPage = () => {
                 <strong>Recipient:</strong> {transaction.recipient}
               </div>
               <div>
-                <strong>Wallet:</strong> {transaction.wallet}
+                <strong>Sender:</strong> {transaction.wallet}
               </div>
               <div>
                 <strong>Recurring:</strong> {transaction.is_recurring ? 'Yes' : 'No'}
