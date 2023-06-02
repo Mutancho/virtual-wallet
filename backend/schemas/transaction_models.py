@@ -34,7 +34,7 @@ class DisplayTransactionInfo(BaseModel):
     amount: PositiveFloat
     category: str
     recipient: str
-    wallet: int
+    wallet: str
     is_recurring: bool
     sent_at: date
     accepted:bool

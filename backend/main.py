@@ -8,6 +8,8 @@ from routers.transfers import transfers_router
 from routers.wallets import wallets_router
 from routers.contacts import contacts_router
 from routers.transactions import transactions_router
+import threading
+from services.tasks import run_task_scheduler
 
 app = FastAPI()
 
@@ -15,6 +17,8 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup_event():
     await init_db()
+    thread = threading.Thread(target=run_task_scheduler)
+    thread.start()
 
 
 @app.on_event("shutdown")

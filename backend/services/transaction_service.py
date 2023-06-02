@@ -15,6 +15,8 @@ async def create_transaction(transaction,token):
         transaction.category = 'Other'
     if not transaction.is_recurring:
         transaction.is_recurring = False
+    else:
+        await insert_query('''INSERT INTO recurring_transactions(`interval`,next_occurrence) VALUES (%s,%s)''',(transaction.interval,transaction.start_date))
 
     transaction_id = await insert_query('''INSERT INTO transactions(amount, is_recurring, recipient_id, category, wallet_id,confirmed) VALUES(%s,%s,%s,%s,%s,%s)''',
                        (transaction.amount,transaction.is_recurring,recipient,transaction.category,transaction.wallet,confirmed))
@@ -128,7 +130,8 @@ async def acceptence_email(transaction_id,recepient_email):
 async def all(from_date,to_date,sender,recipient,limit,offset):
 
 
-    sql = '''SELECT t.amount,t.category,t.recipient_id,t.wallet_id,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at FROM transactions as t '''
+    sql = '''SELECT t.amount,t.category,u.username,u2.username,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at 
+    FROM transactions as t join users as u on u.id = t.recipient_id join wallets as w on w.id = t.wallet_id join users as u2 on u2.id = w.creator_id'''
 
     where_clauses = []
     if from_date:
@@ -153,7 +156,8 @@ async def all(from_date,to_date,sender,recipient,limit,offset):
 async def get_transactions(from_date:date,to_date,user,direction,limit,offset,token):
     user_id = oauth2.get_current_user(token)
 
-    sql = f'''SELECT t.amount,t.category,t.recipient_id,t.wallet_id,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at FROM transactions as t '''
+    sql = f'''SELECT t.amount,t.category,u.username,u2.username,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at 
+    FROM transactions as t JOIN users as u on u.id = t.recipient_id join wallets as w on w.id = t.wallet_id join users as u2 on u2.id = w.creator_id'''
 
     where_clauses = []
     if user:
@@ -190,8 +194,14 @@ async def get_transactions(from_date:date,to_date,user,direction,limit,offset,to
 
 async def get_pending_transactions(token):
     user_id = oauth2.get_current_user(token)
-    transaction_data = await read_query(f'''SELECT t.id, t.amount, t.category, t.is_recurring, t.sent_at, t.accepted_by_recipient,c.currency FROM transactions as t, currencies as c 
-                                            WHERE confirmed = 1 AND accepted_by_recipient = 0 AND recipient_id = {user_id} AND c.id = (SELECT currency_id FROM wallets WHERE id = t.wallet_id)''')
+    transaction_data = await read_query(f'''
+    SELECT t.id, t.amount, t.category, t.is_recurring, t.sent_at, t.accepted_by_recipient, c.currency 
+FROM transactions AS t, currencies AS c 
+WHERE confirmed = 1 
+    AND accepted_by_recipient = 0 
+    AND recipient_id = {user_id} 
+    AND c.id = (SELECT currency_id FROM wallets WHERE id = t.wallet_id) 
+    AND DATE_ADD(t.sent_at, INTERVAL 1 DAY) >= NOW()''')
 
 
     return (PendingTransaction.from_query_result(*t) for t in transaction_data)

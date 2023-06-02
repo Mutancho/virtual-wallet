@@ -29,3 +29,9 @@ async def update_query(sql: str, sql_params=()) -> bool:
             await cursor.execute(sql, sql_params)
             await conn.commit()
             return cursor.rowcount
+
+async def new_query(connection,sql: str, sql_params=()) -> bool:
+    async with connection.cursor() as cursor:
+            await cursor.execute(sql, sql_params)
+
+            return cursor.lastrowid
