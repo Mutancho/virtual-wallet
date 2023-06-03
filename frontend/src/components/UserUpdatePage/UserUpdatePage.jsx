@@ -120,11 +120,11 @@ function UpdateUser() {
           placeholder="Phone number"
           onChange={handleChange}
         />
-        <select className="form-input" name="two_factor_method" onChange={handleChange}>
+        {/* <select className="form-input" name="two_factor_method" onChange={handleChange}>
           <option value="">Select two-factor method</option>
           <option value="email">Email</option>
           <option value="sms">SMS</option>
-        </select>
+        </select> */}
         <select className="form-input" name="title" onChange={handleChange}>
           <option value="">Select title</option>
           <option value="Mr">Mr</option>
