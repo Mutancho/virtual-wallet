@@ -5,7 +5,9 @@ from utils.passwords import hash_password, verify_password
 from utils import oauth2
 from utils.send_emails import send_email
 from services.external_apis.stripe_api import create_customer
+from config.config import settings
 
+base_url = settings.base_url
 
 async def create(user: RegisterUser) -> RegisterUser:
     hashed = await hash_password(user.password)
@@ -21,7 +23,7 @@ async def create(user: RegisterUser) -> RegisterUser:
 
     user.id = generate_id
     subject = "Virtual Wallet Account Confirmation"
-    confirmation_link = f'http://127.0.0.1:8000/users/confirmation/{generate_id}'
+    confirmation_link = f'{base_url}/users/confirmation/{generate_id}'
     message = f"Please click the link below to confirm your email address:\n\n{confirmation_link}"
 
     await send_email(user.email, confirmation_link, subject, message)
@@ -111,7 +113,7 @@ async def update(id: int, user: UpdateUser):
     if user.email and user.email != old.email:
         email_verified = 0
         subject = "Virtual Wallet Account Confirmation"
-        confirmation_link = f'http://127.0.0.1:8000/users/confirmation/{id}'
+        confirmation_link = f'{base_url}/users/confirmation/{id}'
         message = f"Please click the link below to confirm your email address:\n\n{confirmation_link}"
 
         await send_email(user.email, confirmation_link, subject, message)

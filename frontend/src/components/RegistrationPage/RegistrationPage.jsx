@@ -11,7 +11,7 @@ function RegistrationPage() {
     first_name: '',
     last_name: '',
     phone_number: '',
-    two_factor_method: '',
+    // two_factor_method: '',
     title: '',
     gender: '',
     date_of_birth: '',
@@ -149,7 +149,7 @@ function RegistrationPage() {
             required
           />
         </label>
-        <label className="form-label">
+        {/* <label className="form-label">
           Two Factor Method:<span className="required">*</span>
           <div className="radio-group">
             <div className="radio-option">
@@ -173,9 +173,9 @@ function RegistrationPage() {
                 checked={formData.two_factor_method === 'sms'}
               />
               <label htmlFor="twoFactorMethodSms">SMS</label>
-            </div>
-          </div>
-        </label>
+            </div> */}
+          {/* </div>
+        </label> */}
         <label className="form-label">
           Gender:<span className="required">*</span>
           <div className="radio-group">

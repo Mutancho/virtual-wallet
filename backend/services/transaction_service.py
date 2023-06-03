@@ -4,6 +4,10 @@ from schemas.transaction_models import Transaction, DisplayTransaction, DisplayT
 from datetime import date,datetime,timedelta
 from currency_converter import CurrencyConverter
 from services.wallets import get_user_id_from_username
+from config.config import settings
+
+base_url = settings.base_url
+
 async def create_transaction(transaction,token):
     user_id = oauth2.get_current_user(token)
 
@@ -28,7 +32,7 @@ async def create_transaction(transaction,token):
     else:
         user_email = await read_query('''SELECT email FROM users WHERE id = %s''',(user_id,))
         subject = "Outgoing transaction"
-        confirmation_link = f'http://127.0.0.1:8000/transactions/confirmation/{transaction_id}'
+        confirmation_link = f'{base_url}/transactions/confirmation/{transaction_id}'
         msg = f"Please click the link below to confirm this transaction:\n\n{confirmation_link}\n\n"
         await send_emails.send_email(user_email[0][0],confirmation_link, subject,msg)
         info = "Transaction created successfully. Awaiting your confirmation."
@@ -122,7 +126,7 @@ async def confirm(id):
 
 async def acceptence_email(transaction_id,recepient_email):
     subject = "Incoming transaction"
-    confirmation_link = f'http://127.0.0.1:8000/transactions/accept_confirmation/{transaction_id}'
+    confirmation_link = f'{base_url}/transactions/accept_confirmation/{transaction_id}'
     msg = f"Please go to the Pending Transactions section on the site to view and accept this transaction. \n\n If you don't want to accept you can ignore this email.\n\n    The Team at Virtual Wallet."
     await send_emails.send_email(recepient_email,confirmation_link, subject,msg)
 
