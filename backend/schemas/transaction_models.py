@@ -12,9 +12,9 @@ class Transaction(BaseModel):
     interval: int | None
 
     @classmethod
-    def from_query_result(cls, amount, category, recipient, wallet, is_recuring):
+    def from_query_result(cls, amount, category, recipient, wallet, is_recurring):
         return cls(amount=amount, category=category, recipient=recipient, wallet=wallet,
-                   is_recuring=is_recuring)
+                   is_recurring=is_recurring)
 
 class DisplayTransaction(BaseModel):
     information: str

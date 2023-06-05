@@ -210,6 +210,24 @@ WHERE confirmed = 1
 
     return (PendingTransaction.from_query_result(*t) for t in transaction_data)
 
+async def execute_recurring_transactions():
+
+    data = await read_query('''SELECT amount,category,recipient_id,wallet_id,is_recurring FROM transactions WHERE is_recurring = 1 and id in 
+    (SELECT * FROM (SELECT transaction_id FROM recurring_transactions WHERE next_occurrence = DATE(NOW())) AS subquery)''')
+
+    if data:
+        await update_query('''UPDATE recurring_transactions SET next_occurrence = DATE_ADD(next_occurrence, INTERVAL `interval` DAY) WHERE transaction_id in 
+        (SELECT * FROM (SELECT transaction_id FROM recurring_transactions WHERE next_occurrence = DATE(NOW())) AS subquery)''')
+        insert_sql = 'INSERT INTO transactions(amount, is_recurring, recipient_id, category, wallet_id,confirmed) VALUES '
+        insert_data = []
+        for t in data:
+            transaction = Transaction.from_query_result(*t)
+            insert_sql += ' (%s,%s,%s,%s,%s,%s),'
+            insert_data.extend([transaction.amount,transaction.is_recurring,int(transaction.recipient),transaction.category,int(transaction.wallet),1])
+
+        await insert_query(insert_sql.rstrip(','),tuple(insert_data))
+
+
 async def get_transaction_sent_at(transaction_id: int):
     sent_at = await read_query('''SELECT sent_at FROM transactions WHERE id = %s''',(transaction_id,))
 

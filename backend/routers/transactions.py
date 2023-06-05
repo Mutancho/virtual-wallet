@@ -80,3 +80,8 @@ async def pending_transactions(token: str = Header(alias="Authorization")):
         return Response(status_code=401)
 
     return await transaction_service.get_pending_transactions(token)
+
+@transactions_router.post('/recurring')
+async def recurring_transactions():
+
+    return await transaction_service.execute_recurring_transactions()
