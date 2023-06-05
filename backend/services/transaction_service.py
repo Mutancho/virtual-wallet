@@ -19,11 +19,11 @@ async def create_transaction(transaction,token):
         transaction.category = 'Other'
     if not transaction.is_recurring:
         transaction.is_recurring = False
-    else:
-        await insert_query('''INSERT INTO recurring_transactions(`interval`,next_occurrence) VALUES (%s,%s)''',(transaction.interval,transaction.start_date))
 
     transaction_id = await insert_query('''INSERT INTO transactions(amount, is_recurring, recipient_id, category, wallet_id,confirmed) VALUES(%s,%s,%s,%s,%s,%s)''',
                        (transaction.amount,transaction.is_recurring,recipient,transaction.category,transaction.wallet,confirmed))
+    if transaction.is_recurring:
+        await insert_query('''INSERT INTO recurring_transactions(`interval`,next_occurrence,transaction_id) VALUES (%s,%s,%s)''',(transaction.interval,transaction.start_date,transaction_id))
     if transaction.amount <= 10000:
         recepient_email = await read_query('''SELECT email FROM users WHERE id = %s''',(recipient,))
 

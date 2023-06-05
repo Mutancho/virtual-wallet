@@ -90,6 +90,8 @@ const TransactionsPage = () => {
         wallet: location.state.walletId,
         is_recurring: isRecurring,
         recurring_transaction: isRecurring ? recurringTransaction : null,
+        interval: recurringTransaction.interval,
+        start_date: recurringTransaction.startDate
       };
   
       const response = await axios.post('/transactions', transactionData, {
