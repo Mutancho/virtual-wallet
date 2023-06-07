@@ -6,8 +6,9 @@ from utils.send_emails import send_email
 from schemas.referrals import Referral, ViewReferrals
 from services.user_service import is_admin
 from services.custom_errors.users import AdminAccessRequired
+from config.config import settings
 
-base_url = "http://localhost:3000"
+base_url = settings.base_url
 
 
 async def create_referral_link(referral: Referral, token: str):
@@ -29,7 +30,6 @@ async def create_referral_link(referral: Referral, token: str):
     else:
         get_last_referral_id = get_last_referral_id[0][0]
     new_link = f"{base_url}/register/{get_last_referral_id + 1}"
-    # todo update above link to deployed host link
     expiry_date = datetime.now() + timedelta(days=30)
 
     await insert_query(
@@ -58,10 +58,8 @@ async def delete(token: str):
 
 
 async def validate(referral_id: int):
-    is_referral_valid = await read_query("SELECT id FROM referrals WHERE id = %s", (referral_id,))
-    return is_referral_valid
+    return await read_query("SELECT id FROM referrals WHERE id = %s", (referral_id,))
 
 
 async def referral_used(referral_id: int):
     await update_query("UPDATE referrals SET is_used = 1 WHERE id = %s", (referral_id,))
-# todo add transaction for bonuses for the 2 users

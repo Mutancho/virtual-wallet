@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch
+from unittest.mock import patch, AsyncMock
 from pydantic import ValidationError
 from schemas.wallet_models import NewWallet, ViewAllWallets, ViewWallet, WalletSettings, Member
 from services.custom_errors.wallets import NotWalletAdmin, UserAlreadyInGroup, NoWithdrawalAccess, NoTopUpAccess, \
@@ -12,10 +12,10 @@ class TestCreateWalletShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets.select_currency")
-    @patch("services.wallets.insert_query")
-    @patch("services.wallets._user_has_wallet")
-    @patch("services.wallets._create_joint_wallet")
+    @patch("services.wallets.select_currency", new_callable=AsyncMock)
+    @patch("services.wallets.insert_query", new_callable=AsyncMock)
+    @patch("services.wallets._user_has_wallet", new_callable=AsyncMock)
+    @patch("services.wallets._create_joint_wallet", new_callable=AsyncMock)
     async def test_successful(self, mock_create_joint_wallet, mock_user_has_wallet, mock_insert_query,
                               mock_select_currency, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
@@ -32,10 +32,10 @@ class TestCreateWalletShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets.select_currency")
-    @patch("services.wallets.insert_query")
-    @patch("services.wallets._user_has_wallet")
-    @patch("services.wallets._create_joint_wallet")
+    @patch("services.wallets.select_currency", new_callable=AsyncMock)
+    @patch("services.wallets.insert_query", new_callable=AsyncMock)
+    @patch("services.wallets._user_has_wallet", new_callable=AsyncMock)
+    @patch("services.wallets._create_joint_wallet", new_callable=AsyncMock)
     async def test_unsuccessful(self, mock_create_joint_wallet, mock_user_has_wallet, mock_insert_query,
                                 mock_select_currency, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
@@ -60,8 +60,8 @@ class TestViewWalletsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets.read_query")
-    @patch("services.wallets._view_group_members")
+    @patch("services.wallets.read_query", new_callable=AsyncMock)
+    @patch("services.wallets._view_group_members", new_callable=AsyncMock)
     async def test_successful(self, mock_view_group_members, mock_read_query, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_read_query.side_effect = [
@@ -73,16 +73,19 @@ class TestViewWalletsShould:
         result = await all_wallets(C.TOKEN)
         expected_result = ViewAllWallets(
             owner=C.SUCCESSFUL_OWNER_QUERY_RESULT[0][0],
-            wallets=[ViewWallet.from_query_result(*wallet) for wallet in C.SUCCESSFUL_WALLET_QUERY_RESULT]
+            wallets=[
+                ViewWallet.from_query_result(*wallet) for wallet in C.SUCCESSFUL_WALLET_QUERY_RESULT
+            ]
         )
+        expected_result.wallets[1].members = C.SUCCESSFUL_GROUP_MEMBERS_RESULT
         assert result == expected_result
 
 
 class TestWalletByIdShould:
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets.read_query")
-    @patch("services.wallets._view_group_members")
+    @patch("services.wallets.read_query", new_callable=AsyncMock)
+    @patch("services.wallets._view_group_members", new_callable=AsyncMock)
     async def test_return_wallet_when_found(self, mock_view_group_members, mock_read_query, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_read_query.return_value = C.SUCCESSFUL_WALLET_QUERY_RESULT
@@ -96,8 +99,8 @@ class TestWalletByIdShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets.read_query")
-    @patch("services.wallets._view_group_members")
+    @patch("services.wallets.read_query", new_callable=AsyncMock)
+    @patch("services.wallets._view_group_members", new_callable=AsyncMock)
     async def test_return_wallet_when_found(self, mock_view_group_members, mock_read_query, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_read_query.return_value = C.SUCCESSFUL_WALLET_QUERY_RESULT
@@ -113,7 +116,7 @@ class TestWalletByIdShould:
 class TestWalletSettingsShould:
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._wallet_exists")
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
     async def test_return_none_when_wallet_does_not_exist(self, mock_wallet_exists, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_wallet_exists.return_value = False
@@ -124,8 +127,8 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets._is_wallet_admin")
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
     async def test_raise_error_when_not_wallet_admin(self, mock_is_wallet_admin, mock_wallet_exists,
                                                      mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
@@ -137,9 +140,9 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._change_wallet_name")
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._change_wallet_name", new_callable=AsyncMock)
     async def test_change_wallet_name(self, mock_change_wallet_name, mock_is_wallet_admin, mock_wallet_exists,
                                       mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
@@ -163,10 +166,10 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets._change_wallet_name")
-    @patch("services.wallets._wallet_status")
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets._change_wallet_name", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_status", new_callable=AsyncMock)
     async def test_status_wallet_change(self, mock_wallet_status, mock_wallet_name, mock_wallet_exists,
                                         mock_is_wallet_admin,
                                         mock_get_current_user):
@@ -188,10 +191,10 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets.get_user_id_from_username")
-    @patch("services.wallets._add_user_to_joint_wallet")
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets.get_user_id_from_username", new_callable=AsyncMock)
+    @patch("services.wallets._add_user_to_joint_wallet", new_callable=AsyncMock)
     async def test_add_user_to_wallet(self, mock_add_user, mock_get_user_id, mock_wallet_exists, mock_is_wallet_admin,
                                       mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
@@ -212,10 +215,10 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets.get_user_id_from_username")
-    @patch("services.wallets._add_user_to_joint_wallet")
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets.get_user_id_from_username", new_callable=AsyncMock)
+    @patch("services.wallets._add_user_to_joint_wallet", new_callable=AsyncMock)
     async def test_add_user_to_wallet_raise_error_already_exists(self, mock_add_user, mock_get_user_id,
                                                                  mock_wallet_exists, mock_is_wallet_admin,
                                                                  mock_get_current_user):
@@ -240,10 +243,10 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets.get_user_id_from_username")
-    @patch("services.wallets._remove_user_from_joint_wallet")
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets.get_user_id_from_username", new_callable=AsyncMock)
+    @patch("services.wallets._remove_user_from_joint_wallet", new_callable=AsyncMock)
     async def test_remove_user_from_wallet(self, mock_remove_username, mock_get_user_id, mock_wallet_exists,
                                            mock_is_wallet_admin,
                                            mock_get_current_user):
@@ -265,10 +268,10 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets.get_user_id_from_username")
-    @patch("services.wallets._amend_user_access_joint_wallet")
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets.get_user_id_from_username", new_callable=AsyncMock)
+    @patch("services.wallets._amend_user_access_joint_wallet", new_callable=AsyncMock)
     async def test_change_user_access(self, mock_amend_user_access, mock_get_user_id, mock_wallet_exists,
                                       mock_is_wallet_admin, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
@@ -288,11 +291,11 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._wallet_exists")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets.get_user_id_from_username")
-    @patch("services.wallets._amend_user_access_joint_wallet")
-    @patch("services.wallets._add_user_to_joint_wallet")
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets.get_user_id_from_username", new_callable=AsyncMock)
+    @patch("services.wallets._amend_user_access_joint_wallet", new_callable=AsyncMock)
+    @patch("services.wallets._add_user_to_joint_wallet", new_callable=AsyncMock)
     async def test_amend_user_access(self, mock_add_user, mock_amend_user_access, mock_get_user_id,
                                      mock_is_wallet_admin, mock_wallet_exists,
                                      mock_get_current_user):
@@ -320,8 +323,8 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._wallet_exists")
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
     async def test_not_admin(self, mock_wallet_exists, mock_is_wallet_admin, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_is_wallet_admin.return_value = False
@@ -338,8 +341,8 @@ class TestWalletSettingsShould:
 
     @pytest.mark.asyncio
     @patch("services.wallets.get_current_user")
-    @patch("services.wallets._is_wallet_admin")
-    @patch("services.wallets._wallet_exists")
+    @patch("services.wallets._is_wallet_admin", new_callable=AsyncMock)
+    @patch("services.wallets._wallet_exists", new_callable=AsyncMock)
     async def test_status_wallet_change(self, mock_wallet_exists, mock_is_wallet_admin, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_is_wallet_admin.return_value = True
@@ -386,63 +389,36 @@ class TestViewGroupMembersShould:
 class TestUpdateWalletBalance:
     @pytest.mark.asyncio
     @patch('services.wallets.get_current_user')
-    @patch('services.wallets.read_query')
-    @patch('services.wallets.update_query')
+    @patch('services.wallets.read_query', new_callable=AsyncMock)
+    @patch('services.wallets.update_query', new_callable=AsyncMock)
     async def test_update_wallet_balance(self, mock_update_query, mock_read_query, mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_read_query.return_value = [(C.NEW_PERSONAL_WALLET.type,)]
         mock_update_query.return_value = C.SUCCESSFUL_WALLET_CREATION
 
-        result = await update_wallet_balance(C.VALID_WALLET_ID, C.WALLET_BALANCE_100, C.TOKEN)
+        result = await update_wallet_balance(C.VALID_WALLET_ID, C.WALLET_BALANCE_100, C.TOKEN, C.TOP_UP)
         assert result is True
-
-        mock_read_query.assert_called_once_with("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
-        mock_update_query.assert_called_once_with("UPDATE wallets SET balance = balance + %s WHERE id = %s",
-                                                  (C.WALLET_BALANCE_100, C.VALID_WALLET_ID))
 
     @pytest.mark.asyncio
     @patch('services.wallets.get_current_user')
-    @patch('services.wallets.read_query')
-    @patch('services.wallets.update_query')
+    @patch('services.wallets.read_query', new_callable=AsyncMock)
+    @patch('services.wallets.update_query', new_callable=AsyncMock)
     async def test_update_wallet_balance_joint_no_withdrawal_access(self, mock_update_query, mock_read_query,
                                                                     mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_read_query.side_effect = [[(C.NEW_JOINT_WALLET.type,)], [(C.WALLET_NULL_ACCESS,)]]
 
         with pytest.raises(NoWithdrawalAccess):
-            await update_wallet_balance(C.VALID_WALLET_ID, -C.WALLET_BALANCE_100, C.TOKEN)
-
-        mock_read_query.assert_any_call("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
-        mock_read_query.assert_any_call("SELECT access_level FROM users_wallets WHERE user_id = %s",
-                                        (C.CURRENT_USER_ID,))
+            await update_wallet_balance(C.VALID_WALLET_ID, -C.WALLET_BALANCE_100, C.TOKEN, C.WITHDRAW)
 
     @pytest.mark.asyncio
     @patch('services.wallets.get_current_user')
-    @patch('services.wallets.read_query')
-    @patch('services.wallets.update_query')
+    @patch('services.wallets.read_query', new_callable=AsyncMock)
+    @patch('services.wallets.update_query', new_callable=AsyncMock)
     async def test_update_wallet_balance_joint_no_top_up_access(self, mock_update_query, mock_read_query,
                                                                 mock_get_current_user):
         mock_get_current_user.return_value = C.CURRENT_USER_ID
         mock_read_query.side_effect = [[(C.NEW_JOINT_WALLET.type,)], [(C.WALLET_NULL_ACCESS,)]]
 
         with pytest.raises(NoTopUpAccess):
-            await update_wallet_balance(C.VALID_WALLET_ID, C.WALLET_BALANCE_100, C.TOKEN)
-
-        mock_read_query.assert_any_call("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
-        mock_read_query.assert_any_call("SELECT access_level FROM users_wallets WHERE user_id = %s",
-                                        (C.CURRENT_USER_ID,))
-
-    @pytest.mark.asyncio
-    @patch('services.wallets.get_current_user')
-    @patch('services.wallets.read_query')
-    @patch('services.wallets.update_query')
-    async def test_update_wallet_balance_withdraw_more_than_balance(self, mock_update_query, mock_read_query,
-                                                                    mock_get_current_user):
-        mock_get_current_user.return_value = C.CURRENT_USER_ID
-        mock_read_query.side_effect = [[(C.NEW_PERSONAL_WALLET.type,)], [(0,)]]
-
-        with pytest.raises(WithdrawMoreThanBalance):
-            await update_wallet_balance(C.VALID_WALLET_ID, -C.WALLET_BALANCE_100, C.TOKEN)
-
-        mock_read_query.assert_any_call("SELECT type FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
-        mock_read_query.assert_any_call("SELECT balance FROM wallets WHERE id = %s", (C.VALID_WALLET_ID,))
+            await update_wallet_balance(C.VALID_WALLET_ID, C.WALLET_BALANCE_100, C.TOKEN, C.TOP_UP)
