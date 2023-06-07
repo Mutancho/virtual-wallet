@@ -198,18 +198,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `e-wallet`.`referals`
+-- Table `e-wallet`.`referrals`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `e-wallet`.`referals` (
+CREATE TABLE IF NOT EXISTS `e-wallet`.`referrals` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `expiary_date` DATE NOT NULL,
+  `expiry_date` DATE NOT NULL,
   `is_used` TINYINT(4) NOT NULL DEFAULT 0,
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_referals_users1_idx` (`user_id` ASC) ,
-  CONSTRAINT `fk_referals_users1`
+  INDEX `fk_referrals_users1_idx` (`user_id` ASC) ,
+  CONSTRAINT `fk_referrals_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `e-wallet`.`users` (`id`)
     ON DELETE CASCADE
