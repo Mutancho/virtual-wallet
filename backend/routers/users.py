@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, Header, Query, Request
+from fastapi import APIRouter, Response, Header, Query
 from fastapi.responses import HTMLResponse
 from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, BlockUnblock
 from services import user_service
@@ -19,7 +19,6 @@ async def create_user(user: RegisterUser, referral_id: int = Query(None)):
 
 @users_router.get("/confirmation/{id}")
 async def confirmation_email(id: int):
-
     return HTMLResponse(content=await user_service.confirm(id), status_code=200, media_type='text/html')
 
 
@@ -34,6 +33,7 @@ async def login(credentials: EmailLogin | UsernameLogin):
         return Response(status_code=401, content='Invalid password.')
 
     return await user_service.login(credentials)
+
 
 @users_router.post('/logout')
 async def logout(token: str = Header(alias="Authorization")):
@@ -58,7 +58,7 @@ async def get_all(username: str | None = None,
 
 
 @users_router.delete('/{id}', response_model=DisplayUser)
-async def delete(id: int|None, token: str = Header(alias="Authorization")):
+async def delete(id: int | None, token: str = Header(alias="Authorization")):
     if not await user_service.is_logged_in(token):
         return Response(status_code=401)
     if not await user_service.is_user_authorized_to_delete(token, id):

@@ -1,5 +1,4 @@
 from fastapi.middleware.cors import CORSMiddleware
-import asyncio
 from database.connection import init_db, get_connection
 from fastapi import FastAPI
 from routers.referrals import referrals_router
@@ -10,7 +9,7 @@ from routers.wallets import wallets_router
 from routers.contacts import contacts_router
 from routers.transactions import transactions_router
 import threading
-from services.tasks import run_task_scheduler,schedule_task
+from services.tasks import run_task_scheduler
 
 app = FastAPI()
 
