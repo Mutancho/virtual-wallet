@@ -83,7 +83,7 @@ async def update(id: int, user: UpdateUser, token: str = Header(alias="Authoriza
     return await user_service.update(id, user)
 
 
-@users_router.post('/{id}/blocks')  # maybe change method to patch/put
+@users_router.post('/{id}/blocks')
 async def block_unblock(id: int, command: BlockUnblock, token: str = Header(alias="Authorization")):
     if not await user_service.is_logged_in(token):
         return Response(status_code=401)

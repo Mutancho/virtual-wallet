@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     stripe_secret_key: str
     stripe_public_key: str
     base_url: str
+    chat_project_id: str
+    chat_private_key: str
 
     class Config:
         env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -25,23 +25,25 @@ import NewWalletPage from './components/AddWalletPage/AddWalletPage';
 import WalletSettingsPage from './components/WalletSettings/WalletSettingsPage';
 import PendingTransactionsPage from "./components/PendingTransactionsPage/PendingTransactionsPage"
 import ViewTransactionsPage from "./components/ViewTransactionsPage/ViewTransactionsPage";
+import ChatPage from "./components/ChatPage/ChatPage";
 
 const stripePromise = loadStripe('pk_test_51N8aWKBoGCspooGJW8aKWZUM6W8IOJTjhJcwwN3Mez7j9lWGxazkmyPxNM1jcCPNAeOko2GlrAyFYmyitl7c8Fnu00njr03PIO');
 
 const App = () => {
-  const shouldShowSidebar = !(
-    window.location.pathname === '/users/menu' ||
-    window.location.pathname === '/users/transactions' ||
-    window.location.pathname === '/users/payments/top-up' ||
-    window.location.pathname === '/contacts' 
-  );
+
+  const [user, setUser] = useState();
+  const handleAuth = (userData) => {
+    console.log('User Data:', userData); // Log the user data
+    setUser(userData);
+  };
+
 
   return (
     <Router>
       <div className="app">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage onAuth={handleAuth}/>} />
           <Route path="/register/:referralId?" element={<RegistrationPage />} />
           <Route path="/verify-email" element={<EmailVerificationPage />} />
           <Route path="/users/menu" element={<MenuPage />} />
@@ -79,6 +81,7 @@ const App = () => {
           <Route path='/pending/transactions' element={<PendingTransactionsPage />} />
           <Route path='/users/referrals' element={<ReferralPage />} />
           <Route path='/transactions' element={<ViewTransactionsPage />} />
+          <Route path='/chat' element={<ChatPage user={user}/>} />
         </Routes>
       </div>
     </Router>

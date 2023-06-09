@@ -3,7 +3,7 @@ import './LoginPage.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function LoginPage() {
+const LoginPage = (props) =>{
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -16,12 +16,16 @@ function LoginPage() {
       const response = await axios.post('/users/login', {
         username: username,
         password: password,
-      });
+      })
+      // .then((r) => props.onAuth({info: response.data.response_data,pass: password }));
       const token = response.data.access_token;
       const is_admin = response.data.is_admin;
+      props.onAuth({info: response.data.response_data, pass: password});
+      // console.log(props)
 
       localStorage.setItem('token', token);
       localStorage.setItem('is_admin',is_admin);
+      // localStorage.setItem('props',props);
 
       axios.defaults.headers.common['Authorization'] = `Bearer "${token}"`;
 

@@ -7,8 +7,11 @@ from utils.send_emails import send_email
 from services.external_apis.stripe_api import create_customer
 from config.config import settings
 from asyncmy.connection import Connection
+import requests
 
 base_url = settings.base_url
+chat_project_id = settings.chat_project_id
+chat_private_key = settings.chat_private_key
 
 
 @manage_db_transaction
@@ -32,6 +35,19 @@ async def create(conn: Connection, user: RegisterUser) -> RegisterUser:
     await send_email(user.email, confirmation_link, subject, message)
     stripe_id = await create_customer(user.email, str(generate_id), user.first_name, user.last_name)
     await update_query(conn, "UPDATE users SET stripe_id = %s WHERE id = %s", (stripe_id, generate_id))
+
+    response = requests.post('https://api.chatengine.io/users/',
+                             data={
+                                 "username": user.username,
+                                 "secret": user.password,
+                                 "email": user.email,
+                                 "first_name": user.first_name,
+                                 "last_name": user.last_name,
+                             },
+                             headers={"Private-Key": chat_private_key}
+                             )
+    # return response.json()
+
     return user
 
 
@@ -48,7 +64,15 @@ async def login(conn: Connection, credentials: EmailLogin | UsernameLogin):
     token = oauth2.create_access_token(id)
     await insert_query(conn, '''UPDATE users SET token = %s WHERE id = %s''', (token, id))
 
-    return dict(access_token=token, token_type="bearer", is_admin=bool(admin))
+    response = requests.get('https://api.chatengine.io/users/me/',
+                            headers={
+                                "Project-ID": chat_project_id,
+                                "User-Name": credentials.username,
+                                "User-Secret": credentials.password
+                            }
+                            )
+    # return response.json()
+    return dict(access_token=token, token_type="bearer", is_admin=bool(admin),response_data= response.json())
 
 
 @manage_db_transaction
