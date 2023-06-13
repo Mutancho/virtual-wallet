@@ -53,7 +53,7 @@ const TransactionsPage = () => {
   const handleSearch = async () => {
     setActiveTab('search');
     try {
-      const response = await axios.get('/users/search', {
+      const response = await axios.get('/users/searches', {
         params: searchParams,
         headers: {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,

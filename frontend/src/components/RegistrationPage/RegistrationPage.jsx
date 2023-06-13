@@ -73,7 +73,7 @@ function RegistrationPage() {
     });
 
     try {
-      const response = await axios.post('/users/register', data, {
+      const response = await axios.post('/users/registrations', data, {
         params: {
           referral_id: formData.referral_id,
         },
