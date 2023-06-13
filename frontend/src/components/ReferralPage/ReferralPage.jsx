@@ -81,7 +81,7 @@ const ReferralPage = () => {
               <div className="referral-email-container">
                 <span className="referral-email">{referral.email}</span>
               </div>
-              <button className="copy-button" onClick={() => copyToClipboard(referral.link)}>Copy</button>
+              <button className="copy-button" onClick={() => copyToClipboard(`http://127.0.0.1:3000/register/${referral.id}`)}>Copy</button>
             </div>
           ))}
         </div>

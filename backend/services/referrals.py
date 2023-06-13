@@ -20,13 +20,13 @@ async def create_referral_link(conn: Connection, referral: Referral, token: str)
     if any(num[0] == 1 for num in global_check_referral):
         raise UserHasBeenReferredAlready()
 
-    local_check_referral = await read_query(conn, "SELECT link FROM referals WHERE user_id =%s  and email = %s",
+    local_check_referral = await read_query(conn, "SELECT id FROM referrals WHERE user_id =%s  and email = %s",
                                             (user_id, referral.email,))
 
     if local_check_referral:
-        return local_check_referral[0][0]
+        return f"{base_url}/register/{local_check_referral[0][0]}"
 
-    get_last_referral_id = await read_query(conn, "SELECT id FROM referals ORDER BY id DESC LIMIT 1")
+    get_last_referral_id = await read_query(conn, "SELECT id FROM referrals ORDER BY id DESC LIMIT 1")
     if not get_last_referral_id:
         get_last_referral_id = 0
     else:
@@ -36,8 +36,8 @@ async def create_referral_link(conn: Connection, referral: Referral, token: str)
 
     await insert_query(
         conn,
-        "INSERT INTO referrals(email, expiry_date, user_id, link) VALUES (%s, %s, %s, %s)",
-        (referral.email, expiry_date, user_id, new_link))
+        "INSERT INTO referrals(email, expiry_date, user_id) VALUES (%s, %s, %s)",
+        (referral.email, expiry_date, user_id))
     await send_email(referral.email, subject="Virtual Wallet Referral Link",
                      message=f"Please use the referral link to register for a Virtual Wallet:\n\n{new_link} ")
     return new_link
@@ -48,7 +48,7 @@ async def view(conn: Connection, token: str):
     user_id = get_current_user(token)
     get_referrals = await read_query(
         conn,
-        "SELECT id, email, created_at, expiry_date, link, is_used FROM referals WHERE user_id = %s",
+        "SELECT id, email, created_at, expiry_date, is_used FROM referrals WHERE user_id = %s",
         (user_id,))
     found_referrals = [ViewReferrals.read_from_query(*referral) for referral in get_referrals]
     return found_referrals
@@ -59,15 +59,15 @@ async def delete(conn: Connection, token: str):
     admin = await is_admin(token)
     if not admin:
         raise AdminAccessRequired()
-    delete_referrals = await update_query(conn, "DELETE FROM referals WHERE expiry_date < CURDATE()")
+    delete_referrals = await update_query(conn, "DELETE FROM referrals WHERE expiry_date < CURDATE()")
     return delete_referrals
 
 
 @manage_db_transaction
 async def validate(conn: Connection, referral_id: int):
-    return await read_query(conn, "SELECT id FROM referals WHERE id = %s", (referral_id,))
+    return await read_query(conn, "SELECT id FROM referrals WHERE id = %s", (referral_id,))
 
 
 @manage_db_transaction
 async def referral_used(conn: Connection, referral_id: int):
-    await update_query(conn, "UPDATE referals SET is_used = 1 WHERE id = %s", (referral_id,))
+    await update_query(conn, "UPDATE referrals SET is_used = 1 WHERE id = %s", (referral_id,))
