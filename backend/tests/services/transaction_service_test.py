@@ -4,6 +4,8 @@ from utils import oauth2
 from asyncio import run
 from services import transaction_service
 from unittest.mock import Mock, patch,AsyncMock
+from asyncmy.connection import Connection
+
 AMOUNT = 1000.00
 CATEGORY = 'Rent'
 RECIPIENT = 'DeanWinchester'
@@ -21,10 +23,12 @@ SENDER = 'SamWinchester'
 LIMIT = 1
 OFFSET = 0
 DIRECTION = 'outgoing'
+CONNECTION = Mock(spec=Connection)
 
 class TransactionService_Should(unittest.TestCase):
+    @patch('services.transaction_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.transaction_service.insert_query', autospec=True)
-    def test_createTransaction(self, mock_insert_query):
+    def test_createTransaction(self, mock_insert_query, mock_manage_db_transaction):
         async def async_test():
             with patch('services.transaction_service.read_query') as mock_read_query:
                 transaction_service.get_user_id_from_username = AsyncMock(return_value= 1)
@@ -45,8 +49,9 @@ class TransactionService_Should(unittest.TestCase):
 
         run(async_test())
 
+    @patch('services.transaction_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.transaction_service.read_query', autospec=True)
-    def test_all(self, mock_read_query):
+    def test_all(self, mock_read_query, mock_manage_db_transaction):
         async def async_test():
             transaction = DisplayTransactionInfo(amount=AMOUNT,category=CATEGORY,
                                                  recipient=1,wallet=WALLET,is_recurring=IS_RECURRING,
@@ -59,8 +64,9 @@ class TransactionService_Should(unittest.TestCase):
 
         run(async_test())
 
+    @patch('services.transaction_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.transaction_service.read_query', autospec=True)
-    def test_getTransaction(self, mock_read_query):
+    def test_getTransaction(self, mock_read_query, mock_manage_db_transaction):
         async def async_test():
             transaction = DisplayTransactionInfo(amount=AMOUNT, category=CATEGORY,
                                                  recipient=1, wallet=WALLET, is_recurring=IS_RECURRING,
