@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `e-wallet`.`users_wallets` (
   CONSTRAINT `fk_users_has_wallets_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `e-wallet`.`users` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_users_has_wallets_wallets1`
     FOREIGN KEY (`wallet_id`)
