@@ -5,13 +5,16 @@ from utils import oauth2
 from asyncio import run
 from services import contact_service
 from unittest.mock import Mock, patch
+from asyncmy.connection import Connection
 
 USERNAME='DeanWinchester'
 TOKEN = 'Bearer "'+oauth2.create_access_token(1)+'"'
+CONNECTION = Mock(spec=Connection)
 
 class ContactService_Should(unittest.TestCase):
+    @patch('services.contact_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.contact_service.insert_query', autospec=True)
-    def test_addContact(self, mock_insert_query):
+    def test_addContact(self, mock_insert_query, mock_manage_db_transaction):
         async def async_test():
             with patch('services.contact_service.read_query') as mock_read_query:
                 mock_read_query.return_value = [(1,)]
@@ -21,8 +24,9 @@ class ContactService_Should(unittest.TestCase):
                 self.assertEqual(expected, result)
         run(async_test())
 
+    @patch('services.contact_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.contact_service.update_query', autospec=True)
-    def test_removeContact(self, mock_update_query):
+    def test_removeContact(self, mock_update_query, mock_manage_db_transaction):
         async def async_test():
             with patch('services.contact_service.read_query') as mock_read_query:
                 mock_read_query.return_value = [(1,)]
@@ -33,8 +37,9 @@ class ContactService_Should(unittest.TestCase):
 
         run(async_test())
 
+    @patch('services.contact_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.contact_service.read_query', autospec=True)
-    def test_getContacts(self, mock_read_query):
+    def test_getContacts(self, mock_read_query, mock_manage_db_transaction):
         async def async_test():
             user1 = Username(username=USERNAME,photo_selfie='Photo')
             mock_read_query.return_value = [(USERNAME,'Photo')]
@@ -46,8 +51,9 @@ class ContactService_Should(unittest.TestCase):
 
         run(async_test())
 
+    @patch('services.contact_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.contact_service.read_query', autospec=True)
-    def test_isContact_returns_True_whenThereIsContact(self, mock_read_query):
+    def test_isContact_returns_True_whenThereIsContact(self, mock_read_query, mock_manage_db_transaction):
         async def async_test():
             mock_read_query.return_value = [(1,2)]
 
@@ -57,8 +63,9 @@ class ContactService_Should(unittest.TestCase):
 
         run(async_test())
 
+    @patch('services.contact_service.manage_db_transaction', lambda x: CONNECTION).start()
     @patch('services.contact_service.read_query', autospec=True)
-    def test_isContact_returns_False_whenThereIsNoContact(self, mock_read_query):
+    def test_isContact_returns_False_whenThereIsNoContact(self, mock_read_query, mock_manage_db_transaction):
         async def async_test():
             mock_read_query.return_value = []
 

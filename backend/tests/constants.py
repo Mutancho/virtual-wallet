@@ -56,7 +56,7 @@ FIRST_QUERY_RESULT = [[0]]
 SECOND_QUERY_RESULT = []
 THIRD_QUERY_RESULT = [[1]]
 TEST_EMAIL = 'test@test.com'
-EXPECTED_LINK = f'{settings.base_url}/register/2'
+EXPECTED_LINK = f'{settings.base_url}/registrations/2'
 QUERY_RESULT_USER_ALREADY_REFERRED = [[1]]
 
 

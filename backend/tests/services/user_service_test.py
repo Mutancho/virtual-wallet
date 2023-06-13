@@ -27,14 +27,9 @@ CONNECTION = Mock(spec=Connection)
 
 
 
+
 class UserService_Should(unittest.TestCase):
-    def setUp(self):
 
-        def kill_patches():
-            patch.stopall()
-            imp.reload(user_service)
-
-        self.addCleanup(kill_patches)
 
     @patch('services.user_service.insert_query', autospec=True)
     @patch('services.user_service.update_query', autospec=True)

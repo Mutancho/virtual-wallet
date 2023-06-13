@@ -32,7 +32,7 @@ async def referral_check(referral_id: int):
     is_valid = await validate(referral_id)
     if not is_valid:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expired referral link!")
-    url = f"{base_url}/users/register?referral_id={referral_id}"
+    url = f"{base_url}/users/registrations?referral_id={referral_id}"
     response = RedirectResponse(url=url)
     return response
 

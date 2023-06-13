@@ -40,7 +40,7 @@ async def create_transaction(conn: Connection, transaction, token):
     else:
         user_email = await read_query(conn, '''SELECT email FROM users WHERE id = %s''', (user_id,))
         subject = "Outgoing transaction"
-        confirmation_link = f'{base_url}/transactions/confirmation/{transaction_id}'
+        confirmation_link = f'{base_url}/transactions/confirmations/{transaction_id}'
         msg = f"Please click the link below to confirm this transaction:\n\n{confirmation_link}\n\n"
         await send_emails.send_email(user_email[0][0], confirmation_link, subject, msg)
         info = "Transaction created successfully. Awaiting your confirmation."
@@ -145,7 +145,7 @@ async def confirm(conn: Connection, id):
 
 async def acceptence_email(transaction_id, recepient_email):
     subject = "Incoming transaction"
-    confirmation_link = f'{base_url}/transactions/accept_confirmation/{transaction_id}'
+    confirmation_link = f'{base_url}/transactions/accepts_confirmations/{transaction_id}'
     msg = f"Please go to the Pending Transactions section on the site to view and accept this transaction. \n\n If you don't want to accept you can ignore this email.\n\n    The Team at Virtual Wallet."
     await send_emails.send_email(recepient_email, confirmation_link, subject, msg)
 

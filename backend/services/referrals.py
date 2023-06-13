@@ -25,14 +25,14 @@ async def create_referral_link(conn: Connection, referral: Referral, token: str)
                                             (user_id, referral.email,))
 
     if local_check_referral:
-        return f"{base_url}/register/{local_check_referral[0][0]}"
+        return f"{base_url}/registrations/{local_check_referral[0][0]}"
 
     get_last_referral_id = await read_query(conn, "SELECT id FROM referrals ORDER BY id DESC LIMIT 1")
     if not get_last_referral_id:
         get_last_referral_id = 0
     else:
         get_last_referral_id = get_last_referral_id[0][0]
-    new_link = f"{base_url}/register/{get_last_referral_id + 1}"
+    new_link = f"{base_url}/registrations/{get_last_referral_id + 1}"
     expiry_date = datetime.now() + timedelta(days=30)
 
     await insert_query(

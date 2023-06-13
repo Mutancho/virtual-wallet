@@ -29,7 +29,7 @@ async def create(conn: Connection, user: RegisterUser) -> RegisterUser:
 
     user.id = generate_id
     subject = "Virtual Wallet Account Confirmation"
-    confirmation_link = f'{base_url}/users/confirmation/{generate_id}'
+    confirmation_link = f'{base_url}/users/confirmations/{generate_id}'
     message = f"Please click the link below to confirm your email address:\n\n{confirmation_link}"
 
     await send_email(user.email, confirmation_link, subject, message)
@@ -141,7 +141,7 @@ async def update(conn: Connection, id: int, user: UpdateUser):
     if user.email and user.email != old.email:
         email_verified = 0
         subject = "Virtual Wallet Account Confirmation"
-        confirmation_link = f'{base_url}/users/confirmation/{id}'
+        confirmation_link = f'{base_url}/users/confirmations/{id}'
         message = f"Please click the link below to confirm your email address:\n\n{confirmation_link}"
 
         await send_email(user.email, confirmation_link, subject, message)

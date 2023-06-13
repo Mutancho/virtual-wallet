@@ -54,6 +54,15 @@ function RegistrationPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const currentDate = new Date();
+    const selectedDate = new Date(formData.date_of_birth);
+    const age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+    if (age < 18) {
+      setErrorMessage('You must be at least 18 years old to register.');
+      return;
+    }
+
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value instanceof File) {
@@ -64,7 +73,7 @@ function RegistrationPage() {
     });
 
     try {
-      const response = await axios.post('/users/register', data, {
+      const response = await axios.post('/users/registrations', data, {
         params: {
           referral_id: formData.referral_id,
         },

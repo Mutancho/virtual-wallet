@@ -16,7 +16,7 @@ const ViewTransactionsPage = () => {
   const handleSearch = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/transactions/search', {
+      const response = await axios.get('/transactions/searches', {
         params: {
           from_date: fromDate,
           to_date: toDate,

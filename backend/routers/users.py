@@ -7,7 +7,7 @@ from services.referrals import referral_used
 users_router = APIRouter(prefix='/users', tags=['Users'])
 
 
-@users_router.post("/register")
+@users_router.post("/registrations")
 async def create_user(user: RegisterUser, referral_id: int = Query(None)):
     if await user_service.exists_by_username_email_phone(user):
         return Response(status_code=400,
@@ -17,7 +17,7 @@ async def create_user(user: RegisterUser, referral_id: int = Query(None)):
     return await user_service.create(user)
 
 
-@users_router.get("/confirmation/{id}")
+@users_router.get("/confirmations/{id}")
 async def confirmation_email(id: int):
     return HTMLResponse(content=await user_service.confirm(id), status_code=200, media_type='text/html')
 
@@ -95,7 +95,7 @@ async def block_unblock(id: int, command: BlockUnblock, token: str = Header(alia
     return await user_service.block_unblock(id, command)
 
 
-@users_router.get('/search')
+@users_router.get('/searches')
 async def get_user(username: str | None = None,
                    phone: str | None = None,
                    email: str | None = None,

@@ -43,7 +43,13 @@ class RegisterUser(BaseModel):
         try:
             date_obj = datetime.strptime(value, '%Y-%m-%d').date()
         except ValueError:
-            raise ValueError('Invalid date format. Expected format: day.month.year')
+            raise ValueError('Invalid date format. Expected format: YYYY-MM-DD')
+
+        today = date.today()
+        age = today.year - date_obj.year - ((today.month, today.day) < (date_obj.month, date_obj.day))
+        if age < 18:
+            raise ValueError('You must be 18 years or older.')
+
         return date_obj
 
 class UsernameLogin(BaseModel):
