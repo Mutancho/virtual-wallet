@@ -27,6 +27,8 @@ const TransactionsPage = () => {
   const [selectedRecipient, setSelectedRecipient] = useState('');
   const [transactionAmount, setTransactionAmount] = useState('');
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringTransaction, setRecurringTransaction] = useState({
@@ -72,6 +74,9 @@ const TransactionsPage = () => {
   };
 
   const handleSendMoney = async () => {
+
+    setIsLoading(true);
+
     if (transactionAmount > 10000) {
       const confirmation = window.confirm(
         "Your transaction amount exceeds $10,000. For your security, we have sent a confirmation link to your registered email address. Please check your email and click the link to authorize this transaction."
@@ -79,8 +84,6 @@ const TransactionsPage = () => {
       if (!confirmation) {
         return;
       }
-      // Maybe you need to handle email confirmation here.
-      // After the user confirms, you could let the transaction go through.
     }
     try {
       const transactionData = {
@@ -100,9 +103,12 @@ const TransactionsPage = () => {
         },
       });
       alert('Money sent successfully')
+      window.location.reload();
       console.log(response.data);
     } catch (error) {
       console.error(error);
+    }finally {
+      setIsLoading(false);
     }
   };
   
@@ -263,7 +269,7 @@ const TransactionsPage = () => {
         <div className="send-money-confirmation">
           <div className="confirmation-text">Are you sure you want to finish this transaction?</div>
           <div className="confirmation-buttons">
-            <button className="confirmation-button" onClick={handleSendMoney}>Yes</button>
+            <button className="confirmation-button" onClick={handleSendMoney} disabled={isLoading}>{isLoading ? 'Sending...' : 'Yes'}</button>
             <button className="confirmation-button" onClick={() => setShowSendMoneyConfirmation(false)}>No</button>
           </div>
       </div>
