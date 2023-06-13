@@ -9,7 +9,8 @@ from services.custom_errors.users import AdminAccessRequired
 from config.config import settings
 from asyncmy.connection import Connection
 
-base_url = settings.base_url
+# base_url = settings.base_url
+base_url = "http://127.0.0.1:3000"
 
 
 @manage_db_transaction
