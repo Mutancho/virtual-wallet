@@ -112,5 +112,5 @@ Follow the steps below to use the Virtual Wallet application:
 
 Note: It is important to handle sensitive information, such as real credit card details, carefully during testing. Make sure to use test or dummy data for transactions and avoid using real financial information.
 
-For detailed API documentation, please refer to the [Swagger documentation](<http://127.0.0.1:8000/docs>).
+For detailed API documentation, please refer to the [Swagger documentation](<http://127.0.0.1:8000/docs>) after the server is initialised.
 
