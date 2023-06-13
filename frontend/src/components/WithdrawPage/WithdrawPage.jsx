@@ -4,7 +4,7 @@ import './WithdrawPage.css';
 import Sidebar from "../SideBar/SideBar";
 
 const fetchPaymentMethods = async () => {
-  const response = await fetch('/users/cards/payment-methods/list', {
+  const response = await fetch('/users/cards/payment-methods', {
     headers: {
       'Authorization': `Bearer "${localStorage.getItem('token')}"`,
     },
@@ -45,7 +45,7 @@ const WithdrawPage = () => {
     }
 
     try {
-      const response = await fetch('/users/transfers/create-payout', {
+      const response = await fetch('/users/transfers/payouts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

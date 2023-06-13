@@ -4,7 +4,7 @@ import './ManageCards.css';
 import Sidebar from '../SideBar/SideBar';
 
 const fetchPaymentMethods = async () => {
-  const response = await fetch('/users/cards/payment-methods/list', {
+  const response = await fetch('/users/cards/payment-methods', {
     headers: {
       'Authorization': `Bearer "${localStorage.getItem('token')}"`,
     },
@@ -56,7 +56,7 @@ const ManageCards = () => {
       return;
     }
 
-    const response = await fetch('/users/cards/payment-methods/attach', {
+    const response = await fetch('/users/cards/payment-methods/attachments', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer "${localStorage.getItem('token')}"`,
@@ -73,7 +73,7 @@ const ManageCards = () => {
   };
 
   const detachCard = async (cardId) => {
-    const response = await fetch('/users/cards/payment-methods/detach', {
+    const response = await fetch('/users/cards/payment-methods/detachments', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer "${localStorage.getItem('token')}"`,

@@ -5,7 +5,7 @@ import './TopupPage.css';
 import Sidebar from '../SideBar/SideBar';
 
 const fetchPaymentMethods = async () => {
-  const response = await fetch('/users/cards/payment-methods/list', {
+  const response = await fetch('/users/cards/payment-methods', {
     headers: {
       'Authorization': `Bearer "${localStorage.getItem('token')}"`,
     },
@@ -75,7 +75,7 @@ const TopupPage = () => {
         paymentMethodId = paymentMethod.id;
       }
 
-      const response = await fetch('/users/transfers/payment-intent', {
+      const response = await fetch('/users/transfers/deposits', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer "${localStorage.getItem('token')}"`,

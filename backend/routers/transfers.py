@@ -8,7 +8,7 @@ from services.transfers import update_transfers_db
 transfers_router = APIRouter(prefix="/users/transfers", tags=["Transfers"])
 
 
-@transfers_router.post("/payment-intent")
+@transfers_router.post("/deposits")
 async def create_payment_intent_route(amount: str = Body(...), wallet_id: int = Body(...),
                                       currency: str = Body(...), payment_method_id: str = Body(...),
                                       token: str = Header(alias="Authorization")):
@@ -22,7 +22,7 @@ async def create_payment_intent_route(amount: str = Body(...), wallet_id: int = 
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={"message": "Payment unsuccessful"})
 
 
-@transfers_router.post("/create-payout")
+@transfers_router.post("/payouts")
 async def create_payout_route(amount: str = Body(...), wallet_id: int = Body(...),
                               token: str = Header(alias="Authorization")):
     try:

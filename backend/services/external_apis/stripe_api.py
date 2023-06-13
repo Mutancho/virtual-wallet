@@ -19,7 +19,7 @@ async def create_customer(email: str, user_id: str, first_name: str, last_name: 
 
 @manage_db_transaction
 async def attach_payment_method(conn: Connection, payment_method_id: str, token: str) -> PaymentMethod:
-    customer_id = get_stripe_id(conn, token)
+    customer_id = await get_stripe_id(conn, token)
     return PaymentMethod.attach(payment_method_id, customer=customer_id)
 
 
@@ -29,7 +29,7 @@ async def detach_payment_method(payment_method_id: str) -> PaymentMethod:
 
 @manage_db_transaction
 async def list_payment_methods(conn: Connection, token: str) -> list[PaymentMethod]:
-    customer_id = get_stripe_id(conn, token)
+    customer_id = await get_stripe_id(conn, token)
     return PaymentMethod.list(customer=customer_id, type='card')
 
 
