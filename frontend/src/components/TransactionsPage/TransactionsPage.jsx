@@ -30,8 +30,8 @@ const TransactionsPage = () => {
 
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringTransaction, setRecurringTransaction] = useState({
-    startDate: '',
-    interval: '',
+    startDate: undefined,
+    interval: undefined,
   });
 
   const fetchContacts = async () => {
