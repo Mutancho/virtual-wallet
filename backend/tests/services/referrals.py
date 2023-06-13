@@ -1,10 +1,13 @@
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, Mock
 from schemas.referrals import Referral
 from services.custom_errors.referrals import UserHasBeenReferredAlready
 from services.custom_errors.users import AdminAccessRequired
 from services.referrals import create_referral_link, view, delete
 import tests.constants as C
+from asyncmy.connection import Connection
+
+CONNECTION = Mock(spec=Connection)
 
 
 class TestCreateShould:
@@ -13,7 +16,9 @@ class TestCreateShould:
     @patch('services.referrals.get_current_user')
     @patch('services.referrals.insert_query', new_callable=AsyncMock)
     @patch('services.referrals.send_email', new_callable=AsyncMock)
-    async def test_successful(self, mock_send_email, mock_insert_query, mock_get_current_user, mock_read_query):
+    @patch('services.wallets.manage_db_transaction', lambda x: CONNECTION).start()
+    async def test_successful(self, mock_manage_db_transaction, mock_send_email, mock_insert_query,
+                              mock_get_current_user, mock_read_query):
         mock_read_query.side_effect = [
             C.FIRST_QUERY_RESULT,
             C.SECOND_QUERY_RESULT,
@@ -22,6 +27,7 @@ class TestCreateShould:
         mock_get_current_user.return_value = C.USER_ID
         mock_insert_query.return_value = None
         mock_send_email.return_value = None
+        mock_manage_db_transaction.return_value = CONNECTION
 
         referral = Referral(email=C.TEST_EMAIL)
 
@@ -36,9 +42,11 @@ class TestCreateShould:
     @pytest.mark.asyncio
     @patch('services.referrals.read_query', new_callable=AsyncMock)
     @patch('services.referrals.get_current_user')
-    async def test_unsuccessful(self, mock_get_current_user, mock_read_query):
+    @patch('services.wallets.manage_db_transaction', lambda x: CONNECTION).start()
+    async def test_unsuccessful(self, mock_manage_db_transaction, mock_get_current_user, mock_read_query):
         mock_read_query.return_value = C.QUERY_RESULT_USER_ALREADY_REFERRED
         mock_get_current_user.return_value = C.USER_ID
+        mock_manage_db_transaction.return_value = CONNECTION
 
         referral = Referral(email=C.TEST_EMAIL)
 
@@ -50,9 +58,11 @@ class TestViewShould:
     @pytest.mark.asyncio
     @patch('services.referrals.get_current_user')
     @patch('services.referrals.read_query', new_callable=AsyncMock)
-    async def test_view_referrals(self, mock_read_query, mock_get_current_user):
+    @patch('services.wallets.manage_db_transaction', lambda x: CONNECTION).start()
+    async def test_view_referrals(self, mock_manage_db_transaction, mock_read_query, mock_get_current_user):
         mock_get_current_user.return_value = C.USER_ID
         mock_read_query.return_value = C.QUERY_RESULT_REFERRALS
+        mock_manage_db_transaction.return_value = CONNECTION
 
         token = C.TOKEN
         result = await view(token)
@@ -64,9 +74,11 @@ class TestDeleteShould:
     @pytest.mark.asyncio
     @patch('services.referrals.is_admin', new_callable=AsyncMock)
     @patch('services.referrals.update_query', new_callable=AsyncMock)
-    async def test_delete_referrals(self, mock_update_query, mock_is_admin):
+    @patch('services.wallets.manage_db_transaction', lambda x: CONNECTION).start()
+    async def test_delete_referrals(self, mock_manage_db_transaction, mock_update_query, mock_is_admin):
         mock_is_admin.return_value = True
         mock_update_query.return_value = C.DELETE_RESULT_COUNT
+        mock_manage_db_transaction.return_value = CONNECTION
 
         token = C.TOKEN
         result = await delete(token)
@@ -75,8 +87,10 @@ class TestDeleteShould:
 
     @pytest.mark.asyncio
     @patch('services.referrals.is_admin', new_callable=AsyncMock)
-    async def test_delete_referrals_admin_access_required(self, mock_is_admin):
+    @patch('services.wallets.manage_db_transaction', lambda x: CONNECTION).start()
+    async def test_delete_referrals_admin_access_required(self, mock_manage_db_transaction, mock_is_admin):
         mock_is_admin.return_value = False
+        mock_manage_db_transaction.return_value = CONNECTION
 
         token = C.TOKEN
         with pytest.raises(AdminAccessRequired):
