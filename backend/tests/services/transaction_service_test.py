@@ -23,7 +23,9 @@ SENDER = 'SamWinchester'
 LIMIT = 1
 OFFSET = 0
 DIRECTION = 'outgoing'
+CURRENCY = 'BGN'
 CONNECTION = Mock(spec=Connection)
+
 
 class TransactionService_Should(unittest.TestCase):
     @patch('services.transaction_service.manage_db_transaction', lambda x: CONNECTION).start()
@@ -55,7 +57,7 @@ class TransactionService_Should(unittest.TestCase):
         async def async_test():
             transaction = DisplayTransactionInfo(amount=AMOUNT,category=CATEGORY,
                                                  recipient=1,wallet=WALLET,is_recurring=IS_RECURRING,
-                                                 sent_at=SENT_AT,accepted=True,received_at=RECEIVED_AT)
+                                                 sent_at=SENT_AT,accepted=True,received_at=RECEIVED_AT,currency=CURRENCY)
             mock_read_query.return_value = [(AMOUNT,CATEGORY,1,WALLET,IS_RECURRING,SENT_AT,True,RECEIVED_AT)]
             result = await transaction_service.all(FROM_DATE,TO_DATE,SENDER,RECIPIENT,LIMIT,OFFSET)
 
@@ -70,7 +72,7 @@ class TransactionService_Should(unittest.TestCase):
         async def async_test():
             transaction = DisplayTransactionInfo(amount=AMOUNT, category=CATEGORY,
                                                  recipient=1, wallet=WALLET, is_recurring=IS_RECURRING,
-                                                 sent_at=SENT_AT, accepted=True, received_at=RECEIVED_AT)
+                                                 sent_at=SENT_AT, accepted=True, received_at=RECEIVED_AT,currency=CURRENCY)
             mock_read_query.return_value = [(AMOUNT, CATEGORY, 1, WALLET, IS_RECURRING, SENT_AT, True, RECEIVED_AT)]
             result = await transaction_service.get_transactions(FROM_DATE, TO_DATE, RECIPIENT, DIRECTION,LIMIT, OFFSET,TOKEN)
 

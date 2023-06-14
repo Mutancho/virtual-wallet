@@ -39,10 +39,11 @@ class DisplayTransactionInfo(BaseModel):
     sent_at: date
     accepted:bool
     received_at: date | None
+    currency: str
 
     @classmethod
-    def from_query_result(cls,amount,category,recipient,wallet,is_recurring,sent_at,accepted,received_at):
-        return cls(amount=amount,category=category,recipient=recipient,wallet=wallet,is_recurring=bool(is_recurring),sent_at=sent_at,accepted=bool(accepted),received_at=received_at)
+    def from_query_result(cls,amount,category,recipient,wallet,is_recurring,sent_at,accepted,received_at,currency):
+        return cls(amount=amount,category=category,recipient=recipient,wallet=wallet,is_recurring=bool(is_recurring),sent_at=sent_at,accepted=bool(accepted),received_at=received_at,currency=currency)
 
 
 class PendingTransaction(BaseModel):
