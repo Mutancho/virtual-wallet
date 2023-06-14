@@ -1,5 +1,5 @@
 from fastapi.middleware.cors import CORSMiddleware
-from database.connection import init_db, get_connection
+from database.connection import init_db
 from fastapi import FastAPI
 from routers.referrals import referrals_router
 from routers.users import users_router
@@ -10,6 +10,7 @@ from routers.contacts import contacts_router
 from routers.transactions import transactions_router
 import threading
 from services.tasks import run_task_scheduler
+from database.connection import Database
 
 app = FastAPI()
 
@@ -23,8 +24,9 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    pool = await get_connection()
-    pool.close()
+    if Database.pool is not None:
+        Database.pool.close()
+        await Database.pool.wait_closed()
 
 
 origins = [
