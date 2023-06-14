@@ -1,16 +1,4 @@
-INSERT IGNORE INTO `e-wallet`.`currencies` (`id`, `currency`)
-VALUES
-  (1, 'USD'),
-  (2, 'EUR'),
-  (3, 'GBP'),
-  (4, 'JPY'),
-  (5, 'CAD'),
-  (6, 'AUD'),
-  (7, 'TRY'),
-  (8, 'BGN');
-
-ALTER TABLE `e-wallet`.`currencies`
-MODIFY COLUMN `currency` CHAR(8);
+# If you decide to use this test data you need to ensure that the registration of the users is manually done in stripe and chatengine and update the stripe ids stripe provides into the database
 
 INSERT INTO `e-wallet`.users (username, password, is_admin, is_blocked, two_factor_method, anti_money_laundry_checked, email_verified, stripe_id, title, first_name, last_name, gender, dob, address, email, phone_number, identity_document) VALUES
 ('SamWinchester', 'Sammy10?', 1, 0, 'email', 1, 1, 'stripe_123', 'Mr', 'Sam', 'Winchester', 'male', '1983-05-02', 'Lawrence, Kansas', 'sammy@example.com', '0888123456', 'photo'),
