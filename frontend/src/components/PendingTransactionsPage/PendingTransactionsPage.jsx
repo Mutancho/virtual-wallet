@@ -98,7 +98,7 @@ const PendingTransactionsPage = () => {
       const token = localStorage.getItem('token');
       const selectedWalletId = selectedWallets[transactionId];
       await axios.post(
-        `/transactions/accept_confirmation/${transactionId}`,
+        `/transactions/accepts_confirmations/${transactionId}`,
         { wallet: selectedWalletId },
         {
           headers: {
