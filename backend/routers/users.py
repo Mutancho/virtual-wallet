@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Response, Header, Query
 from fastapi.responses import HTMLResponse
-from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, BlockUnblock
+from schemas.user_models import RegisterUser, EmailLogin, UsernameLogin, DisplayUser, UpdateUser, BlockUnblock, \
+    AfterUpdateUser
 from services import user_service
 from services.referrals import referral_used
 
@@ -83,16 +84,16 @@ async def update(id: int, user: UpdateUser, token: str = Header(alias="Authoriza
     return await user_service.update(id, user)
 
 
-@users_router.post('/{id}/blocks')
-async def block_unblock(id: int, command: BlockUnblock, token: str = Header(alias="Authorization")):
+@users_router.post('/{username}/blocks')
+async def block_unblock(username: str, command: BlockUnblock, token: str = Header(alias="Authorization")):
     if not await user_service.is_logged_in(token):
         return Response(status_code=401)
     if not await user_service.is_admin(token):
         return Response(status_code=403)
-    if not await user_service.exists_by_id(id):
+    if not await user_service.exists_by_username_email_phone(AfterUpdateUser(username=username)):
         return Response(status_code=404)
 
-    return await user_service.block_unblock(id, command)
+    return await user_service.block_unblock(username, command)
 
 
 @users_router.get('/searches')

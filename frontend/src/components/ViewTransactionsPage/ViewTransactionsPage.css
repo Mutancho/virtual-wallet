@@ -74,12 +74,12 @@ li:last-child {
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 5px;
-  
+
 }
 
 .transaction-box > div {
   margin-bottom: 5px;
-  
+
 }
 
 .transaction-box > div:last-child {
@@ -107,7 +107,7 @@ li:last-child {
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 #fromDate,

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from "../SideBar/SideBar";
+import './BlockUsersPage.css';
 
 const BlockUsersPage = () => {
-  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState('');
   const [action, setAction] = useState('');
 
   const handleBlockUnblock = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`/users/${userId}/blocks`, { action: action }, {
+      const response = await axios.post(`/users/${username}/blocks`, { action: action }, {
         headers: {
           Authorization: `Bearer "${token}"`,
         },
@@ -26,13 +27,12 @@ const BlockUsersPage = () => {
         <Sidebar />
       <h1>Block Users</h1>
       <div className="form-group">
-        <label htmlFor="userId">User ID</label>
+        <label htmlFor="username">Username</label>
         <input
-          type="number"
-          id="userId"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          min={0}
+          type="text"
+          id="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
       </div>
       <div className="form-group">
