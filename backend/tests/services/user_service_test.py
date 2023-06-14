@@ -193,7 +193,7 @@ class UserService_Should(unittest.TestCase):
     def test_block_unblock_Blocks(self,manage_db_transaction, mock_update_query):
         async def async_test():
             command = BlockUnblock(action='block')
-            result = await user_service.block_unblock(1,command)
+            result = await user_service.block_unblock(USERNAME,command)
 
             self.assertEqual('User was blocked',result)
 

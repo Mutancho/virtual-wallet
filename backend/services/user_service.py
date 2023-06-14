@@ -162,14 +162,15 @@ async def update(conn: Connection, id: int, user: UpdateUser):
 
 
 @manage_db_transaction
-async def block_unblock(conn: Connection, id: int, command: BlockUnblock):
+async def block_unblock(conn: Connection, username: str, command: BlockUnblock):
+
     if command.action == 'block':
         is_blocked = 1
         msg = 'User was blocked'
     else:
         is_blocked = 0
         msg = 'User was unblocked'
-    await update_query(conn, '''UPDATE users SET is_blocked = %s WHERE id = %s''', (is_blocked, id))
+    await update_query(conn, '''UPDATE users SET is_blocked = %s WHERE username = %s ''', (is_blocked, username))
 
     return msg
 
