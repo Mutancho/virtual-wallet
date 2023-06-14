@@ -35,12 +35,16 @@ async def create_referral_link(conn: Connection, referral: Referral, token: str)
     new_link = f"{base_url}/register/{get_last_referral_id + 1}"
     expiry_date = datetime.now() + timedelta(days=30)
 
+    get_username = await read_query(conn, "SELECT username FROM users WHERE id = %s",
+                                    (user_id,))
+
     await insert_query(
         conn,
         "INSERT INTO referrals(email, expiry_date, user_id) VALUES (%s, %s, %s)",
         (referral.email, expiry_date, user_id))
     await send_email(referral.email, subject="Virtual Wallet Referral Link",
-                     message=f"Please use the referral link to register for a Virtual Wallet:\n\n{new_link} ")
+                     message=f"{get_username[0][0]} has invited you to register at Virtual Wallet, "
+                             f"please use the referral link:\n\n{new_link} ")
     return new_link
 
 
