@@ -33,8 +33,8 @@ function HomePage() {
       <section>
         <div className="homepage">
           <Navbar />
-          <h1>Welcome to Virtual Wallet!</h1>
-          <p>Your one-stop solution for managing your virtual currency.</p>
+          <h1 id="hide-header">Welcome to Virtual Wallet!</h1>
+
           <div className="homepage-buttons"></div>
         </div>
       </section>
