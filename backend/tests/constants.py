@@ -1,5 +1,4 @@
 from datetime import datetime, date
-
 from schemas.referrals import ViewReferrals
 from schemas.wallet_models import NewWallet, WalletSettings
 from config.config import settings

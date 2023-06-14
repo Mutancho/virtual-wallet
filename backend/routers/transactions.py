@@ -32,7 +32,10 @@ async def accept(id: int, wallet: ChooseWallet):
 @transactions_router.get("/confirmations/{id}")
 async def confirmation_email(id: int):
     if not await transaction_service.get_transaction_sent_at(id) + timedelta(1) >= datetime.now():
-        html = '''<!DOCTYPE html><html><head><title>Transaction Confirmation Time Expired</title><style>body {font-family: Arial, sans-serif;text-align: center;margin-top: 100px;}h1 {color: #336699;}p {color: #666666;}</style></head><body><h1>Transaction Confirmation Time Expired</h1><p>We're sorry, but the confirmation time for this transaction has expired. Please contact our support team for further assistance.</p></body></html>'''
+        html = '''<!DOCTYPE html><html><head><title>Transaction Confirmation Time Expired</title><style>body 
+        {font-family: Arial, sans-serif;text-align: center;margin-top: 100px;}h1 {color: #336699;}p {color: #666666;}
+        </style></head><body><h1>Transaction Confirmation Time Expired</h1><p>We're sorry, but the confirmation time 
+        for this transaction has expired. Please contact our support team for further assistance.</p></body></html>'''
         return HTMLResponse(content=html, status_code=400, media_type='text/html')
 
     return HTMLResponse(content=await transaction_service.confirm(id), status_code=200, media_type='text/html')

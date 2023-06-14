@@ -6,10 +6,8 @@ from utils.send_emails import send_email
 from schemas.referrals import Referral, ViewReferrals
 from services.user_service import is_admin
 from services.custom_errors.users import AdminAccessRequired
-from config.config import settings
 from asyncmy.connection import Connection
 
-# base_url = settings.base_url
 base_url = "http://127.0.0.1:3000"
 
 
