@@ -257,6 +257,18 @@ async def get_transaction_sent_at(conn: Connection, transaction_id: int):
 
     return sent_at[0][0]
 
+@manage_db_transaction
+async def stop_recurring_transactions(conn: Connection,id: int):
+    await update_query(conn,'''UPDATE transactions SET is_recurring = 0 WHERE id = %s ''',(id,))
+
+@manage_db_transaction
+async def is_transaction_creator(conn: Connection,transaction_id,token):
+    user_id = oauth2.get_current_user(token)
+    data = await read_query(conn, '''SELECT wallet_id FROM transactions WHERE id = %s AND wallet_id IN 
+    (SELECT id FROM wallets WHERE creator_id = %s )''', (transaction_id,user_id))
+
+    return len(data)>0
+
 
 def sort(transactions: list[DisplayTransactionInfo], *, attribute='sent_at', reverse=False):
     if attribute == 'amount':

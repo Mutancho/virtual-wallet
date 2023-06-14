@@ -92,3 +92,12 @@ async def pending_transactions(token: str = Header(alias="Authorization")):
 @transactions_router.post('/recurring')
 async def recurring_transactions():
     return await transaction_service.execute_recurring_transactions()
+
+@transactions_router.post('/stops_recurring/{id}')
+async def stop_recurring_transactions(id: int,token: str = Header(alias="Authorization")):
+    if not await user_service.is_logged_in(token):
+        return Response(status_code=401)
+    if not await transaction_service.is_transaction_creator(id,token):
+        return Response(status_code=401)
+
+    return await transaction_service.stop_recurring_transactions(id)
