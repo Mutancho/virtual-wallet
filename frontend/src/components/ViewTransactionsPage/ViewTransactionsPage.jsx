@@ -127,7 +127,7 @@ const ViewTransactionsPage = () => {
           {transactions.map((transaction) => (
             <li key={transaction.id}>
               <div>
-                <strong>Amount:</strong> {transaction.amount}
+                <strong>Amount:</strong> {transaction.amount} {transaction.currency}
               </div>
               <div>
                 <strong>Category:</strong> {transaction.category}

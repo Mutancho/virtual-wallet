@@ -152,8 +152,8 @@ async def acceptence_email(transaction_id, recepient_email):
 
 @manage_db_transaction
 async def all(conn: Connection, from_date, to_date, sender, recipient, limit, offset):
-    sql = '''SELECT t.amount,t.category,u.username,u2.username,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at 
-    FROM transactions as t join users as u on u.id = t.recipient_id join wallets as w on w.id = t.wallet_id join users as u2 on u2.id = w.creator_id'''
+    sql = '''SELECT t.amount,t.category,u.username,u2.username,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at, c.currency  
+    FROM transactions as t join users as u on u.id = t.recipient_id join wallets as w on w.id = t.wallet_id join users as u2 on u2.id = w.creator_id join currencies c on w.currency_id = c.id '''
 
     where_clauses = []
     if from_date:
@@ -181,8 +181,8 @@ async def all(conn: Connection, from_date, to_date, sender, recipient, limit, of
 async def get_transactions(conn: Connection, from_date: date, to_date, user, direction, limit, offset, token):
     user_id = oauth2.get_current_user(token)
 
-    sql = f'''SELECT t.amount,t.category,u.username,u2.username,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at 
-    FROM transactions as t JOIN users as u on u.id = t.recipient_id join wallets as w on w.id = t.wallet_id join users as u2 on u2.id = w.creator_id'''
+    sql = f'''SELECT t.amount,t.category,u.username,u2.username,t.is_recurring,t.sent_at,t.accepted_by_recipient,t.received_at, c.currency  
+    FROM transactions as t JOIN users as u on u.id = t.recipient_id join wallets as w on w.id = t.wallet_id join users as u2 on u2.id = w.creator_id join currencies c on w.currency_id = c.id'''
 
     where_clauses = []
     if user:
