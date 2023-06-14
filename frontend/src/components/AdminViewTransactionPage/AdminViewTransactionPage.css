@@ -3,6 +3,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  margin-bottom: 10px;
 }
 
 .form-group {
@@ -52,8 +53,6 @@
   border-radius: 4px;
 }
 
-
-
 ul {
   list-style-type: none;
   padding: 0;
@@ -68,7 +67,6 @@ li {
 li:last-child {
   border-bottom: none;
 }
-
 
 p {
   margin: 0;
@@ -106,4 +104,51 @@ p {
 
 .received-at {
   color: #6c757d;
+}
+
+.transaction-box {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.transaction-box > div {
+  margin-bottom: 10px;
+}
+
+.transaction-box > div:last-child {
+  margin-bottom: 0;
+}
+
+.transaction-box strong {
+  font-weight: 700;
+}
+
+.input-large {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+  width: 100%;
+}
+
+#fromDate,
+#toDate,
+#sender,
+#recipient {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from "../SideBar/SideBar";
+import './AdminViewTransactionPage.css'
+
 
 const AdminViewTransactionPage = () => {
   const [fromDate, setFromDate] = useState(undefined);
@@ -43,45 +45,42 @@ const AdminViewTransactionPage = () => {
         <Sidebar/>
       <h1>Admin View Transactions</h1>
       <div className="form-group">
-        <label htmlFor="fromDate">From Date</label>
-        <input
-          type="date"
-          id="fromDate"
-          value={fromDate}
-          onChange={(e) => setFromDate(e.target.value)}
-          className="input-large"
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="toDate">To Date</label>
-        <input
-          type="date"
-          id="toDate"
-          value={toDate}
-          onChange={(e) => setToDate(e.target.value)}
-          className="input-large"
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="sender">Sender</label>
-        <input
-          type="text"
-          id="sender"
-          value={sender}
-          onChange={(e) => setSender(e.target.value)}
-          className="input-large"
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="recipient">Recipient</label>
-        <input
-          type="text"
-          id="recipient"
-          value={recipient}
-          onChange={(e) => setRecipient(e.target.value)}
-          className="input-large"
-        />
-      </div>
+  <label htmlFor="fromDate">From Date</label>
+  <input
+    type="date"
+    id="fromDate"
+    value={fromDate}
+    onChange={(e) => setFromDate(e.target.value)}
+  />
+</div>
+  <div className="form-group">
+    <label htmlFor="toDate">To Date</label>
+    <input
+      type="date"
+      id="toDate"
+      value={toDate}
+      onChange={(e) => setToDate(e.target.value)}
+    />
+  </div>
+  <div className="form-group">
+    <label htmlFor="sender">Sender</label>
+    <input
+      type="text"
+      id="sender"
+      value={sender}
+      onChange={(e) => setSender(e.target.value)}
+    />
+  </div>
+  <div className="form-group">
+    <label htmlFor="recipient">Recipient</label>
+    <input
+      type="text"
+      id="recipient"
+      value={recipient}
+      onChange={(e) => setRecipient(e.target.value)}
+    />
+  </div>
+
       <div className="form-group">
         <label htmlFor="limit">Limit</label>
         <input
@@ -123,39 +122,39 @@ const AdminViewTransactionPage = () => {
         Search
       </button>
       <div className="transaction-list">
-        <ul>
-          {transactions.map((transaction) => (
-            <li key={transaction.id}>
-                <div>
+      <ul>
+        {transactions.map((transaction) => (
+          <li key={transaction.id}>
+            <div className="transaction-box">
+              <div>
                 <strong>Amount:</strong> {transaction.amount} {transaction.currency}
               </div>
-                <div>
+              <div>
                 <strong>Category:</strong> {transaction.category}
               </div>
-                <div>
+              <div>
                 <strong>Recipient:</strong> {transaction.recipient}
               </div>
-                <div>
+              <div>
                 <strong>Sender:</strong> {transaction.wallet}
               </div>
-                <div>
+              <div>
                 <strong>Recurring:</strong> {transaction.is_recurring ? 'Yes' : 'No'}
               </div>
-                <div>
-                <strong>Sent_at:</strong> {transaction.sent_at}
+              <div>
+                <strong>Sent at:</strong> {transaction.sent_at}
               </div>
-                <div>
+              <div>
                 <strong>Accepted:</strong> {transaction.accepted ? 'Yes' : 'No'}
               </div>
-                <div>
-                <strong>Received_at:</strong> {transaction.received_at ? transaction.received_at:"Outstanding"}
+              <div>
+                <strong>Received at:</strong> {transaction.received_at ? transaction.received_at:"Outstanding"}
               </div>
+            </div>
+          </li>
+        ))}
+      </ul>
 
-
-
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

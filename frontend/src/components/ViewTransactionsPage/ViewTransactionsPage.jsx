@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../SideBar/SideBar';
+import './ViewTransactionsPage.css'
 
 const ViewTransactionsPage = () => {
   const [fromDate, setFromDate] = useState(undefined);
@@ -126,6 +127,7 @@ const ViewTransactionsPage = () => {
         <ul>
           {transactions.map((transaction) => (
             <li key={transaction.id}>
+              <div className="transaction-box">
               <div>
                 <strong>Amount:</strong> {transaction.amount} {transaction.currency}
               </div>
@@ -149,6 +151,7 @@ const ViewTransactionsPage = () => {
               </div>
               <div>
                 <strong>Received_at:</strong> {transaction.received_at ? transaction.received_at : 'Outstanding'}
+              </div>
               </div>
             </li>
           ))}
