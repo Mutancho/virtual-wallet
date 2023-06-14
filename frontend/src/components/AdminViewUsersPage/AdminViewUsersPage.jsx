@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from "../SideBar/SideBar";
+import './AdminViewUsersPage.css'
 
 function AdminViewUsersPage() {
   const [users, setUsers] = useState([]);
