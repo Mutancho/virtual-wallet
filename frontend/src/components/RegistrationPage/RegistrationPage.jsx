@@ -23,6 +23,8 @@ function RegistrationPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const { referralId } = useParams();
+  const [showUsernameTooltip, setShowUsernameTooltip] = useState(false);
+  const [showPasswordTooltip, setShowPasswordTooltip] = useState(false);
 
   useEffect(() => {
     if (referralId) {
@@ -35,6 +37,22 @@ function RegistrationPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleFocusUsername = () => {
+    setShowUsernameTooltip(true);
+  };
+
+  const handleBlurUsername = () => {
+    setShowUsernameTooltip(false);
+  };
+
+  const handleFocusPassword = () => {
+    setShowPasswordTooltip(true);
+  };
+
+  const handleBlurPassword = () => {
+    setShowPasswordTooltip(false);
   };
 
   const handleFileChange = (e) => {
@@ -98,26 +116,42 @@ function RegistrationPage() {
       <h2>Create Your E-Wallet Account</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
-        <label>
-          Username:<span className="required">*</span>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Password:<span className="required">*</span>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </label>
+      <label className="input-label">
+        Username:<span className="required">*</span>
+      </label>
+      <div className="input-container">
+        <input
+          type="text"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          onFocus={handleFocusUsername}
+          onBlur={handleBlurUsername}
+          required
+        />
+        {showUsernameTooltip && (
+          <div className="tooltip">
+            Username must be unique and between 2 and 20 symbols.
+          </div>
+        )}
+      </div>
+      <label className="input-container">
+        Password:<span className="required">*</span>
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          onFocus={handleFocusPassword}
+          onBlur={handleBlurPassword}
+          required
+        />
+        {showPasswordTooltip && (
+          <div className="tooltip">
+            Password must be at least 8 symbols and should contain capital letter, digit, and special symbol.
+          </div>
+        )}
+      </label>
         <label>
           Email:<span className="required">*</span>
           <input
