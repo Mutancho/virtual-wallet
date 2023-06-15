@@ -70,7 +70,7 @@ Before you begin, ensure you have met the following requirements:
     - Open MySQL Workbench.
     - Connect to the database using the connection string retrieved from Azure.
     - Create a new database for the project: `CREATE DATABASE your_database_name;`.
-    - Import the provided SQL files (`e-wallet_database.sql` and `e-wallet_insert_currencies.sql`) to set up the tables and include the supported currencies.
+    - Import the provided SQL file (`e-wallet_database.sql`) to set up the tables and include the supported currencies.
 
 4. **Setting up the .env file**
 
