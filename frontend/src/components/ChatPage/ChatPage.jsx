@@ -13,9 +13,10 @@ const ChatsPage = (props) => {
         <Sidebar />
     <div className="chat-window" style={{ height: "100vh", width: "82vw" ,marginLeft: "18vw"}}>
       <PrettyChatWindow
+
         projectId={'79d6fdad-378e-442a-98b8-fc49beb7e9c0'}
-        username={props.user.info.username}
-        secret={props.user.pass}
+        username={localStorage.getItem('username')}//props.user.info.username
+        secret={localStorage.getItem('pass')}//props.user.pass
         style={{ height: "100%" }}
       />
     </div>
