@@ -84,7 +84,7 @@ const MenuPage = ({ user }) => {
   return (
     <div className="menu-page">
       <Sidebar />
-      <h1 class="welcome_user">Welcome {owner}</h1>
+      <h1 id="unique-h1">Welcome {owner}</h1>
       <Link to='/users/wallets'>
         <button className="add-wallet-button">Add Wallet</button>
       </Link>

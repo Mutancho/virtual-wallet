@@ -7,7 +7,7 @@ import image2 from '../../images/group_wallet.jpg';
 import image3 from '../../images/currency_exchange.png';
 import image4 from '../../images/lightning.jpg';
 import image5 from '../../images/saving.png';
-import image6 from '../../images/recurring_transaction.jpg';
+import image6 from '../../images/recurring_transaction.png';
 
 
 function HomePage() {
@@ -28,18 +28,17 @@ function HomePage() {
   };
 
   return (
-    
     <div>
-      <section>
-        <div className="homepage">
+      <section id="homepage-section">
+        <div className="homepage" id="homepage-container">
           <Navbar />
           <h1 id="hide-header">Welcome to Virtual Wallet!</h1>
 
           <div className="homepage-buttons"></div>
         </div>
       </section>
-      <section class="card-group">
-        <div className="flip-card-container">
+      <section id="card-section" className="card-group">
+        <div className="flip-card-container" id="flip-card-container">
           {cardData.map((card) => (
             <div className="flip-card" key={card.id} tabIndex="0">
               <div

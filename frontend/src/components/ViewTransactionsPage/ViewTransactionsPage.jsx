@@ -123,40 +123,44 @@ const ViewTransactionsPage = () => {
       <button className="btn" onClick={handleSearch}>
         Search
       </button>
-      <div className="transaction-list">
-        <ul>
-          {transactions.map((transaction) => (
-            <li key={transaction.id}>
-              <div className="transaction-box">
-              <div>
-                <strong>Amount:</strong> {transaction.amount} {transaction.currency}
-              </div>
-              <div>
-                <strong>Category:</strong> {transaction.category}
-              </div>
-              <div>
-                <strong>Recipient:</strong> {transaction.recipient}
-              </div>
-              <div>
-                <strong>Sender:</strong> {transaction.wallet}
-              </div>
-              <div>
-                <strong>Recurring:</strong> {transaction.is_recurring ? 'Yes' : 'No'}
-              </div>
-              <div>
-                <strong>Sent_at:</strong> {transaction.sent_at}
-              </div>
-              <div>
-                <strong>Accepted:</strong> {transaction.accepted ? 'Yes' : 'No'}
-              </div>
-              <div>
-                <strong>Received_at:</strong> {transaction.received_at ? transaction.received_at : 'Outstanding'}
-              </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {transactions.length > 0 ? (
+        <div className="transaction-list">
+          <ul>
+            {transactions.map((transaction) => (
+              <li key={transaction.id}>
+                <div className="transaction-box">
+                  <div>
+                    <strong>Amount:</strong> {transaction.amount} {transaction.currency}
+                  </div>
+                  <div>
+                    <strong>Category:</strong> {transaction.category}
+                  </div>
+                  <div>
+                    <strong>Recipient:</strong> {transaction.recipient}
+                  </div>
+                  <div>
+                    <strong>Sender:</strong> {transaction.wallet}
+                  </div>
+                  <div>
+                    <strong>Recurring:</strong> {transaction.is_recurring ? 'Yes' : 'No'}
+                  </div>
+                  <div>
+                    <strong>Sent_at:</strong> {transaction.sent_at}
+                  </div>
+                  <div>
+                    <strong>Accepted:</strong> {transaction.accepted ? 'Yes' : 'No'}
+                  </div>
+                  <div>
+                    <strong>Received_at:</strong> {transaction.received_at ? transaction.received_at : 'Outstanding'}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="no-transactions"></div>
+      )}
     </div>
   );
 };

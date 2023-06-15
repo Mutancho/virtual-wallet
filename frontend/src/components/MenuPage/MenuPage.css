@@ -4,46 +4,36 @@
   font-family: Arial, sans-serif;
 }
 
-h1 {
+#unique-h1 {
   font-family: 'Poppins', sans-serif;
   font-size: 64px;
   font-weight: bold;
-  color: #ff7f50; /* Warm orange color, you can customize it */
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  color: #ffffff;
   text-align: center;
   margin: 50px 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow effect */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 106%;
+  background: #ff7f50; 
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  overflow: hidden;
 }
 
 h1::before {
   content: "";
   position: absolute;
-  top: -10px;
+  top: 0;
   left: 0;
-  right: 0;
-  height: 5px;
-  background-color: #ff7f50; /* Warm orange color, you can customize it */
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, #ff7f50, transparent);
+  transform: translateX(-100%);
+  transition: transform 0.8s;
 }
-
-h1::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 5px;
-  background-color: #ff7f50; /* Warm orange color, you can customize it */
-}
-
-/* Example media query to adjust font size for smaller screens */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 48px;
-  }
-}
-
 
 
 .wallets {
@@ -71,7 +61,8 @@ h1::after {
 
 .wallet h2 {
   margin: 0;
-  font-size: 2em;
+  font-size: 1.8em;
+  color: white;
 }
 
 .wallet p {
@@ -198,4 +189,11 @@ h1::after {
 
 .add-wallet-button:hover {
   background-color: #FF4B2B;
+}
+
+.wallet-details p,
+.wallet-header p,
+.active-status span {
+  font-size: 1em; /* adjust this size as needed */
+  color: white;
 }

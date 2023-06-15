@@ -86,3 +86,7 @@ label {
 .confirmation-button:hover {
   background-color: #007B9A;
 }
+
+.update-user-form {
+  background-color: #FFDAB9; 
+}

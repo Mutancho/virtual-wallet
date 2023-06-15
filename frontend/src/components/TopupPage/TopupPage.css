@@ -1,10 +1,10 @@
-.container {
-  width: 115%;
+#topup-container1 {
+  width: 110%;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f2f2f2;
+  background-color: #FFDAB9;
   border-radius: 5px;
-  box-sizing: border-box; /* Ensure padding is included in the width */
+  box-sizing: border-box;
 }
 
 h1 {
@@ -44,13 +44,13 @@ input[type="number"],
 #card-element,
 select {
   width: 100%;
-  box-sizing: border-box; /* Ensure padding is included in the width */
+  box-sizing: border-box;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
   font-size: 14px;
   margin-bottom: 10px;
-  outline: none; /* Remove default outline */
+  outline: none; 
 }
 
 button[type="submit"] {
@@ -74,7 +74,6 @@ button[type="submit"]:disabled {
   cursor: not-allowed;
 }
 
-/* Add specific styles for select dropdown */
 select {
   appearance: none; /* Remove default select dropdown arrow */
   background-image: url('data:image/svg+xml;utf8,<svg fill="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom dropdown arrow */

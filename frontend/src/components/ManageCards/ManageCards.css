@@ -9,7 +9,8 @@
 }
 
 .add-card-container {
-  margin-bottom: 20px;
+  margin-bottom:20px;
+  width: 300px;
 }
 
 #card-element {

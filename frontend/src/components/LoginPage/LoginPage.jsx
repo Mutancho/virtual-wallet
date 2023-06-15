@@ -25,6 +25,8 @@ const LoginPage = (props) =>{
 
       localStorage.setItem('token', token);
       localStorage.setItem('is_admin',is_admin);
+      localStorage.setItem('username', response.data.response_data.username);
+      localStorage.setItem( 'pass', password);
       // localStorage.setItem('props',{info: response.data.response_data, pass: password});
 
       axios.defaults.headers.common['Authorization'] = `Bearer "${token}"`;
