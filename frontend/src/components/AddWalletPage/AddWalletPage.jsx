@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddWalletPage.css'
 import Sidebar from '../SideBar/SideBar';
+import alertify from 'alertifyjs';
+import 'alertifyjs/build/css/alertify.css';
 
 const AddWalletPage = () => {
   const [name, setName] = useState('');
@@ -32,8 +34,8 @@ const AddWalletPage = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      alert("Wallet successfully created!");  // Notification about successful wallet creation.
-      navigate('/users/menu'); // Redirect to /users/menu page
+      alertify.success("Wallet successfully created!");
+      navigate('/users/menu'); 
 
     } catch (error) {
       console.error('Error:', error);

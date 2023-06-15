@@ -3,6 +3,8 @@ import axios from 'axios';
 import Sidebar from '../SideBar/SideBar';
 import { json, useLocation } from 'react-router-dom';
 import './TransactionsPage.css'; 
+import alertify from 'alertifyjs';
+import 'alertifyjs/build/css/alertify.css';
 
 const TransactionsPage = () => {
   const [activeTab, setActiveTab] = useState('contacts');
@@ -102,8 +104,10 @@ const TransactionsPage = () => {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
         },
       });
-      alert('Money sent successfully')
-      window.location.reload();
+      alertify.alert('Money sent successfully!', function(){
+        alertify.success('Ok');
+        window.location.reload();
+      });
       console.log(response.data);
     } catch (error) {
       console.error(error);
