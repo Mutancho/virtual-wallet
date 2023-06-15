@@ -63,6 +63,9 @@ const MenuPage = ({ user }) => {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
+
+    setOwner(localStorage.getItem('username') || '');
+
     fetch('/users/wallets', {
       headers: {
         'Authorization': `Bearer "${token}"`
