@@ -32,6 +32,8 @@ async def shutdown_event():
 origins = [
     "http://localhost",
     "http://localhost:3000",
+    "http://frontend:3000",
+    "http://frontend:80",
 ]
 
 app.add_middleware(
