@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  mariadb:
+    image: mariadb:latest
+    env_file:
+      - ./mariadb.env
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./backend/scripts/e-wallet-database.sql:/docker-entrypoint-initdb.d/e-wallet-database.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  fastapi-app:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/usr/src/app
+    env_file:
+      - docker/backend/.env
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+
+volumes:
+  mariadb-data:

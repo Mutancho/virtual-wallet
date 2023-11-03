@@ -1,0 +1,20 @@
+# Ignore node modules
+node_modules/
+
+# Ignore npm debug logs
+npm-debug.log
+
+# Ignore local environment variables
+.env.local
+.env.development.local
+
+# If you're using Git, you might also want to ignore:
+.git/
+.gitignore
+
+# Ignore any build outputs if you've built locally before Dockerizing
+/build/
+
+# Additional common files to ignore
+*.log
+*.DS_Store

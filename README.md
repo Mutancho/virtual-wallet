@@ -74,7 +74,7 @@ Before you begin, ensure you have met the following requirements:
 
 4. **Setting up the .env file**
 
-    Navigate to backend/config and create a file named `.env`. This file will environment variables that your application requires. 
+    Navigate to backend/config and create a file named `.env`. This file will hold environment variables that your application requires. 
 
     - `DATABASE_HOSTNAME`= The hostname where your database is hosted. If you are running your database locally, this will be `localhost`. If you are using Azure, this will be the hostname provided by Azure.
     - `DATABASE_PORT`= The port that your database is running on. For MariaDB/MySQL, the default port is typically `3306`.
@@ -87,6 +87,11 @@ Before you begin, ensure you have met the following requirements:
     - `STRIPE_SECRET_KEY` and `STRIPE_PUBLIC_KEY`= Your secret and public keys for the Stripe API. You will get these from your Stripe account.
     - `BASE_URL`= The base URL of your application, for instance `http://127.0.0.1:8000`.
     - `CHAT_PROJECT_ID` and `CHAT_PRIVATE_KEY`= Your project ID and private key for the Chat Engine. You will get these from your Chat Engine account.
+      
+   Navigate to the root folder and create a file named `mariadb.env`. This file will hold environment variables specific to your MariaDB container setup:
+
+   - `MYSQL_ROOT_PASSWORD`: The password for the root user of your MariaDB instance. Ensure this is a strong, unique password.
+   - `MYSQL_DATABASE`: The name of the database that MariaDB will initially create upon container startup. This should ideally match the `DATABASE_NAME` from the `.env` file in the `backend/config` directory.
 
 5. **In terminal, within the root directory of main.py use to run the backend server "uvicorn main:app --reload"**
 
