@@ -4,6 +4,7 @@ import jwt_decode from 'jwt-decode';
 import './UserUpdatePage.css';
 import Sidebar from '../SideBar/SideBar';
 import {useNavigate} from "react-router-dom";
+import { API_BASE_URL } from '../../config';
 
 function UpdateUser() {
   const [data, setData] = useState({});
@@ -39,7 +40,7 @@ function UpdateUser() {
     try {
       const token = localStorage.getItem('token');
       const decoded = jwt_decode(token);
-      const res = await axios.put(`/users/${decoded.user_id}`, data, {
+      const res = await axios.put(`${API_BASE_URL}users/${decoded.user_id}`, data, {
         headers: {
           Authorization: `Bearer "${token}"`,
           'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ function UpdateUser() {
     try {
       const token = localStorage.getItem('token');
       const decoded = jwt_decode(token);
-      await axios.delete(`/users/${decoded.user_id}`, {
+      await axios.delete(`${API_BASE_URL}users/${decoded.user_id}`, {
         headers: {
           Authorization: `Bearer "${token}"`,
         }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from "../SideBar/SideBar";
 import './AdminViewTransactionPage.css'
+import {API_BASE_URL} from "../../config";
 
 
 const AdminViewTransactionPage = () => {
@@ -18,7 +19,7 @@ const AdminViewTransactionPage = () => {
   const handleSearch = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/transactions', {
+      const response = await axios.get(`${API_BASE_URL}/transactions`, {
         params: {
           from_date: fromDate,
           to_date: toDate,

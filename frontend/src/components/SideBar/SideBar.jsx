@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './SideBar.css';
 import axios from 'axios';
+import {API_BASE_URL} from "../../config";
 
 
 const Sidebar = () => {
@@ -11,7 +12,7 @@ const Sidebar = () => {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post('/users/logout', null, {
+      await axios.post(`${API_BASE_URL}users/logout`, null, {
         headers: {
           Authorization: `Bearer "${token}"`
         }

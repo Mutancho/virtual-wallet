@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../SideBar/SideBar';
 import './AdminViewUsersPage.css';
+import {API_BASE_URL} from "../../config";
 
 function AdminViewUsersPage() {
   const [users, setUsers] = useState([]);
@@ -18,7 +19,7 @@ function AdminViewUsersPage() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/users', {
+      const response = await axios.get(`${API_BASE_URL}users`, {
         params: {
           username: usernameSearchTerm,
           email: emailSearchTerm,

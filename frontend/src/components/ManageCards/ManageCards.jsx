@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import './ManageCards.css';
 import Sidebar from '../SideBar/SideBar';
+import {API_BASE_URL} from "../../config";
 
 const fetchPaymentMethods = async () => {
-  const response = await fetch('/users/cards/payment-methods', {
+  const response = await fetch(`${API_BASE_URL}users/cards/payment-methods`, {
     headers: {
       'Authorization': `Bearer "${localStorage.getItem('token')}"`,
     },
@@ -56,7 +57,7 @@ const ManageCards = () => {
       return;
     }
 
-    const response = await fetch('/users/cards/payment-methods/attachments', {
+    const response = await fetch(`${API_BASE_URL}users/cards/payment-methods/attachments`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer "${localStorage.getItem('token')}"`,
@@ -73,7 +74,7 @@ const ManageCards = () => {
   };
 
   const detachCard = async (cardId) => {
-    const response = await fetch('/users/cards/payment-methods/detachments', {
+    const response = await fetch(`${API_BASE_URL}users/cards/payment-methods/detachments`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer "${localStorage.getItem('token')}"`,

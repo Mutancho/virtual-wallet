@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './MenuPage.css';
 import { Link } from 'react-router-dom';
 import Sidebar from '../SideBar/SideBar';
+import {API_BASE_URL} from "../../config";
 
 const Wallet = ({ wallet }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -66,7 +67,7 @@ const MenuPage = ({ user }) => {
 
     setOwner(localStorage.getItem('username') || '');
 
-    fetch('/users/wallets', {
+    fetch(`${API_BASE_URL}users/wallets`, {
       headers: {
         'Authorization': `Bearer "${token}"`
       },

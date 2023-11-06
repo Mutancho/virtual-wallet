@@ -3,6 +3,7 @@ import axios from 'axios';
 import './PendingTransactionsPage.css';
 import { Link } from 'react-router-dom';
 import Sidebar from '../SideBar/SideBar';
+import {API_BASE_URL} from "../../config";
 
 const Wallet = ({ wallet }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -56,7 +57,7 @@ const PendingTransactionsPage = () => {
   const fetchTransactions = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/transactions/pending', {
+      const response = await axios.get(`${API_BASE_URL}transactions/pending`, {
         headers: {
           Authorization: `Bearer "${token}"`,
         },
@@ -70,7 +71,7 @@ const PendingTransactionsPage = () => {
   const fetchWallets = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/users/wallets', {
+      const response = await axios.get(`${API_BASE_URL}/users/wallets`, {
         headers: {
           Authorization: `Bearer "${token}"`,
         },
@@ -98,7 +99,7 @@ const PendingTransactionsPage = () => {
       const token = localStorage.getItem('token');
       const selectedWalletId = selectedWallets[transactionId];
       await axios.post(
-        `/transactions/accepts_confirmations/${transactionId}`,
+        `${API_BASE_URL}transactions/accepts_confirmations/${transactionId}`,
         { wallet: selectedWalletId },
         {
           headers: {

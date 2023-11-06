@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import './RegistrationPage.css';
+import {API_BASE_URL} from "../../config";
 
 function RegistrationPage() {
   const [formData, setFormData] = useState({
@@ -91,7 +92,7 @@ function RegistrationPage() {
     });
 
     try {
-      const response = await axios.post('/users/registrations', data, {
+      const response = await axios.post(`${API_BASE_URL}users/registrations`, data, {
         params: {
           referral_id: formData.referral_id,
         },

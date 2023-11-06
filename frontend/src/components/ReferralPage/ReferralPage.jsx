@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../SideBar/SideBar';
 import './ReferralPage.css';
+import {API_BASE_URL} from "../../config";
 
 const ReferralPage = () => {
   const [referrals, setReferrals] = useState([]);
@@ -11,7 +12,7 @@ const ReferralPage = () => {
   const fetchReferrals = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/users/referrals', {
+      const response = await axios.get(`${API_BASE_URL}users/referrals`, {
         headers: {
           Authorization: `Bearer "${token}"`,
         },
@@ -34,7 +35,7 @@ const ReferralPage = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        '/users/referrals',
+        `${API_BASE_URL}users/referrals`,
         { email: newEmail },
         {
           headers: {

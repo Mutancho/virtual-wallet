@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './WalletSettingsPage.css';
 import Sidebar from '../SideBar/SideBar';
+import { API_BASE_URL } from '../../config';
 
 const WalletSettingsPage = () => {
   const { state } = useLocation();
@@ -25,7 +26,7 @@ const WalletSettingsPage = () => {
 
   const fetchWalletData = async () => {
     try {
-      const response = await axios.get(`/users/wallets/${walletId}`, {
+      const response = await axios.get(`${API_BASE_URL}users/wallets/${walletId}`, {
         headers: {
           'Authorization': `Bearer "${localStorage.getItem('token')}"`,
         },
@@ -42,7 +43,7 @@ const WalletSettingsPage = () => {
 
   const fetchMembers = async () => {
     try {
-      const response = await axios.get(`/users/wallets/${walletId}`, {
+      const response = await axios.get(`${API_BASE_URL}users/wallets/${walletId}`, {
         headers: {
           'Authorization': `Bearer "${localStorage.getItem('token')}"`,
         },
@@ -69,7 +70,7 @@ const WalletSettingsPage = () => {
     };
 
     try {
-      const response = await axios.put(`/users/wallets/${walletId}/settings`, requestBody, {
+      const response = await axios.put(`${API_BASE_URL}users/wallets/${walletId}/settings`, requestBody, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer "${localStorage.getItem('token')}"`,
@@ -89,7 +90,7 @@ const WalletSettingsPage = () => {
 
   const handleDefaultWallet = async () => {
     try {
-      const response = await axios.patch(`/users/wallets/${walletId}`, {}, {
+      const response = await axios.patch(`${API_BASE_URL}users/wallets/${walletId}`, {}, {
         headers: {
           'Authorization': `Bearer "${localStorage.getItem('token')}"`,
         },
@@ -108,7 +109,7 @@ const WalletSettingsPage = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this wallet?');
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`/users/wallets/${walletId}`, {
+        const response = await axios.delete(`${API_BASE_URL}users/wallets/${walletId}`, {
           headers: {
             'Authorization': `Bearer "${localStorage.getItem('token')}"`,
           },

@@ -3,9 +3,10 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './TopupPage.css';
 import Sidebar from '../SideBar/SideBar';
+import { API_BASE_URL } from '../../config';
 
 const fetchPaymentMethods = async () => {
-  const response = await fetch('/users/cards/payment-methods', {
+  const response = await fetch(`${API_BASE_URL}users/cards/payment-methods`, {
     headers: {
       'Authorization': `Bearer "${localStorage.getItem('token')}"`,
     },
@@ -75,7 +76,7 @@ const TopupPage = () => {
         paymentMethodId = paymentMethod.id;
       }
 
-      const response = await fetch('/users/transfers/deposits', {
+      const response = await fetch(`${API_BASE_URL}users/transfers/deposits`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer "${localStorage.getItem('token')}"`,

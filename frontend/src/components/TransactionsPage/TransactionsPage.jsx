@@ -5,6 +5,7 @@ import { json, useLocation } from 'react-router-dom';
 import './TransactionsPage.css'; 
 import alertify from 'alertifyjs';
 import 'alertifyjs/build/css/alertify.css';
+import { API_BASE_URL } from '../../config';
 
 const TransactionsPage = () => {
   const [activeTab, setActiveTab] = useState('contacts');
@@ -41,7 +42,7 @@ const TransactionsPage = () => {
   const fetchContacts = async () => {
     setActiveTab('contacts');
     try {
-      const response = await axios.get('/contacts', {
+      const response = await axios.get(`${API_BASE_URL}contacts`, {
         headers: {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
           'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ const TransactionsPage = () => {
   const handleSearch = async () => {
     setActiveTab('search');
     try {
-      const response = await axios.get('/users/searches', {
+      const response = await axios.get(`${API_BASE_URL}users/searches`, {
         params: searchParams,
         headers: {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
@@ -99,7 +100,7 @@ const TransactionsPage = () => {
         start_date: recurringTransaction.startDate
       };
   
-      const response = await axios.post('/transactions', transactionData, {
+      const response = await axios.post(`${API_BASE_URL}transactions`, transactionData, {
         headers: {
           Authorization: `Bearer "${localStorage.getItem('token')}"`,
         },

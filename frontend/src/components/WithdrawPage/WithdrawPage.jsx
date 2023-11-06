@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './WithdrawPage.css';
 import Sidebar from "../SideBar/SideBar";
+import { API_BASE_URL } from '../../config';
 
 const fetchPaymentMethods = async () => {
-  const response = await fetch('/users/cards/payment-methods', {
+  const response = await fetch(`${API_BASE_URL}users/cards/payment-methods`, {
     headers: {
       'Authorization': `Bearer "${localStorage.getItem('token')}"`,
     },
@@ -45,7 +46,7 @@ const WithdrawPage = () => {
     }
 
     try {
-      const response = await fetch('/users/transfers/payouts', {
+      const response = await fetch(`${API_BASE_URL}users/transfers/payouts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

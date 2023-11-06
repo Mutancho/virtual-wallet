@@ -4,6 +4,7 @@ import './AddWalletPage.css'
 import Sidebar from '../SideBar/SideBar';
 import alertify from 'alertifyjs';
 import 'alertifyjs/build/css/alertify.css';
+import { API_BASE_URL } from '../../config';
 
 const AddWalletPage = () => {
   const [name, setName] = useState('');
@@ -21,7 +22,7 @@ const AddWalletPage = () => {
     };
 
     try {
-      const response = await fetch('/users/wallets', {
+      const response = await fetch(`${API_BASE_URL}users/wallets`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

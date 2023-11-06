@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from "../SideBar/SideBar";
 import './BlockUsersPage.css';
+import {API_BASE_URL} from "../../config";
 
 const BlockUsersPage = () => {
   const [username, setUsername] = useState('');
@@ -10,7 +11,7 @@ const BlockUsersPage = () => {
   const handleBlockUnblock = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`/users/${username}/blocks`, { action: action }, {
+      const response = await axios.post(`${API_BASE_URL}users/${username}/blocks`, { action: action }, {
         headers: {
           Authorization: `Bearer "${token}"`,
         },

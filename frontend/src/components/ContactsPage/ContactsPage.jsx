@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './ContactsPage.css';
 import axios from 'axios';
 import Sidebar from '../SideBar/SideBar';
+import {API_BASE_URL} from "../../config";
 
 const ContactsPage = () => {
   const [contacts, setContacts] = useState([]);
@@ -11,7 +12,7 @@ const ContactsPage = () => {
   const fetchContacts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/contacts', {
+      const response = await axios.get(`${API_BASE_URL}contacts`, {
         headers: {
           Authorization: `Bearer "${token}"`,
         },
@@ -29,7 +30,7 @@ const ContactsPage = () => {
   const removeContact = async (username) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/contacts/${username}`, {
+      await axios.delete(`${API_BASE_URL}contacts/${username}`, {
         headers: {
           Authorization: `Bearer "${token}"`,
         },
@@ -44,7 +45,7 @@ const ContactsPage = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        `/contacts/${newContactUsername}`,
+        `${API_BASE_URL}contacts/${newContactUsername}`,
         null,
         {
           headers: {

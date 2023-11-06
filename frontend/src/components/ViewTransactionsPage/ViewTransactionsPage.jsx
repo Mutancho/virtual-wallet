@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../SideBar/SideBar';
 import './ViewTransactionsPage.css'
+import { API_BASE_URL } from '../../config';
 
 const ViewTransactionsPage = () => {
   const [fromDate, setFromDate] = useState(undefined);
@@ -17,7 +18,7 @@ const ViewTransactionsPage = () => {
   const handleSearch = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/transactions/searches', {
+      const response = await axios.get(`${API_BASE_URL}transactions/searches`, {
         params: {
           from_date: fromDate,
           to_date: toDate,
